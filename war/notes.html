@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no; minimum-scale=1.0;">
+    <link rel="stylesheet" type="text/css" href="style/main.css" />
+    <link href='http://fonts.googleapis.com/css?family=Squada+One' rel='stylesheet' type='text/css'>
+    <script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script>
+  	$(document).ready(function()
+			{
+  				
+  		
+		  		$("#toggleMenu").click(function () {
+				    $(this).toggleClass("notActive, active");
+				    $("#headerMenu").toggleClass("displayNone");
+			    }); 
+		  		
+		  		$("#timeoutButton").click(function () {
+				    $(this).toggleClass("notPushed, pushed");
+			    });    
+  		
+			});
+  	
+  	
+	</script>
+    
+    
+    <title>Time out!</title>
+  </head>
+
+  <body>
+  	<div id="contentContainer" class="notesPage">
+  	
+  		<div id="header">
+			<div id="headerTop" class="bgWhite">
+				<div id="headerLogo">
+					<div class="logoIcon"><img src="/images/logoIcon.png" height="36" width="36"></div>
+					<div class="logoText">Time out!</div>
+				</div>
+				<div id="toggleMenu" class="notActive"></div>
+			</div>
+			<div id="headerMenu" class="displayNone" >
+				<ul>
+					<li>
+						<a href="javascript:location.reload(true)">Home</a>
+					</li>
+					<li>
+						<a href="javascript:location.reload(true)">Refresh</a>
+					</li>
+					<li>
+						<a href="">Settings</a>
+					</li>
+					<li>
+						<a href="#">Help</a>
+					</li>
+					<li>
+						<a href="login.html" class="noBorder">Logout</a>
+					</li>
+				</ul>
+			</div>
+		</div>	
+  
+  		<div style="width:100%; height:1px;"></div>
+      	
+    	<div id="notesMainContent" class="mainContent">
+	    	<div id="notesOverview">   	
+		    	<div id="noteHeader">
+		    		<div class="title">Notitie-overzicht</div>
+		    		<div id="notesMenu">
+		    			<div id="addIcon" class="menuIconLink"><a href="addnote.html"></a></div>
+		    		</div>
+		    	</div>
+	    		<div id="notesWeekOverview">
+	    			<div class="note" onclick="location.href='viewnote.html';" style="cursor:pointer;">
+	    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
+	    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
+	    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
+						</div>
+	    			</div>
+	    			<div class="note">
+	    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
+	    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
+	    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
+						</div>
+	    			</div>
+	    			<div class="note">
+	    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
+	    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
+	    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
+						</div>				
+	    			</div>
+	    			<div class="note">
+	    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
+	    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
+	    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
+						</div>
+	    			</div>
+	    			<div class="note">
+	    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
+	    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
+	    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
+						</div>
+	    			</div>
+	    		</div>
+	    	</div>
+    	</div>
+    	
+
+    	<div id="spaceFooter"></div>
+
+    	<div id="footer">
+
+			<div class="footerMenu footerMenuShadow bgWhite">
+				 
+				<div class="menuItem">
+				<a href="index.html" data-role="button">
+					<div class="menuIcon" id="home"></div>
+					<span class="footerMenuTitle">Home</span>
+				</a></div>
+				<div class="menuItem">
+				<a href="notes.html" data-role="button">
+					<div class="footerMenuArrow"></div>
+					<div class="menuIcon" id="notes"></div>
+					<span class="footerMenuTitle">Notitie</span>
+				</a></div>
+				<div class="menuItem">
+				<a href="emotion.html" data-role="button">
+					<div class="menuIcon" id="emotion"></div>
+					<span class="footerMenuTitle">Emotie</span>
+				</a></div>
+				<div class="menuItem call bgRed">
+				<a href="call.html" data-role="button">
+					<div class="menuIcon" id="call"></div>
+					<span class="footerMenuTitle">Noodoproep</span>
+				</a></div>
+				
+			</div>
+		</div>
+			
+			
+			
+    	</div>
+    </div>
+  </body>
+</html>
+
+
+

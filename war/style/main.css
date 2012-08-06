@@ -1,0 +1,298 @@
+/* ------------- CSS RESET ------------- */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+
+/* ------------- GENERAL STYLING ------------- */
+
+
+* {
+   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  
+   outline: none;
+}
+
+*:focus {outline: none;}
+
+body {background-color:#ccc; background: #1587ad url('/images/background.jpg') repeat center top; background-attachment: fixed !important; padding:0; margin:0;
+	font-family:arial, verdana; font-size:14px; color:#000; width:100%; }
+
+
+a {color:#fff; text-decoration:none;}
+.displayNone {display:none;}
+
+#contentContainer {margin:0 auto;}
+.bold {font-weight:bold;}
+.clear {clear:both;}
+
+
+.bgWhite {background: #FFF url("/images/bgWhite.png") repeat scroll 0 0;}
+.bgRed {background:#fd6464 url("/images/bgRed.png") repeat scroll 0 0;}
+.bgGreen {background:#64c064 url("/images/bgGreen.png") repeat scroll 0 0;}
+.bgBlue {background:#FFF url("/images/bgBlue.png") repeat scroll 0 0;}
+
+/* ------------- LOGIN ------------- */
+
+div.loginPage {font-size:14px;}
+div.loginPage input{font-size:14px;}
+#logo {margin:30px auto 20px auto; width:250px; height:50px;}
+#logo #logoImage {height:50px; width:50px; background-image: url(/images/logo.png); float:left; margin-right:10px;}
+#logo p {font-size:50px; font-family: 'Squada One', cursive; color:#fff; padding-left:5px; }
+#loginForm {max-width:400px; margin:0 auto; padding:20px;}
+#loginForm label {color:#fff; margin:10px 0 0 0; display:block;}
+#loginForm input.uname{-moz-border-radius: 5px 5px 0 0; -webkit-border-radius: 5px 5px 0 0; -khtml-border-radius: 5px 5px 0 0; border-radius: 5px 5px 0 0; color:#AA99AA; padding:6px 0; width: 100%; margin-bottom:0; border:1px solid #cccccc;}
+#loginForm input.pwd{-moz-border-radius: 0 0 5px 5px; -webkit-border-radius: 0 0 5px 5px; -khtml-border-radius: 0 0 5px 5px; border-radius: 0 0 5px 5px; color:#AA99AA; padding:6px 0; width: 100%; margin-top:0; border:1px solid #cccccc;}
+#loginForm #loginButton{width:100%; padding:6px; -moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; margin:20px 0;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#003366), to(#002b56)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient(top, #003366, #002b56); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(top, #003366, #002b56); /* FF3.6 */
+	background-image:     -ms-linear-gradient(top, #003366, #002b56); /* IE10 */
+	background-image:      -o-linear-gradient(top, #003366, #002b56); /* Opera 11.10+ */
+	background-image:         linear-gradient(top, #003366, #002b56);
+	-moz-box-shadow: 3px 3px 5px		rgba(0,0,0,.3);
+	-webkit-box-shadow: 3px 3px 5px		rgba(0,0,0,.3);
+	box-shadow: 3px 3px 5px				rgba(0,0,0,.3);
+	border:none; color:#fff;}
+
+
+
+
+		/* ------------- RADIO AND CHECKBOX STYLE ------------- */
+.has-js .label_check, .has-js .label_radio { padding: 3px 0 0 30px; }
+.has-js .label_radio { background: url(/images/radio-off.png) no-repeat; }
+.has-js .label_check { background: url(/images/check-off.png) no-repeat; height:21px;}
+.has-js label.c_on { background: url(/images/check-on.png) no-repeat; }
+.has-js label.r_on { background: url(/images/radio-on.png) no-repeat; }
+.has-js .label_check input, .has-js .label_radio input { position: absolute; left: -9999px; }
+
+
+
+
+
+
+/* ------------- REGISTER ------------- */
+
+div.registerPage #registerContent {max-width:400px; padding:10px; margin: 0 auto; padding:0 20px; color:#fff; text-align:justify;}
+
+
+
+
+
+/* ------------- HEADER ------------- */
+
+#header { width:100%; margin:0; padding:0; position:absolute;}
+#header #headerTop {height:52px;
+	-moz-box-shadow: 0 10px 10px		rgba(0,0,0,.3);
+	-webkit-box-shadow: 0 10px 10px		rgba(0,0,0,.3);
+	box-shadow: 0 10px 10px				rgba(0,0,0,.3);}
+#header #headerLogo {float:left; margin:8px 0 8px 20px; height:36px; display:table-cell; vertical-align:middle;}
+#header #headerLogo div.logoIcon {float:left;}
+#header #headerLogo div.logoText {font-family: 'Squada One', cursive; font-size:22px; color:#0099cc; float:left; display:table-cell; vertical-align:middle; margin:8px 0 0 5px;}
+#header #toggleMenu {float:right; height:36px; width:36px; margin:8px 20px 8px 0; cursor:pointer;}
+#header #toggleMenu.notActive {background:url("/images/menuIcon.png") no-repeat right;}
+#header #toggleMenu.active {background:url("/images/menuIconActive.png") no-repeat right;}
+#header #headerMenu {padding:0; clear:both;}
+#header #headerMenu ul {width:100%; margin:0; font-size:0; display:block; padding:0;}
+#header #headerMenu ul li {display:block; width:20%; margin:0; padding:10px 0; list-style:none; list-style-type:none; font-size:12px; text-align:center; color:#fff; float:left;
+background-image: -webkit-gradient(linear, left top, left bottom, from(#002041), to(#003366)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient(top, #002041, #003366); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(top, #002041, #003366); /* FF3.6 */
+	background-image:     -ms-linear-gradient(top, #002041, #003366); /* IE10 */
+	background-image:      -o-linear-gradient(top, #002041, #003366); /* Opera 11.10+ */
+	background-image:         linear-gradient(top, #002041, #003366);
+}
+#header #headerMenu ul li a {border-right:1px solid #0099cc; display:block;}
+#header #headerMenu ul li a.noBorder {border:none;}
+
+
+
+
+
+/* ------------- INDEXPAGE ------------- */
+
+div.mainContent {margin-top:110px;}
+
+div.mainContent #timeoutBlock {padding:0 20px; max-width:400px; margin:0 auto;}
+div.mainContent #timeoutBlock #timeoutButton {position:absolute; width:120px; height:114px; margin:-5px 0 0 10px;}
+div.indexPage div.mainContent #timeoutBlock #timeoutButton.notPushed {background-image:url("/images/timeoutButton.png");}
+div.indexPage div.mainContent #timeoutBlock #timeoutButton.pushed {background-image:url("/images/timeoutButtonPushed.png");}
+div.mainContent #timeoutBlock #timeoutField { height:74px; padding:40px 10px 0 140px; color:#0099cc; font-family: 'Squada One', cursive; font-size:32px; margin-top:20px; text-align:center;
+	-moz-box-shadow: 5px 10px 10px		rgba(0,0,0,.3);
+	-webkit-box-shadow: 5px 10px 10px		rgba(0,0,0,.3);
+	box-shadow: 5px 10px 10px				rgba(0,0,0,.3);}
+	
+	
+
+
+
+/* ------------- TRIGGER ------------- */
+
+#trigger{width:100%; height:100%; position:absolute; background-color:#003366; z-index:100; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";	filter: alpha(opacity=95); -moz-opacity:0.95; -khtml-opacity: 0.95; opacity: 0.95;}
+#triggerContent a.exitIcon {width:40px; height:30px; display:block; background-image:url("/images/exitIcon.png"); float:right; margin:10px;}
+#triggerContent {position:absolute;  width:100%; z-index:101; margin: 0 auto;}
+#triggerContent #triggerContainer {margin: 0 auto; max-width:400px; color:#fff; margin-top: 60px; text-align:center; line-height:16px; padding:0 20px;}
+#triggerContent #triggerContainer #triggerChoice {margin:20px auto 0; width:240px; padding-left:20px;}
+#triggerContent #triggerContainer #triggerChoice a.triggerOption {width:100px; height:100px; float:left; font-family: 'Squada One', cursive; font-size:60px;
+	-moz-box-shadow: 0 10px 10px		rgba(0,0,0,.3);
+	-webkit-box-shadow: 0 10px 10px		rgba(0,0,0,.3);
+	box-shadow: 0 10px 10px				rgba(0,0,0,.3);}
+#triggerContent #triggerContainer #triggerChoice a.triggerOption span {margin-top:40px; display:block;}
+#triggerContent #triggerContainer #triggerChoice a.triggerOption span.small {margin-top:16px; display:block; font-size:16px;}
+#triggerContent #triggerContainer #triggerChoice a.triggerOption span.medium {margin-top:8px; display:block; font-size:26px; line-height:20px;}
+#triggerContent #triggerContainer #triggerChoice a.triggerOption span.large {margin-top:20px; display:block; font-size:60px;}
+#triggerContent #triggerContainer #triggerChoice #triggerNo {margin-right:20px;}
+#triggerContent #triggerContainer #triggerChoice #triggerYes {margin-right:20px;}
+
+
+
+
+
+/* ------------- TIMEOUT ------------- */
+
+div.timeoutPage div.mainContent {margin-top:110px;}
+
+div.timeoutPage div.mainContent #timeoutBlock {padding:0 20px; max-width:400px; margin:0 auto; }
+div.timeoutPage div.mainContent #timeoutBlock #timeoutButton {position:absolute; width:120px; height:114px; margin:-5px 0 0 10px;}
+div.timeoutPage div.mainContent #timeoutBlock #timeoutButton.notPushed {background-image:url("/images/timeoutButton.png");}
+div.timeoutPage div.mainContent #timeoutBlock #timeoutButton.pushed {background-image:url("/images/timeoutButtonPushed.png");}
+div.timeoutPage div.mainContent #timeoutBlock #timeoutField {height:44px; padding:10px 10px 0 140px; color:#0099cc; font-family: 'Squada One', cursive; font-size:34px; margin-top:20px; text-align:center;}
+div.timeoutPage #timer {padding:10px 0; width:100%;}
+div.timeoutPage #timeoutContainer {
+	-moz-box-shadow: 5px 10px 10px		rgba(0,0,0,.3);
+	-webkit-box-shadow: 5px 10px 10px		rgba(0,0,0,.3);
+	box-shadow: 5px 10px 10px				rgba(0,0,0,.3);}
+div.timeoutPage #message {padding:20px 15px; color:#0099cc; line-height:16px;}
+div.timeoutPage div.countDown {padding:3px 10px; margin:0 auto; font-size:40px; text-align:center; font-family: 'Squada One', Arial; color:#0099cc;}
+#countdownBackground {width: 100px; margin:0 auto;
+-moz-box-shadow: inset 0px 2px 8px 3px		rgba(0,153,204,.3);
+	-webkit-box-shadow: inset 0px 2px 8px 3px		rgba(0,153,204,.3);
+	box-shadow: inset 0px 2px 8px 3px				rgba(0,153,204,.3);}
+
+
+
+
+/* ------------- NOTES ------------- */
+
+#notesOverview {margin:0 auto; max-width:500px; padding:0 20px;}
+#notesOverview #noteHeader {padding:10px; background-color:#003366; min-height:30px; }
+#notesOverview #noteHeader div.title {color:#fff; font-weight:bold; float:left; margin-top:7px; font-size:16px;}
+#notesOverview #noteHeader #notesMenu {float:right;}
+#notesOverview #noteHeader #notesMenu div.menuIconLink {width:40px; height:30px; border-left: 1px solid #0099cc; float:right; margin-left:10px;}
+#notesOverview #noteHeader #notesMenu div.menuIconLink a, #notesOverview #noteHeader div.menuIconBackLink a {width:40px; height:30px; display:block;}
+#notesOverview #noteHeader div.menuIconBackLink {width:40px; height:30px; border-right: 1px solid #0099cc; float:left; margin-right:10px;}
+#notesOverview #noteHeader #backIcon.menuIconBackLink {background-image:url("/images/backIcon.png")}
+#notesOverview #noteHeader #notesMenu #addIcon.menuIconLink {background-image:url("/images/addIcon.png")}
+#notesOverview #noteHeader #notesMenu #trashIcon.menuIconLink {background-image:url("/images/trashIcon.png")}
+#notesOverview #noteHeader #notesMenu #editIcon.menuIconLink {background-image:url("/images/editIcon.png")}
+#notesOverview #noteHeader #notesMenu #addNote a {width:30px; height:30px; display:block;}
+#notesOverview #notesWeekOverview {clear:both;}
+#notesOverview #notesWeekOverview div.note {border-style:solid; border-color:#cccccc; border-width:0 0 1px 0; padding:10px 15px 8px 10px; font-size:12px;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e5e5e5)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient(top, #fff, #e5e5e5); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(top, #fff, #e5e5e5); /* FF3.6 */
+	background-image:     -ms-linear-gradient(top, #fff, #e5e5e5); /* IE10 */
+	background-image:      -o-linear-gradient(top, #fff, #e5e5e5); /* Opera 11.10+ */
+	background-image:         linear-gradient(top, #fff, #e5e5e5);}
+#notesOverview #notesWeekOverview div.note input {float:right; margin:3px 0 0 3px;}
+#notesOverview #notesWeekOverview div.note div.date {font-weight:bold;}
+#notesOverview #notesWeekOverview div.note div.date span {font-style:italic; margin-left:10px;} 
+#notesOverview #notesWeekOverview div.note div.message {text-overflow:ellipsis; white-space:nowrap; overflow:hidden;}
+a.editNote {width:100%; height:100%; display:block;}
+
+
+			/* ------------- EDIT NOTE ------------- */
+
+#editNoteMainContent textarea {width:100%; border:1px solid #cccccc; min-height:100px;}
+
+
+#viewNoteMainContent div.viewMessage {line-height:14px}
+
+
+
+
+/* ------------- EMOTION ------------- */
+
+#moodieContainer {margin:0 auto; width:262px;}
+#moodieContainer #moodieText p {color:#fff; text-align:center; padding:0 0 10px;}
+#moodieContainer canvas {border:none;}
+#moodieContainer #saveEmotion {width:252px; text-align:center; padding:5px; font-family: 'Squada One', cursive; color:#fff; font-size:16px; margin-top:5px; cursor:pointer;
+	-moz-box-shadow: 5px 10px 10px		rgba(0,0,0,.3);
+	-webkit-box-shadow: 5px 10px 10px	rgba(0,0,0,.3);
+	box-shadow: 5px 10px 10px			rgba(0,0,0,.3);}
+
+
+
+
+/* ------------- FOOTER ------------- */
+
+#spaceFooter {height:120px;}
+
+
+#footer {}
+div.footerMenu {position:fixed; bottom:0; width:100%;
+	-moz-box-shadow: 0 -3px 10px		rgba(0,0,0,.3);
+	-webkit-box-shadow: 0 -3px 10px		rgba(0,0,0,.3);
+	box-shadow: 0 -3px 10px				rgba(0,0,0,.3);}
+div.footerMenu div.menuItem {width:25%; margin:0; padding:0; font-size:12px; float:left; text-align:center; }
+div.footerMenu div.menuItem.call {}
+div.footerMenu div.menuItem a { color:#0099cc; padding:10px; display:block; border-right:1px solid #666666;}
+div.footerMenu div.menuItem div.menuIcon {width:32px; height:32px;}
+div.footerMenu div.menuItem span.footerMenuTitle {margin-top:2px; display:block; font-family: 'Squada One', cursive;}
+div.footerMenu div.menuItem div#home.menuIcon {background-image: url('/images/homeIcon.png'); margin:0 auto;}
+div.footerMenu div.menuItem div#notes.menuIcon {background-image: url('/images/notesIcon.png'); margin:0 auto;}
+div.footerMenu div.menuItem div#emotion.menuIcon {background-image: url('/images/emotionIcon.png'); margin:0 auto;}
+div.footerMenu div.menuItem div#call.menuIcon {background-image: url('/images/callIcon.png'); margin:0 auto; }
+div.footerMenu div.menuItem.call span { color:#fff;}
+div.footerMenuArrow {width:32px; height:18px; background-image:url('/images/menuArrow.png'); margin:-28px auto 10px;}
+
+	
+	
+	
+
+
+
+
+
+
