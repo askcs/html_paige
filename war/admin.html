@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Timeout ! Admin</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+		<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+		<script src="/js/jquery-1.7.2.min.js"></script>
+		<script src="/js/admin.js"></script>
+		
+		<script>
+			var save = function(){
+				var idA = $('#emailA').val();
+				var passA = $('#passA').val();
+				var passA_r = $('#passA_retype').val();
+				
+				var idB = $('#emailB').val();
+				var passB = $('#passB').val();
+				var passB_r = $('#passB_retype').val();
+				
+				if(idA == "" || passA == "" || idB == "" || passB == ""){
+					alert_timeout("Please fill all the blanks");
+					return;
+				}else if(passA != passA_r || passB != passB_r){
+					alert_timeout("Password not matched !");
+					return; 
+				}else{
+					$('.alert').remove();
+				}				
+				
+							
+			}
+			
+			var initAdminPage = function(){
+				dataCon.get("operator/getAllAskatars",null,function(res){
+					console.log(res);
+					var opt = {'source' : ['a','b','c'],
+							'items' : 8
+							}
+					$('#emailA').typeahead(opt);
+				})
+				
+				
+			}
+			
+			var checkLogin = function(){
+				if(!admin_session.isLogin()){
+					goHome();
+				}
+			}
+		</script>
+	</head>
+	<body onload="checkLogin(); initAdminPage();">
+		<div class="container">
+			<h3>Timeout! App Admin Console</h3>
+			<br>
+			
+			<div>
+				<table class="table">
+					<tr><td>Person A</td></tr>
+					<tr><td><input id="emailA" type="text" class="input" placeholder="Email" data-provide="typeahead"></td></tr>
+					<tr>
+						<td>
+							<input id="passA" type="password" class="input" placeholder="Password">
+							<input id="passA_retype" type="password" class="input" placeholder="reType password">
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<table class="table">
+					<tr><td>Person B</td></tr>
+					<tr><td><input id="emailB" type="text" class="input" placeholder="Email" data-provide="typeahead"></td></tr>
+					<tr>
+						<td>
+							<input id="passB" type="password" class="input" placeholder="Password">
+							<input id="passB_retype" type="password" class="input" placeholder="reType password">
+						</td>
+					</tr>
+				</table>
+			</div>
+			<button id="fat-btn" data-loading-text="Comfirming..." class="btn btn-primary" onclick="javascript:save()">
+                    Comfirm
+            </button>
+		</div>
+	</body>
+</html>

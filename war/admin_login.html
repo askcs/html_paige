@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Timeout ! Admin</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+		<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+		<script src="/js/jquery-1.7.2.min.js"></script>		
+		<script src="/js/admin.js"></script>
+				
+		<script>
+		var login = function(){
+						
+                    	/*code for login from login_classic*/
+                        var usrName = $('#adminUser').val().toLowerCase();
+                        var passStr = $('#adminPass').val();
+                        var passHash = MD5(passStr);
+                        
+                        if(usrName == "" || passStr == ""){
+                        	alert_timeout("Please fill the user name and password.")
+                        	return;
+                        }
+                        
+                        $.Read({
+                            url: admin_session.appServices + 'login',
+                            xhrFields: {
+                                withCredentials: true
+                            },
+                            data: {
+                                "uuid": '' + usrName,
+                                "pass": '' + passHash
+                            },
+                            200: function(data){
+                                console.log("received 200 ok on login.");
+                                window.handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]); 
+                            },
+                            400: function(data){
+                                localStorage['password'] = '';//                              
+                                alert_timeout("Login failed: Please check your email or password");
+                            },
+                            error: function() {
+                            	
+                            	alert_timeout("Login failed: Connection error.");
+                            }
+                        });
+                        return false;
+                        /*code for login_classic ends here */
+		}	
+			
+			
+			
+		</script>
+	</head>
+	<body >
+		<div class="container">
+			<h3>Timeout! App Admin Login</h3>
+			<br>
+			
+			<div>
+				<input id="adminUser" type="text" class="input" placeholder="Admin User">
+				<input id="adminPass" type="password" class="input" placeholder="Password">
+				<button id="fat-btn" data-loading-text="login..." class="btn btn-primary" onclick="javascript:login()">
+                    Login
+            	</button>
+			</div>
+			
+		</div>
+	</body>
+</html>
