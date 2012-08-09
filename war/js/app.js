@@ -63,10 +63,13 @@ function buildHeader()
 	menuUl.append('<li><a href="javascript:location.reload(true)">Refresh</a></li>');
 	menuUl.append('<li><a href="">Settings</a></li>');
 	menuUl.append('<li><a href="">Help</a></li>');
-	menuUl.append('<li><a href="login.html" class="noBorder">Logout</a></li>');
+	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Logout</a></li>');
 	
+	$(menuUl.find('#button_logout')[0]).live('click',function(){
+		session.logoff();
+	})
 	headerMenu.append(menuUl);
-
+	
 	
 	$('#header').append(headerTop, headerMenu); 
 }
