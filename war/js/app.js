@@ -72,19 +72,6 @@ function buildHeader()
 }
 
 
-//	<div id="callPopUp" class="popUp displayNone">
-//  	<div class="popUpBg">
-//  	</div>
-//	  	<div class="triggerContent call">
-//  		<a class="exitIcon" href="home.html"></a>
-//  		<div id="triggerContainer">
-//	  		<p><span class="bold">Noodoproep</span></p>
-//			<div id="triggerChoice">
-//				<a href="index.html" class="triggerOption bgRed" id="triggerNo"><span class="small">Bel<span class="large">112</span></span></a>
-//				<a href="timeout.html" class="triggerOption bgGreen" id="triggerYes"><span class="small">Bel<span class="medium">Contact- persoon</span></span></a>
-//			</div>
-//  		</div>
-//		</div>
-//	</div>
+
 
 
