@@ -28,38 +28,16 @@
 			    $("#timerTitle").hide();
 			    $("#timer").show();
 			    $("#timeoutStarted").slideDown();		
-
-
-<<<<<<< HEAD
-		    });
-	  		 		
-	  		
-	  		buildFooter('Home');
-	  		
-	  		$("#callButton").click(function() {
-	  			$("#callPopUp").removeClass("displayNone");
-	  		});
-	  		
-	  		$("div.exitIcon").click(function() {
-	  			$("#callPopUp").addClass("displayNone");
-	  			
-	  		});
-	  		
-	  		
-=======
-			    });
+			});
 		  		 		
 		  		
-		  		buildFooter('Home');
+		  	buildFooter('Home');
 		  		
-		  		$("#callButton").click(function() {	
-		  			$(window).scrollTop('0');
-		  			$("#callPopUp").removeClass("displayNone");
-		  			$('#callPopUp').load('contents/callpopup.html');
-		  		});
-		  		
-		  		
->>>>>>> 52e1516457418c8feb1d6b109c7c1d4ab25f7bd6
+	  		$("#callButton").click(function() {	
+	  			$(window).scrollTop('0');
+	  			$("#callPopUp").removeClass("displayNone");
+	  			$('#callPopUp').load('contents/callpopup.html');
+	  		});
   		
 		});
   	
@@ -83,29 +61,9 @@
     
     <title>Time out!</title>
   </head>
-
-<<<<<<< HEAD
   <body onload="checkLogin()">
-  	<div id="callPopUp" class="popUp displayNone" ontouchmove="blockMove()">
-	  	<div class="popUpBg">
-	  	</div>
-  	  	<div class="triggerContent call">
-	  		<div class="exitIcon"></div>
-	  		<div id="triggerContainer">
-		  		<p><span class="bold">Noodoproep</span></p>
-				<div id="triggerChoice">
-					<a href="tel:112" class="triggerOption bgRed" id="triggerNo"><span class="small">Bel<span class="large">112</span></span></a>
-					<a href="tel:1234567890" class="triggerOption bgGreen" id="triggerYes"><span class="small">Bel<span class="medium">Contact- persoon</span></span></a>
-				</div>
-	  		</div>
-  		</div>
-  	</div>
-=======
-  <body>
   	<div id="callPopUp" class="popUp displayNone" ontouchmove="blockMove()"></div>
->>>>>>> 52e1516457418c8feb1d6b109c7c1d4ab25f7bd6
-  	
-  	
+
   	<div id="contentContainer" class="indexPage">
   	
   	<div id="header"></div>
