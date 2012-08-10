@@ -1,7 +1,5 @@
 /* File contains offline REST cache and cacheRegister */
 var caches = new CacheRegister();
-
-
 //TODO: remove JQM dependencies
 //TODO: remove Session dependencies
 //TODO: fix new record ID space
@@ -30,7 +28,6 @@ function ASKCache(label,url,data,idQuery,session,idLoop){
 		return true;
 	}
 	this.onChangeCBs=[];
-	
 	//init:
 	if (localStorage[this.label+"_changes"] != "true"){
 		localStorage[this.label+"_changes"]="false";
@@ -49,6 +46,7 @@ ASKCache.prototype.addRenderer = function(page,renderer,doRender){
 		console.log("Failed to add renderer, it's not a function! ",typeof renderer);
 		return;
 	}
+	
 	if (this.renderers[page]){
 		this.renderers[page]=this.renderers[page].concat([renderer]);
 	} else {
@@ -58,32 +56,27 @@ ASKCache.prototype.addRenderer = function(page,renderer,doRender){
 	if (doRender) this.render();
 }
 
-PaigeUser.prototype.setRenderer = function(page, renderer) {
-	caches.waitForCache("getPaigeinfo", function(cacheList) {
-	var cache = cacheList[0];
-	cache.addRenderer(page, renderer);
-	cache.sync();
-	});
-}
-
 ASKCache.prototype.addCB = function(callback){
 	this.onChangeCBs=this.onChangeCBs.concat([callback]);
 }
 
 ASKCache.prototype.render = function(){
 	var cache = this;
-	var page = $.mobile.activePage;
 	var render_list = this.renderers["all"];
-	if (page){
-		var page_list = this.renderers[page.jqmData("url")];
-		if (page_list){
-			if (render_list){
-				render_list = render_list.concat(page_list);
-			} else {
-				render_list = page_list;
-			}
-		}
-	} 
+	
+	var page = window.location;
+
+    if (page){
+        var page_list = this.renderers[page.pathname];
+        if (page_list){
+            if (render_list){
+                render_list = render_list.concat(page_list);
+            } else {
+                render_list = page_list;
+            }
+        }
+    } 
+	
 	if (!render_list){
 		return;
 	} 
@@ -121,18 +114,16 @@ ASKCache.prototype.restart=function(){
 	var cache = this;
 	this.stop();
 	this.interval=setInterval(function(){ cache.sync();},this.hidden_repeat);
-	var page = $.mobile.activePage;
-	if (page){
-		var renderers = this.renderers[page.jqmData("url")];
-		if (!renderers) return;
-		renderers.map(function (renderer){
-			if (renderer && typeof renderer == "function"){
-				cache.stop();
-				cache.interval=setInterval(function(){ cache.sync();},cache.shown_repeat);
-				cache.render();
-			}			
-		});
-	}
+	
+	var renderers = this.renderers[window.location.pathname];
+	if (!renderers) return;
+	renderers.map(function (renderer){
+		if (renderer && typeof renderer == "function"){
+			cache.stop();
+			cache.interval=setInterval(function(){ cache.sync();},cache.shown_repeat);
+			cache.render();
+		}			
+	});
 }
 
 ASKCache.prototype.destroy=function(){
@@ -263,17 +254,12 @@ ASKCache.prototype.clear = function(){
 
 //Sync function
 ASKCache.prototype.sync =	function(sucCallback,failedCallback){
-	if (!session.isSession()){
+	if (!session.isLogin()){
 		console.log("No session, skipping sync.");
 		return;
 	} 
 	
 	var cache=this;
-	
-	if(paigeSettings.conf.demodata){
-		cache.render();
-		return;
-	}
 	
 	var oldKey=session.sessionKey;
 	if (cache.outstanding_request){
@@ -282,7 +268,7 @@ ASKCache.prototype.sync =	function(sucCallback,failedCallback){
 	} 
 	
 	function forbidden(){
-		if (cache.session.sessionKey != oldKey && session.isSession()){
+		if (cache.session.sessionKey != oldKey && session.isLogin()){
 			console.log("["+cache.label+"]: Info: New session available, resyncing");
 			cache.sync();
 		} else {
@@ -471,9 +457,9 @@ ASKCache.prototype.sync =	function(sucCallback,failedCallback){
 function CacheRegister() {
 	var caches=this;
 	// Provides a lookup structure for caches, either by Label or URL.
-	session.addCallback("authenticator",function(){caches.stopAll();});
-	session.addCallback("logoff",function(){caches.stopAll();});
-	session.addCallback("login",function(){caches.startAll();});
+//	session.addCallback("authenticator",function(){caches.stopAll();});
+//	session.addCallback("logoff",function(){caches.stopAll();});
+//	session.addCallback("login",function(){caches.startAll();});
 	
 }
 
@@ -536,7 +522,7 @@ CacheRegister.prototype.waitForCache = function (key,success,failure,interval,co
 }
 
 CacheRegister.prototype.showList = function(key){
-	if (!session.isSession()) return; // early out when no login available
+	if (!session.isLogin()) return; // early out when no login available
 	var myCaches = this.getList(key);
 	if (myCaches){
 		myCaches.map(function(cache){
@@ -546,7 +532,7 @@ CacheRegister.prototype.showList = function(key){
 	}
 }
 CacheRegister.prototype.hideList = function(key){
-	if (!session.isSession()) return; // early out when no login available
+	if (!session.isLogin()) return; // early out when no login available
 	var myCaches = caches.getList(key);
 	if (myCaches){
 		myCaches.map(function(cache){ cache.restart()});

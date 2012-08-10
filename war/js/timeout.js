@@ -26,13 +26,13 @@
 })(jQuery);
 
 
-
 var session = new paigeSession();
+var phoneGapAvailable = false;
 
 function paigeSession(sKey) {
 	this.sessionKey = localStorage["paigeSessionKey"];
 	this.appServices = localStorage["appServices"];
-	this.uuid = localStorage["adminUser"];
+	this.uuid = localStorage["PaigeUser"];
 	if (!this.appServices) {
 		this.appServices = "http://localhost:8888/";
 	}
@@ -41,7 +41,7 @@ function paigeSession(sKey) {
 	}
 	// this.loading = false;
 	// this.onAuthenticator = [];
-	// this.onLogin = [];
+	this.onLogin = [];
 	// this.onLogoff = [];
 }
 
@@ -84,10 +84,30 @@ paigeSession.prototype.logoff = function(){
 	window.location = "http://" + window.location.host + "/login.html";
 }
 
+paigeSession.prototype.addCallback = function(when, callback) {
+	switch (when) {
+	// case "authenticator":
+		// this.onAuthenticator = this.onAuthenticator.concat([ callback ]);
+		// break;
+	case "login":
+		this.onLogin = this.onLogin.concat([ callback ]);
+		break;
+	// case "logoff":
+		// this.onLogoff = this.onLogoff.concat([ callback ]);
+		// break;
+	default:
+		console.log("Unknown session callback registered");
+	}
+}
+
+
+
 function handle_session(sessionKey, url) {// Has to be global function
 	session.setSessionKey(sessionKey);
 	session.uuid = localStorage['paigeUser'];
-	
+	session.onLogin.map(function(func) {
+		func();
+	});
 	if (url) {
 		window.location = url;
 	}else{
@@ -395,6 +415,18 @@ var MD5 = function(string) {
 	return temp.toLowerCase();
 }
 
-$.import_js('/js/jquery.rest.min.js');
-$.import_js('/js/askRest_cache.js');
-$.import_js('/js/settings.js');
+$.import_js("/js/settings.js");
+$.import_js("/js/jquery.rest.min.js");
+$.import_js("/js/askRest_cache.js");
+
+// $("head").append('<script type="text/javascript" src="/js/settings.js"></script>');
+// $("head").append('<script type="text/javascript" src="/js/jquery.rest.min.js"></script>');
+
+// $.import_js("/js/Paige_phone/cordova-1.5.0.js");
+// $.import_js("/js/Paige_phone/phonegap-toast.js");
+// $.import_js("/js/Paige_phone/pee_plugin.js");
+// $.import_js("/js/Paige_phone/sense_platform.js");
+// $.import_js("/js/Paige_phone/IntentJS.js");
+// $.import_js("/js/Paige_phone/WebView.js");
+// $.import_js("/js/Paige_phone/SystemNotification.js");
+// $.import_js("/js/Paige_phone/paige_phonegap.js");
