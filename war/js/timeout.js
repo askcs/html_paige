@@ -46,7 +46,8 @@ function paigeSession(sKey) {
 }
 
 paigeSession.prototype.isLogin = function() {
-	return (this.sessionKey != null && this.sessionKey != "");
+	// handle_session(localStorage["paigeSessionKey"],"");
+	return (typeof this.sessionKey != "undefined" && this.sessionKey != null && this.sessionKey != "");
 }
 
 paigeSession.prototype.setSessionKey = function(sKey) {
@@ -82,6 +83,20 @@ paigeSession.prototype.logoff = function(){
 	localStorage.removeItem('autologin');
 	
 	window.location = "http://" + window.location.host + "/login.html";
+	
+	if (phoneGapAvailable && window.plugins.sense) {
+		window.plugins.sense.toggleMain(false, function() {
+		}, function() {
+		});
+		
+		window.plugins.intentjs.logOff();
+	}
+
+	if (phoneGapAvailable && window.plugins.pee) {
+		
+		window.plugins.pee.unregisterC2DM();
+		window.plugins.pee.logout();
+	}
 }
 
 paigeSession.prototype.addCallback = function(when, callback) {
@@ -105,13 +120,10 @@ paigeSession.prototype.addCallback = function(when, callback) {
 function handle_session(sessionKey, url) {// Has to be global function
 	session.setSessionKey(sessionKey);
 	session.uuid = localStorage['paigeUser'];
-	session.onLogin.map(function(func) {
-		func();
-	});
-	if (url) {
-		window.location = url;
-	}else{
-		goHome();
+	if(session.onLogin != null){
+		session.onLogin.map(function(func) {
+			func();
+		});
 	}
 }
 
@@ -415,18 +427,71 @@ var MD5 = function(string) {
 	return temp.toLowerCase();
 }
 
+var senseProfiles = {
+	'timeout': {
+		// General
+		commonsense_rate:			'0',
+		sync_rate:					'1',
+		autostart:					true,
+		
+		// Advanced
+		use_commonsense:			true,
+		//devmode:					false,
+		compression:				true,
+		
+		// Phonestate
+		phonestate_battery:			true,
+		phonestate_screen_activity:	true,
+		phonestate_proximity:		false,
+		phonestate_ip:				false,
+		phonestate_data_connection:	false,
+		phonestate_unread_msg:		false,
+		phonestate_service_state:	false,
+		phonestate_signal_strength:	false,
+		phonestate_call_state:		true,
+		
+		// Ambience
+		ambience_audio_spectrum:	false,
+		ambience_camera_light:		false,
+		ambience_light:				false,
+		ambience_mic:				true,
+		ambience_pressure:			false,
+		ambience_temperature:		false,
+		
+		// Proximity
+		proximity_bt:				false,
+		proximity_wifi:				false,
+		proximity_nfc:				false,
+		
+		// Location
+		location_gps:				false,
+		location_network:			true,
+		automatic_gps:				false,
+			
+		// Motion
+		motion_fall_detector:		false,
+		motion_epimode:				false,
+		motion_unregister:			false,
+		motion_energy:				true,
+		motion_screenoff_fix:		false
+	}
+};
+
+
 $.import_js("/js/settings.js");
 $.import_js("/js/jquery.rest.min.js");
 $.import_js("/js/askRest_cache.js");
 
-// $("head").append('<script type="text/javascript" src="/js/settings.js"></script>');
+// $("head").append('<script type="text/javascript" src="/js/settings.js"></script>');	
 // $("head").append('<script type="text/javascript" src="/js/jquery.rest.min.js"></script>');
 
-// $.import_js("/js/Paige_phone/cordova-1.5.0.js");
-// $.import_js("/js/Paige_phone/phonegap-toast.js");
-// $.import_js("/js/Paige_phone/pee_plugin.js");
-// $.import_js("/js/Paige_phone/sense_platform.js");
-// $.import_js("/js/Paige_phone/IntentJS.js");
-// $.import_js("/js/Paige_phone/WebView.js");
-// $.import_js("/js/Paige_phone/SystemNotification.js");
-// $.import_js("/js/Paige_phone/paige_phonegap.js");
+$.import_js("/js/Paige_phone/cordova-2.0.0.js");
+$.import_js("/js/Paige_phone/pee_plugin.js");
+$.import_js("/js/Paige_phone/sense_platform.js");
+$.import_js("/js/Paige_phone/IntentJS.js");
+$.import_js("/js/Paige_phone/WebView.js");
+$.import_js("/js/Paige_phone/SystemNotification.js");
+$.import_js("/js/Paige_phone/paige_phonegap.js");
+$.import_js("/js/jquery.ui.core-1.8.17.min.js");
+$.import_js("/js/jquery.ui.widget-1.8.17.min.js");
+$.import_js("/js/jquery.ui.affectbutton.js");

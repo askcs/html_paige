@@ -2,6 +2,7 @@ function buildFooter(active)
 {
 	//var menuItems = new Array;	
 	var menuItems = ['home', 'notes', 'emotion', 'call'];
+	var menuLinks = ['timeoutBlock', 'notesBlock', 'emotionBlock', 'call'];
 	var menuNames = ['Home', 'Notities', 'Emotie', 'Noodoproep'];
    
 	var navbar = $('<div class="footerMenu footerMenuShadow bgWhite"></div>');
@@ -25,7 +26,8 @@ function buildFooter(active)
 		else
 		{
 			var item = $('<div class="menuItem"></div>');
-			item.append('<a href="' + menuItems[i] + '.html">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+			//item.append('<a href="' + menuItems[i] + '.html">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+			item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\')">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
 		}
 		
 			

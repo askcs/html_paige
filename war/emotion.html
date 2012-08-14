@@ -10,6 +10,9 @@
     <script src="js/jquery.ui.widget-1.8.17.min.js" type="text/javascript"></script>
     <script src="js/jquery.ui.affectbutton.js" type="text/javascript"></script>
 	<script src="js/app.js" type="text/javascript"></script>
+	
+	<script src="js/timeout.js" type="text/javascript"></script>
+	
     <script type="text/javascript">
   	$(document).ready(function()
 			{
@@ -35,8 +38,21 @@
 		  			$('#callPopUp').load('contents/callpopup.html');
 		  		});
 		  		
-		  		
-  		
+		  		$('#contentContainer #saveEmotion').live("click",function(){
+		  			val = $('#emotionMainContent #button').affectbutton('affect');
+					if (window.plugins.sense) {
+						window.plugins.sense.addDataPoint('emotion', 'Emotie', 'Moodie'
+						, 'json', JSON.stringify(val) , (new Date()).getTime()
+						, function() {
+							// success!
+							window.plugins.sense.flushBuffer(function() {}, function() {});
+						}, function() {
+							console.log('Failed to write data to Sense!');
+						});
+					}
+					
+					goHome();
+		  		});
 			});
   	
   	function blockMove() {
@@ -61,10 +77,10 @@
     	<div id="emotionMainContent" class="mainContent">
     		<div id="moodieContainer">
     			<div id="moodieText"><p>Geef je emotie aan.</p></div>
-	    		<canvas id="button" width="262px" height="262px" ontouchmove="touchMove(event)">
+	    		<canvas id="button" width="262px" height="262px" >
 					(Canvas not supported!)
 				</canvas>
-				<div id="saveEmotion" onclick="location.href='home.html';" class="button">Opslaan</div>
+				<div id="saveEmotion"  class="button">Opslaan</div>
 			</div>
     	</div>
     	
