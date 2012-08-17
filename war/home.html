@@ -37,19 +37,42 @@
 					$('#callPopUp').load('contents/callpopup.html');
 				});
 				
+				$('#timeoutBlock').data("remoteDataChange",false);
+				
 				var timeoutRenderer = function(json, olddata, cache) {
 					console.log(json);
+					
 					if(json != null ){
-						var toOjb = json[0]; 
+						var toOjb = json[0];
+						console.log("remote change : ",$('#timeoutBlock').data("remoteDataChange")); 
+						if($('#timeoutBlock').data("remoteDataChange") == true){
+							
+							if(toOjb.remoteDataChange == "true"){
+								console.log("remote change : ",$('#timeoutBlock').data("remoteDataChange"));
+								$('#timeoutBlock').data("remoteDataChange",false);
+								dataCon.post("timeout/remoteChange",null,function(res){
+									console.log(res);
+								});
+							}else{
+								return;
+							}
+						}
+						
 						if(toOjb.status == "active"){
 							var now = Math.round((new Date()).getTime() / 1000);
 							var continued = now-toOjb.startTime;
 							var itvs = toOjb.interval.split(',');
-							var duration = itvs[1]*60;
+							var duration = 0;
+							for(var i=0 ; i < itvs.length ; i++){
+								duration += parseInt(itvs[i]);
+							}
+							duration = duration*60;
+							 
 							var countdownNumber = duration-continued; 
 							
 							if(typeof $("#timeoutButton").data("continued") == "undefined"
 								|| $("#timeoutButton").data("continued") == false){
+								console.log("Start counting ... ", countdownNumber);
 								javascript_countdown.init(countdownNumber);
 								$("#timeoutButton").data("continued",true);
 							}
@@ -60,11 +83,11 @@
 							$("#timer").show();
 							$("#timeoutStarted").slideDown();
 							
-							$.map(toOjb.appMsg,function(v,k){
-								if(k == session.uuid){
+							$.map(toOjb.attendees,function(v,k){
+								if(k == session.uuid ){
 									$('#timeoutStarted #message p').empty();
 									$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
-									$('#timeoutStarted #message p').append(v);
+									$('#timeoutStarted #message p').append((v.msg == null && typeof v.msg == "undefined")? "": v.msg );
 								}
 							});
 							
@@ -94,11 +117,12 @@
 				$('#timeoutButton').live('click',function(){
 					if($("#timeoutButton").data("active") == false){
 						$("#timeoutButton").data("active",true);
+						$('#timeoutBlock').data("remoteDataChange",true);
 						dataCon.get("timeout/start",null,function(res){
 							console.log(res);
-							// javascript_countdown.init(10);
-							caches.showList("getTimeout"); 
-							// javascript_countdown.init(10*60);
+							setTimeout(function(){
+								caches.showList("getTimeout");
+							},3000);
 						});
 					}
 				})
@@ -122,7 +146,7 @@
 			}
 			
 			// display the page
-			var changeDivPage = function(pageId){
+			var changeDivPage = function(pageId, callback){
 				if(typeof $('#indexMainContent').data("privPage") == "undefined"){
 					$('#indexMainContent').data("privPage","timeoutBlock");
 				}
@@ -131,7 +155,12 @@
 				
 				$('#indexMainContent').data("privPage",$('#indexMainContent').data("currentPage"));
 				$($('#'+pageId)[0]).css('display','block');
-				$('#indexMainContent').data("currentPage",pageId);					
+				$('#indexMainContent').data("currentPage",pageId);
+				
+				if(typeof callback != "undefined"){
+					callback();
+				}
+									
 			}
 		</script>
 		
@@ -141,7 +170,7 @@
 				//number of seconds for countdown
 				var keep_counting = 1;
 				var no_time_left_message = '00:00';
-				var finished_message = '<p><span class="bold">De time-out is afgelopen.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p><a href="home.html" class="button messageButton">OK</a>';
+				var finished_message = '<p><span class="bold">De time-out is finished.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
 				function countdown() {
 					if(time_left < 2) {
 						keep_counting = 0;
@@ -176,6 +205,7 @@
 				function no_time_left() {
 					document.getElementById('javascript_countdown_time').innerHTML = no_time_left_message;
 					document.getElementById('message').innerHTML = finished_message;
+					caches.showList("getTimeout");
 				}
 
 				return {
@@ -219,6 +249,8 @@
 	  			$('#emotionBlock #saveEmotion').data("submited",true);
 	  			$('#emotionMainContent #button').text("Submitting ... ");
 	  			
+	  			$('#timeoutBlock').data("remoteDataChange",true);
+	  			
 				if (window.plugins.sense && phoneGapAvailable) {
 					window.plugins.sense.addDataPoint('emotion', 'Emotie', 'Timeout'
 					, 'json', JSON.stringify(val) , (new Date()).getTime()
@@ -228,16 +260,34 @@
 							$('#emotionBlock #saveEmotion').data("submited",false);
 							$('#emotionMainContent #button').text("Opslaan");
 							
-							changeDivPage("timeoutBlock");
+							changeDivPage("timeoutBlock",function(){
+								caches.showList("getTimeout");
+							});
 							
 							// put a message after user input their emotion
 							$('#timeoutStarted #message p').empty();
 							$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
-							$('#timeoutStarted #message p').append("Thanks for filling your emotion");
+							// this is for 0 - 5 min
+							$('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.");
+							
+							// this is for 5 - 10 min
+							// $('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie. Fijn dat het weer beter met je gaat. De time-out loopt nog steeds. Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.");
 						}, function() {});
 						
 					}, function() {
 						console.log('Failed to write data to Sense!');
+					});
+				}else{
+					
+					// no phonegap and sense  , start to simulate the call for changing the emotion
+					$('#timeoutStarted #message p').empty();
+					$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
+					$('#timeoutStarted #message p').append("Thanks for filling your emotion");
+					
+					$('#emotionBlock #saveEmotion').data("submited",false);
+					
+					changeDivPage("timeoutBlock",function(){
+						// caches.showList("getTimeout");
 					});
 				}
 	  		});
@@ -261,7 +311,7 @@
 								<div style="margin:0px 10px 0 144px;">
 									<div id="countdownBackground" class="bgWhite">
 										<div id="javascript_countdown_time" class="countDown">
-											LA
+											Starting...
 										</div>
 									</div>
 								</div>
@@ -294,7 +344,29 @@
 			    	</div>
 				</div>			
 				<div id="notesBlock" style="display: none;">
-					notification
+						<div id="notesOverview">   	
+					    	<div id="noteHeader">
+					    		<div class="title">Notitie-overzicht</div>
+					    		<div id="notesMenu">
+					    			<div id="addIcon" class="menuIconLink"><a ></a></div>
+					    		</div>
+					    	</div>
+				    		<div id="notesWeekOverview">
+				    			<div class="note" onclick="" style="cursor:pointer;">
+				    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
+				    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
+				    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
+									</div>
+				    			</div>
+				    			<div class="note">
+				    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
+				    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
+				    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
+									</div>
+				    			</div>
+				    			
+				    		</div>
+				    	</div>
 				</div>
 			</div>
 			<div id="spaceFooter"></div>

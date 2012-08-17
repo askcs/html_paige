@@ -273,6 +273,7 @@ ASKCache.prototype.sync =	function(sucCallback,failedCallback){
 			cache.sync();
 		} else {
 			console.log("["+cache.label+"]: Info: Need to login at server");
+			session.sessionKey = null;
 			cache.session.authenticator(cache);
 		}
 	}

@@ -27,6 +27,7 @@
 
 
 var session = new paigeSession();
+var paigeUser = new PaigeUser();
 var phoneGapAvailable = false;
 
 function paigeSession(sKey) {
@@ -57,7 +58,8 @@ paigeSession.prototype.setSessionKey = function(sKey) {
 
 paigeSession.prototype.authenticator = function(){
 	if(!this.isLogin()){
-		window.location = "login.html";
+		// window.location = "login.html";
+		this.logoff();
 	}
 }
 
@@ -82,14 +84,15 @@ paigeSession.prototype.logoff = function(){
 	}
 	localStorage.removeItem('autologin');
 	
-	window.location = "http://" + window.location.host + "/login.html";
-	
 	if (phoneGapAvailable && window.plugins.sense) {
 		window.plugins.sense.toggleMain(false, function() {
 		}, function() {
 		});
 		
-		window.plugins.intentjs.logOff();
+		if(typeof window.plugins.intentjs != "undefined"){
+			window.plugins.intentjs.logOff();
+		}
+		
 	}
 
 	if (phoneGapAvailable && window.plugins.pee) {
@@ -97,6 +100,8 @@ paigeSession.prototype.logoff = function(){
 		window.plugins.pee.unregisterC2DM();
 		window.plugins.pee.logout();
 	}
+	
+	window.location = "http://" + window.location.host + "/login.html";
 }
 
 paigeSession.prototype.addCallback = function(when, callback) {
@@ -127,9 +132,84 @@ function handle_session(sessionKey, url) {// Has to be global function
 	}
 }
 
+function receiveC2DM(type, data) {
+
+	console.log("type:" + type);
+	console.log("data:" + data);
+	// alert("Received type: "+type+" data: "+data);
+	if (type == "registered") {
+		// store data as device registration ID
+		// alert("Registered on: "+data);
+		paigeUser.setData("C2DMKey", data);
+		// var cache = caches.getList("getPaigeQuestions")[0];
+		cache.setInterval(900000); // Since we have C2DM set dialog to low
+									// interval (15 min)
+	} else if (type == "message") {
+		// Use data to determine which Cache needs to sync right now.
+		if(data == "getQuestion"){
+			var cache = caches.getList("getTimeout")[0];
+			cache.sync();
+		}
+	}
+}
+
+session.addCallback("login",function(){
+	if (phoneGapAvailable) {
+		console.log("Start to checking msg from Paige app service.");
+		function successCallback(result) {
+			// handle result
+			console.log("Phone Gap Plugin found messages : " + result);
+		}
+		function failureCallback(error) {
+			// handle error
+			console.log("Phone Gap Msg Plugin found errors: " + error);
+		}
+
+		window.plugins.pee.setCallbackC2DM('receiveC2DM');
+		window.plugins.pee.registerC2DM('receiveC2DM');
+	}
+});
+
+
+
 function goHome(){
 	window.location = "home.html";
 }
+
+// Paige User
+function PaigeUser() {
+}
+
+PaigeUser.prototype.init = function() {
+	var cache = new ASKCache("getPaigeinfo", "resources/", null, "uuid",
+			session);
+	// this.cache.setInterval(10000);
+	cache.addRenderer('all', this.renderInfo);
+}
+
+PaigeUser.prototype.renderInfo = function(json, olddata, cache) {
+
+	paigeUser.data = json[0];
+	paigeUser.cache = cache;
+}
+
+PaigeUser.prototype.setData = function(key, value) {
+	if (this.data != null) {
+		this.data[key] = value;
+
+		this.cache.addElement(this.data.uuid, this.data);
+		this.cache.sync();
+	}
+
+	return false
+}
+
+PaigeUser.prototype.getData = function(key) {
+	var vdata  = this.cache.getElement(this.data.uuid);
+	return vdata[key];
+}
+
+// Paige Data
 var dataCon = new PaigeData();
 
 function PaigeData() {
@@ -173,7 +253,7 @@ PaigeData.prototype.get = function(restPath, data, callback) {
 }
 
 PaigeData.prototype.post = function(restPath, data, callback) {
-	if (!session.isSession()) {
+	if (!session.isLogin()) {
 		console.log("Direct data: Info: No session available, not retrying");
 		session.authenticator();
 		return;
