@@ -1,4 +1,5 @@
 /* File contains offline REST cache and cacheRegister */
+
 var caches = new CacheRegister();
 //TODO: remove JQM dependencies
 //TODO: remove Session dependencies
@@ -7,7 +8,7 @@ var caches = new CacheRegister();
 function ASKCache(label,url,data,idQuery,session,idLoop){
 	//constructor parameters:
 	this.hidden_repeat=300000;
-	this.shown_repeat=30000;
+	this.shown_repeat=15000;
 	this.label=label;
 	this.url=session.appServices+url;
 	this.data=data;

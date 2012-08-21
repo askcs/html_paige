@@ -1,0 +1,200 @@
+<project name="timeout" default="compile" basedir=".">
+	
+	<target name="compile" depends="libs, core, phone, css, states-images, settings-images, home-images" />
+	<target name="clean" depends="clean-libs, clean-core, clean-phone, clean-css" />
+	
+	<!-- Debug parameter -->
+	<property name="debug" value="true"/>
+    <condition property="copy" >
+        <equals arg1="${debug}" arg2="true" />
+    </condition>
+    <condition property="minify" >
+        <equals arg1="${debug}" arg2="false" />
+    </condition>
+	
+	<!--  TODO groups of these targets are almost the same, make some kind of template?! -->
+	
+	<target name="clean-libs">
+		<delete>
+			<fileset dir="build/js" includes="libs.js" />
+			<fileset dir="war/js" includes="libs.min.js" />
+		</delete>
+	</target>
+	
+	<target name="clean-core">
+		<delete>
+			<fileset dir="build/js" includes="core.js" />
+			<fileset dir="war/js" includes="core.min.js" />
+		</delete>
+	</target>
+	
+	<target name="clean-phone">
+		<delete>
+			<fileset dir="build/js" includes="phone.js" />
+			<fileset dir="war/js" includes="phone.min.js" />
+		</delete>
+	</target>
+	
+	<target name="clean-ui">
+		<delete>
+			<fileset dir="build/js" includes="ui.js" />
+			<fileset dir="war/js" includes="ui.min.js" />
+		</delete>
+	</target>
+
+	
+	<target name="clean-css">
+		<delete>
+			<fileset dir="build/css" includes="libs.css" />
+			<fileset dir="war/css" includes="libs.min.css" />
+		</delete>
+	</target>
+	
+	<!--  Libs -->
+	<!-- bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js   for admin page  -->
+	<target name="libs" depends="concat-libs, copy-libs, minify-libs" />
+	
+	<target name="concat-libs">
+		<concat destfile="build/js/libs.js">
+			<filelist dir="src/js/libs" files="jquery-1.7.2.min.js,jquery.ui.core-1.8.17.min.js,jquery.ui.widget-1.8.17.min.js,prefixfree.min.js,jquery.ui.affectbutton.js,jquery.rest.min.js,cordova-2.0.0.js" />
+		</concat>
+	</target>
+	
+	<target name="copy-libs" if="copy">
+		<copy file="build/js/libs.js" tofile="war/js/libs.min.js"/>
+	</target>
+	
+	<target name="minify-libs" if="minify">
+		<java jar="lib/yuicompressor-2.4.7.jar" fork="true">
+			<arg line="-o war/js/libs.min.js build/js/libs.js" />
+		</java>
+	</target>
+	
+	<!--  Core -->
+	<!--  admin.js  -->
+	<target name="core" depends="concat-core, copy-core, minify-core" />
+	
+	<target name="concat-core">
+		<concat destfile="build/js/core.js">
+			<filelist dir="src/js/Paige_core" files="timeout.js,askREST_cache.js,settings.js" />
+		</concat>
+	</target>
+	
+	<target name="copy-core" if="copy">
+		<copy file="build/js/core.js" tofile="war/js/core.min.js"/>
+	</target>
+	
+	<target name="minify-core" if="minify">
+		<java jar="lib/yuicompressor-2.4.7.jar" fork="true">
+			<arg line="-o war/js/core.min.js build/js/core.js" />
+		</java>
+	</target>
+	
+	<!--  Phone -->
+	
+	<target name="phone" depends="concat-phone, copy-phone, minify-phone" />
+	
+	<target name="concat-phone">
+		<concat destfile="build/js/phone.js">
+			<filelist dir="src/js/Paige_phone" files="phonegap-toast.js,pee_plugin.js,sense_platform.js,IntentJS.js,WebView.js,SystemNotification.js,paige_phonegap.js" />
+		</concat>
+	</target>
+	
+	<target name="copy-phone" if="copy">
+		<copy file="build/js/phone.js" tofile="war/js/phone.min.js"/>
+	</target>
+	
+	<target name="minify-phone" if="minify">
+		<java jar="lib/yuicompressor-2.4.7.jar" fork="true">
+			<arg line="-o war/js/phone.min.js build/js/phone.js" />
+		</java>
+	</target>
+	
+	<!--  UI -->
+	<!--  CSS -->
+	
+	<target name="css" depends="concat-css, copy-css, minify-css" />
+	
+	<target name="concat-css">
+		<concat destfile="build/css/libs.css">
+			<filelist dir="src/css" files="jquery.countdown.css,jquery-mobile-fluid960.min.css,jquery.intinput.css,jquery.mobile.simpledialog.min.css,jquery.ui.datepicker.mobile.css,icons.css" />
+		</concat>
+	</target>
+	
+	<target name="copy-css" if="copy">
+		<copy file="build/css/libs.css" tofile="war/css/libs.min.css"/>
+	</target>
+	
+	<target name="minify-css" if="minify">
+		<java jar="lib/yuicompressor-2.4.7.jar" fork="true">
+			<arg line="-o war/css/libs.min.css build/css/libs.css" />
+		</java>
+	</target>
+
+	<!-- Images States -->
+	<target name="states-images" depends="montage-states-availability, montage-states-location, montage-states-connectedness, montage-states-activity, montage-button">
+		<copy file="src/states/icons.css" tofile="war/states/css/icons.css" />
+	</target>
+	
+	<target name="montage-states-availability">
+		<exec executable="montage" dir="src/states/png">
+			<arg line="-background none -geometry 20x20 -tile x1 availability_available.png availability_donotdisturb.png availability_unknown.png montage-availability.png" />
+		</exec>
+		<move overwrite="false" file="src/states/png/montage-availability.png" tofile="war/states/images/availability.png" />
+	</target>
+	
+	<target name="montage-states-location">
+		<exec executable="montage" dir="src/states/png">
+			<arg line="-background none -geometry 20x20 -tile x1 location_added.png location_home.png location_work.png location_friends.png location_sports.png location_restaurants.png location_unknown.png montage-location.png" />
+		</exec>
+		<move overwrite="false" file="src/states/png/montage-location.png" tofile="war/states/images/location.png" />
+	</target>
+	
+	<target name="montage-states-connectedness">
+		<exec executable="montage" dir="src/states/png">
+			<arg line="-background none -geometry 20x20 -tile x1  connectedness_lonely.png connectedness_moderate.png connectedness_social.png montage-connectedness.png" />
+		</exec>
+		<move overwrite="false" file="src/states/png/montage-connectedness.png" tofile="war/states/images/connectedness.png" />
+	</target>
+	
+	<target name="montage-states-activity">
+		<exec executable="montage" dir="src/states/png">
+			<arg line="-background none -geometry 20x20 -tile x1 activity_added.png activity_walking.png activity_travelling.png activity_relaxing.png activity_sleeping.png activity_working.png activity_unknown.png montage-activity.png" />
+		</exec>
+		<move overwrite="false" file="src/states/png/montage-activity.png" tofile="war/states/images/activity.png" />
+	</target>
+	
+	<!--  TODO move to a general section -->
+	<target name="montage-button">
+		<exec executable="montage" dir="src/png">
+			<arg line="-background none -geometry 20x20 -tile x1 button_save.png button_cancel.png button_delete.png button_add.png montage-button.png" />
+		</exec>
+		<move overwrite="false" file="src/png/montage-button.png" tofile="war/js/images/button.png" />
+	</target>
+ 	
+	<target name="settings-images" depends="montage-socialmedia">
+		<copy file="src/settings/icons.css" tofile="war/settings/css/icons.css" />
+	</target>
+	
+	<!-- Images settings -->
+	<target name="montage-socialmedia">
+		<exec executable="montage" dir="src/settings/png">
+			<arg line="-background none -geometry 20x20 -tile x1 socialmedia_facebook.png socialmedia_google.png socialmedia_linkedin.png socialmedia_twitter.png socialmedia_yahoo.png socialmedia_youtube.png montage-socialmedia.png" />
+		</exec>
+		<move overwrite="false" file="src/settings/png/montage-socialmedia.png" tofile="war/settings/images/socialmedia.png" />
+	</target>
+	
+	<!-- Images home -->
+	<target name="home-images" depends="montage-home">
+		<copy file="src/home/icons.css" tofile="war/home/css/icons.css" />
+	</target>
+	
+	<target name="montage-home">
+		<exec executable="montage" dir="src/home/png">
+			<arg line="-background none -geometry 60x60 -tile x1 messages.png groups.png states.png alarm.png tasks.png appointments.png montage-home.png" />
+		</exec>
+		<move overwrite="false" file="src/home/png/montage-home.png" tofile="war/home/images/home.png" />
+	</target>
+	
+	
+</project>

@@ -7,10 +7,11 @@
 		<!--     <link href='http://fonts.googleapis.com/css?family=Squada+One' rel='stylesheet' type='text/css'> -->
 		<script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
 		<script src="js/prefixfree.min.js" type="text/javascript"></script>
+		
+		<script src="js/askREST_cache.js" type="text/javascript"></script>
 		<script src="js/timeout.js" type="text/javascript"></script>
 		<script src="js/app.js" type="text/javascript"></script>
 
-		
 		<!-- <script src="js/askRest_cache.js" type="text/javascript"></script> -->
 		<script type="text/javascript">
 			$(document).ready(function() {
@@ -37,28 +38,13 @@
 					$('#callPopUp').load('contents/callpopup.html');
 				});
 				
-				$('#timeoutBlock').data("remoteDataChange",false);
-				
 				var timeoutRenderer = function(json, olddata, cache) {
 					console.log(json);
 					
 					if(json != null ){
 						var toOjb = json[0];
-						console.log("remote change : ",$('#timeoutBlock').data("remoteDataChange")); 
-						if($('#timeoutBlock').data("remoteDataChange") == true){
-							
-							if(toOjb.remoteDataChange == "true"){
-								console.log("remote change : ",$('#timeoutBlock').data("remoteDataChange"));
-								$('#timeoutBlock').data("remoteDataChange",false);
-								dataCon.post("timeout/remoteChange",null,function(res){
-									console.log(res);
-								});
-							}else{
-								return;
-							}
-						}
 						
-						if(toOjb.status == "active"){
+						if(typeof toOjb != "undefined" && toOjb.status == "active"){
 							var now = Math.round((new Date()).getTime() / 1000);
 							var continued = now-toOjb.startTime;
 							var itvs = toOjb.interval.split(',');
@@ -92,7 +78,7 @@
 							});
 							
 							$("#timeoutButton").data("active",true);
-						}else if(toOjb.status == "inactive"){
+						}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
 							
 							$("#timeoutButton").removeClass("pushed");
 							$("#timeoutButton").addClass("notPushed");
@@ -117,7 +103,6 @@
 				$('#timeoutButton').live('click',function(){
 					if($("#timeoutButton").data("active") == false){
 						$("#timeoutButton").data("active",true);
-						$('#timeoutBlock').data("remoteDataChange",true);
 						dataCon.get("timeout/start",null,function(res){
 							console.log(res);
 							setTimeout(function(){
@@ -205,7 +190,7 @@
 				function no_time_left() {
 					document.getElementById('javascript_countdown_time').innerHTML = no_time_left_message;
 					document.getElementById('message').innerHTML = finished_message;
-					caches.showList("getTimeout");
+					//caches.showList("getTimeout");
 				}
 
 				return {
@@ -249,8 +234,6 @@
 	  			$('#emotionBlock #saveEmotion').data("submited",true);
 	  			$('#emotionMainContent #button').text("Submitting ... ");
 	  			
-	  			$('#timeoutBlock').data("remoteDataChange",true);
-	  			
 				if (window.plugins.sense && phoneGapAvailable) {
 					window.plugins.sense.addDataPoint('emotion', 'Emotie', 'Timeout'
 					, 'json', JSON.stringify(val) , (new Date()).getTime()
@@ -261,7 +244,7 @@
 							$('#emotionMainContent #button').text("Opslaan");
 							
 							changeDivPage("timeoutBlock",function(){
-								caches.showList("getTimeout");
+								// caches.showList("getTimeout");
 							});
 							
 							// put a message after user input their emotion
@@ -282,7 +265,7 @@
 					// no phonegap and sense  , start to simulate the call for changing the emotion
 					$('#timeoutStarted #message p').empty();
 					$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
-					$('#timeoutStarted #message p').append("Thanks for filling your emotion");
+					$('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie.");
 					
 					$('#emotionBlock #saveEmotion').data("submited",false);
 					

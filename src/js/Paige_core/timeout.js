@@ -1,31 +1,3 @@
-(function($)
-{
-    /*
-     * $.import_js() helper (for javascript importing within javascript).
-     */
-    var import_js_imported = [];
-
-    $.extend(true,
-    {
-        import_js : function(script)
-        {
-            var found = false;
-            for (var i = 0; i < import_js_imported.length; i++)
-                if (import_js_imported[i] == script) {
-                    found = true;
-                    break;
-                }
-
-            if (found == false) {
-                $("head").append('<script type="text/javascript" src="' + script + '"></script>');
-                import_js_imported.push(script);
-            }
-        }
-    });
-
-})(jQuery);
-
-
 var session = new paigeSession();
 var paigeUser = new PaigeUser();
 var phoneGapAvailable = false;
@@ -72,6 +44,7 @@ paigeSession.prototype.logoff = function(){
 			withCredentials : true
 		}
 	});
+	
 	// local cleanup:
 	document.cookies = "";
 	// TODO Doesn't work, cookie is on other domain!
@@ -79,10 +52,11 @@ paigeSession.prototype.logoff = function(){
 	session.loading = false;
 	// make this explicit to fix race conditions
 
-	if (localStorage['forget']) {
-		localStorage.clear();
-	}
-	localStorage.removeItem('autologin');
+	localStorage.clear();
+	// if (localStorage['forget']) {
+		// localStorage.clear();
+	// }
+	// localStorage.removeItem('autologin');
 	
 	if (phoneGapAvailable && window.plugins.sense) {
 		window.plugins.sense.toggleMain(false, function() {
@@ -141,7 +115,7 @@ function receiveC2DM(type, data) {
 		// store data as device registration ID
 		// alert("Registered on: "+data);
 		paigeUser.setData("C2DMKey", data);
-		// var cache = caches.getList("getPaigeQuestions")[0];
+		var cache = caches.getList("getTimeout")[0];
 		cache.setInterval(900000); // Since we have C2DM set dialog to low
 									// interval (15 min)
 	} else if (type == "message") {
@@ -265,8 +239,7 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 			console.log("Direct data: Info: New session available, retrying");
 			dataCon.get(restPath, data, callback);
 		} else {
-			console
-					.log("Direct data: Info: Need to login at server, not retrying!");
+			console.log("Direct data: Info: Need to login at server, not retrying!");
 			session.authenticator();
 		}
 	}
@@ -557,21 +530,76 @@ var senseProfiles = {
 	}
 };
 
+function buildFooter(active)
+{
+	//var menuItems = new Array;	
+	var menuItems = ['home', 'notes', 'emotion', 'call'];
+	var menuLinks = ['timeoutBlock', 'notesBlock', 'emotionBlock', 'call'];
+	var menuNames = ['Home', 'Notities', 'Emotie', 'Noodoproep'];
+   
+	var navbar = $('<div class="footerMenu footerMenuShadow bgWhite"></div>');
 
-$.import_js("/js/settings.js");
-$.import_js("/js/jquery.rest.min.js");
-$.import_js("/js/askRest_cache.js");
+	for(var i in menuItems)
+	{
+		if (menuNames[i] == active)
+		{
+			var arrow = '<div class="footerMenuArrow"></div>';
+		}
+		else
+		{
+			var arrow = '';
+		}
+		
+		if (menuNames[i] == 'Noodoproep')
+		{
+			var item = $('<div class="menuItem call bgRed"></div>');
+			item.append('<a id="callButton">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+		}
+		else
+		{
+			var item = $('<div class="menuItem"></div>');
+			//item.append('<a href="' + menuItems[i] + '.html">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+			item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\')">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+		}
+		
+			
+//		var menu = menuNames[i].charAt(0).toUpperCase() + menuNames[i].slice(1);
 
-// $("head").append('<script type="text/javascript" src="/js/settings.js"></script>');	
-// $("head").append('<script type="text/javascript" src="/js/jquery.rest.min.js"></script>');
+		
 
-$.import_js("/js/Paige_phone/cordova-2.0.0.js");
-$.import_js("/js/Paige_phone/pee_plugin.js");
-$.import_js("/js/Paige_phone/sense_platform.js");
-$.import_js("/js/Paige_phone/IntentJS.js");
-$.import_js("/js/Paige_phone/WebView.js");
-$.import_js("/js/Paige_phone/SystemNotification.js");
-$.import_js("/js/Paige_phone/paige_phonegap.js");
-$.import_js("/js/jquery.ui.core-1.8.17.min.js");
-$.import_js("/js/jquery.ui.widget-1.8.17.min.js");
-$.import_js("/js/jquery.ui.affectbutton.js");
+		navbar.append(item);
+	}
+	
+	$('#contentContainer').append(navbar); 
+}
+
+function buildHeader()
+{
+	var headerTop = $('<div id="headerTop" class="bgWhite"></div>');
+	var headerLogo = $('<div id="headerLogo"></div>');
+	
+	headerLogo.append('<div class="logoIcon"><img src="/images/logoIcon.png" height="36" width="36"></div>');
+	headerLogo.append('<div class="logoText">Time out!</div>');
+	headerTop.append(headerLogo);
+
+	var toggleMenu = $('<div id="toggleMenu" class="notActive"></div>');
+	headerTop.append(toggleMenu);
+	
+	var headerMenu = $('<div id="headerMenu" class="displayNone"></div>');
+	
+	var menuUl = $('<ul></ul>');
+	
+	menuUl.append('<li><a href="javascript:location.reload(true)">Home</a></li>');
+	menuUl.append('<li><a href="javascript:location.reload(true)">Refresh</a></li>');
+	menuUl.append('<li><a href="">Settings</a></li>');
+	menuUl.append('<li><a href="">Help</a></li>');
+	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Logout</a></li>');
+	
+	$(menuUl.find('#button_logout')[0]).live('click',function(){
+		session.logoff();
+	})
+	headerMenu.append(menuUl);
+	
+	
+	$('#header').append(headerTop, headerMenu); 
+}
