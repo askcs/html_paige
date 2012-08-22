@@ -75,8 +75,7 @@ paigeSession.prototype.logoff = function(){
 		window.plugins.pee.logout();
 	}
 	
-	window.location = "http://" + window.location.host + "/login.html";
-	console.log(window.location);
+//	window.location = "login.html";
 }
 
 paigeSession.prototype.addCallback = function(when, callback) {
@@ -267,7 +266,7 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 
 function alert_timeout(text){
 	if($(".alert").length == 0){
-		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong><span></span></div>");
+		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">ï¿½</button><strong>Warning!</strong><span></span></div>");
 		$(".alert").alert();
 	}
 	$(".alert span").text(text);
@@ -580,7 +579,8 @@ function buildHeader()
 	var headerTop = $('<div id="headerTop" class="bgWhite"></div>');
 	var headerLogo = $('<div id="headerLogo"></div>');
 	
-	headerLogo.append('<div class="logoIcon"><img src="/images/logoIcon.png" height="36" width="36"></div>');
+	// TODO the logo image should be done in CSS, not using an <img> tag
+	headerLogo.append('<div class="logoIcon"><img src="images/logoIcon.png" height="36" width="36"></div>');
 	headerLogo.append('<div class="logoText">Time out!</div>');
 	headerTop.append(headerLogo);
 
