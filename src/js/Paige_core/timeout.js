@@ -63,8 +63,14 @@ paigeSession.prototype.logoff = function(){
 		}, function() {
 		});
 		
-		if(typeof window.plugins.intentjs != "undefined"){
-			window.plugins.intentjs.logOff();
+		if(typeof window.plugins.intentjs != undefined){
+			window.plugins.intentjs.logOff(
+					function(r) {
+						console.log('IntentJS: logoff success! result: ' + r);
+					},
+					function(e) {
+						console.log('IntentJS: logoff failure! error: ' + e);
+					});
 		}
 		
 	}
@@ -75,7 +81,7 @@ paigeSession.prototype.logoff = function(){
 		window.plugins.pee.logout();
 	}
 	
-//	window.location = "login.html";
+	window.location = "login.html";
 }
 
 paigeSession.prototype.addCallback = function(when, callback) {
