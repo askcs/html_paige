@@ -50,10 +50,8 @@ IntentJS.prototype.logOff = function(success, fail){
     }, 'IntentJS', 'logOff', []);
 };
 
-cordova.addConstructor(function() {
-	if (typeof(window.plugins.intentjs) == "undefined") {
-		console.log('registering intentjs()');
-		cordova.addPlugin('intentjs', new IntentJS());
-	}
-});
-
+/* register the plugin */
+if (!window.plugins)
+	window.plugins = {};
+if (!window.plugins.intentjs) 
+	window.plugins.intentjs = new IntentJS();
