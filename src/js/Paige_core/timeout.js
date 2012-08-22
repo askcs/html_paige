@@ -76,6 +76,7 @@ paigeSession.prototype.logoff = function(){
 	}
 	
 	window.location = "http://" + window.location.host + "/login.html";
+	console.log(window.location);
 }
 
 paigeSession.prototype.addCallback = function(when, callback) {
@@ -113,11 +114,12 @@ function receiveC2DM(type, data) {
 	// alert("Received type: "+type+" data: "+data);
 	if (type == "registered") {
 		// store data as device registration ID
+		
 		// alert("Registered on: "+data);
-		paigeUser.setData("C2DMKey", data);
-		var cache = caches.getList("getTimeout")[0];
-		cache.setInterval(900000); // Since we have C2DM set dialog to low
-									// interval (15 min)
+		// paigeUser.setData("C2DMKey", data);
+		localStorage.setItem("C2DMKey", data);
+		
+		
 	} else if (type == "message") {
 		// Use data to determine which Cache needs to sync right now.
 		if(data == "getQuestion"){
