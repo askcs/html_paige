@@ -111,6 +111,7 @@
 				})
 				
 				if(localStorage['C2DMKey'] != null){
+					console.log("c2dm:"+localStorage['C2DMKey']);
 					dataCon.post("resources/?tags={'C2DMKey':'"+localStorage['C2DMKey']+"'}",null,function(){
 						var t_cache = caches.getList("getTimeout")[0];
 						t_cache.setInterval(900000); // Since we have C2DM set dialog to low

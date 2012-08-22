@@ -75,8 +75,7 @@ paigeSession.prototype.logoff = function(){
 		window.plugins.pee.logout();
 	}
 	
-	window.location = "http://" + window.location.host + "/login.html";
-	console.log(window.location);
+	window.location = "login.html";
 }
 
 paigeSession.prototype.addCallback = function(when, callback) {

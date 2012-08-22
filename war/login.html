@@ -90,6 +90,7 @@
         	return false;
         }
         
+        
         console.log(session.appServices);
         $.Read({
             url: session.appServices + 'login',
@@ -102,8 +103,9 @@
             },
             200: function(data){
                 console.log("received 200 ok on login.");
+                var remember = $('#loginForm .rememberBox');
+                // console.log(remember.attr("checked")); return false;
                 session.addCallback('login', function() {
-                		
                     	if (phoneGapAvailable && window.plugins.sense) {
                             window.plugins.sense.changeLogin(usrName, passHash, function(){
                             	window.plugins.sense.toggleMain(true);
@@ -122,11 +124,11 @@
                     			// start sense modules
                     			// TODO we don't need to start modules if none of their
                     			// corresponding prefs are enabled I guess?
-                    			window.plugins.sense.togglePhoneState(true);
+                    			window.plugins.sense.togglePhoneState(false);
                     			window.plugins.sense.togglePosition(true);
-                    			window.plugins.sense.toggleMotion(true);
+                    			window.plugins.sense.toggleMotion(false);
                     			window.plugins.sense.toggleAmbience(true);
-                    			window.plugins.sense.toggleNeighDev(true);
+                    			window.plugins.sense.toggleNeighDev(false);
                             	
 								window.location = "home.html";
                             }, function(){
