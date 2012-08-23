@@ -59,7 +59,7 @@ table {
 *:focus {outline: none;}
 
 body {background-color:#ccc; background: #1587ad url('/images/background.jpg') repeat center top; background-attachment: fixed !important; padding:0; margin:0;
-	font-family:arial, verdana; font-size:14px; color:#000; width:100%; }
+	font-family:arial, verdana; font-size:15px; color:#000; width:100%; }
 
 
 a {color:#fff; text-decoration:none;}
@@ -69,7 +69,7 @@ a {color:#fff; text-decoration:none;}
 
 #contentContainer {margin:0 auto;}
 
-.button {font-size:14px; text-align:center; padding:6px; -moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; margin:20px 0 0;
+.button {font-size:15px; text-align:center; padding:8px; -moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; margin:22px 0 0;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#003366), to(#002b56)); /* Saf4+, Chrome */
 	background-image: -webkit-linear-gradient(top, #003366, #002b56); /* Chrome 10+, Saf5.1+ */
 	background-image:    -moz-linear-gradient(top, #003366, #002b56); /* FF3.6 */
@@ -93,19 +93,19 @@ a {color:#fff; text-decoration:none;}
 
 /* ------------- LOGIN ------------- */
 
-div.loginPage {font-size:14px;}
-div.loginPage input{font-size:14px;}
+
+div.loginPage input{font-size:15px;}
 #logo {margin:30px auto 20px auto; width:250px; height:50px;}
 #logo #logoImage {height:50px; width:50px; background-image: url(/images/logo.png); float:left; margin-right:10px;}
 #logo p {font-size:50px; font-family: 'Squada One', cursive; color:#fff; padding-left:5px; }
 #loginForm {max-width:400px; margin:0 auto; padding:20px;}
-#loginForm label {color:#fff; margin:10px 0 0 0; display:block;}
-#loginForm input.uname{-moz-border-radius: 5px 5px 0 0; -webkit-border-radius: 5px 5px 0 0; -khtml-border-radius: 5px 5px 0 0; border-radius: 5px 5px 0 0; color:#AA99AA; padding:6px 0; width: 100%; margin-bottom:0; border:1px solid #cccccc;}
-#loginForm input.pwd{-moz-border-radius: 0 0 5px 5px; -webkit-border-radius: 0 0 5px 5px; -khtml-border-radius: 0 0 5px 5px; border-radius: 0 0 5px 5px; color:#AA99AA; padding:6px 0; width: 100%; margin-top:0; border:1px solid #cccccc;}
+#loginForm label {color:#fff; margin:16px 0 0 0; display:block;}
+#loginForm input.uname{-moz-border-radius: 5px 5px 0 0; -webkit-border-radius: 5px 5px 0 0; -khtml-border-radius: 5px 5px 0 0; border-radius: 5px 5px 0 0; color:#AA99AA; padding:8px 0 8px 2px; width: 100%; margin-bottom:0; border:1px solid #cccccc;}
+#loginForm input.pwd{-moz-border-radius: 0 0 5px 5px; -webkit-border-radius: 0 0 5px 5px; -khtml-border-radius: 0 0 5px 5px; border-radius: 0 0 5px 5px; color:#AA99AA; padding:8px 0 8px 2px; width: 100%; margin-top:0; border:1px solid #cccccc;}
 #loginForm #loginButton{width:100%;}
-
-
-
+#loginForm #forgotpassRegister {text-align:right; color:#fff; margin-top:24px;}
+#loginForm #forgotpassRegister a.forgotPass {font-weight:normal; color:white; text-align:right; text-shadow:none; margin-right:5px;}
+#loginForm #forgotpassRegister a.register {font-weight:normal; text-shadow:none; color:white; margin-left:5px;}
 
 
 		/* ------------- RADIO AND CHECKBOX STYLE ------------- */
@@ -178,7 +178,7 @@ div.mainContent #timeoutBlock #blueField p {margin:4px 10px 0 144px;}
 
 #timer { width:100%; height:44px;}
 
-#message {padding:5px 15px 20px 15px; color:#0099cc; line-height:16px;}
+#message {padding:5px 15px 20px 15px; color:#0099cc; line-height:18px;}
 div.countDown {padding:3px 10px; margin:0 auto; font-size:40px; text-align:center; font-family: 'Squada One', Arial; color:#0099cc;}
 #countdownBackground {width: 100px; margin:0 auto;
 -moz-box-shadow: inset 0px 2px 8px 3px		rgba(0,153,204,.3);
@@ -230,7 +230,7 @@ div.exitIcon {width:40px; height:30px; display:block; background-image:url("/ima
 #notesOverview #noteHeader #notesMenu #editIcon.menuIconLink {background-image:url("/images/editIcon.png")}
 #notesOverview #noteHeader #notesMenu #addNote a {width:30px; height:30px; display:block;}
 #notesOverview #notesWeekOverview {clear:both;}
-#notesOverview #notesWeekOverview div.note {border-style:solid; border-color:#cccccc; border-width:0 0 1px 0; padding:10px 15px 8px 10px; font-size:12px;
+#notesOverview #notesWeekOverview div.note {border-style:solid; border-color:#cccccc; border-width:0 0 1px 0; padding:10px 15px 8px 10px; font-size:14px;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e5e5e5)); /* Saf4+, Chrome */
 	background-image: -webkit-linear-gradient(top, #fff, #e5e5e5); /* Chrome 10+, Saf5.1+ */
 	background-image:    -moz-linear-gradient(top, #fff, #e5e5e5); /* FF3.6 */
@@ -240,7 +240,7 @@ div.exitIcon {width:40px; height:30px; display:block; background-image:url("/ima
 #notesOverview #notesWeekOverview div.note input {float:right; margin:3px 0 0 3px;}
 #notesOverview #notesWeekOverview div.note div.date {font-weight:bold;}
 #notesOverview #notesWeekOverview div.note div.date span {font-style:italic; margin-left:10px;} 
-#notesOverview #notesWeekOverview div.note div.message {text-overflow:ellipsis; white-space:nowrap; overflow:hidden;}
+#notesOverview #notesWeekOverview div.note div.message {text-overflow:ellipsis; white-space:nowrap; overflow:hidden; padding-bottom:1px;}
 a.editNote {width:100%; height:100%; display:block;}
 
 
@@ -278,11 +278,11 @@ div.footerMenu {position:fixed; bottom:0; width:100%;
 	-moz-box-shadow: 0 -3px 10px		rgba(0,0,0,.3);
 	-webkit-box-shadow: 0 -3px 10px		rgba(0,0,0,.3);
 	box-shadow: 0 -3px 10px				rgba(0,0,0,.3);}
-div.footerMenu div.menuItem {width:25%; margin:0; padding:0; font-size:12px; float:left; text-align:center; }
+div.footerMenu div.menuItem {width:25%; margin:0; padding:0; font-size:15px; float:left; text-align:center; }
 div.footerMenu div.menuItem.call {}
 div.footerMenu div.menuItem a { color:#0099cc; padding:6px; display:block; border-right:1px solid #666666;}
 div.footerMenu div.menuItem div.menuIcon {width:32px; height:32px;}
-div.footerMenu div.menuItem span.footerMenuTitle {margin-top:2px; display:block; font-family: 'Squada One', cursive;}
+div.footerMenu div.menuItem span.footerMenuTitle {margin-top:2px; display:block; font-family: 'Squada One', cursive; overflow:hidden; text-overflow: clip;}
 div.footerMenu div.menuItem div#home.menuIcon {background-image: url('/images/homeIcon.png'); margin:0 auto;}
 div.footerMenu div.menuItem div#notes.menuIcon {background-image: url('/images/notesIcon.png'); margin:0 auto;}
 div.footerMenu div.menuItem div#emotion.menuIcon {background-image: url('/images/emotionIcon.png'); margin:0 auto;}
