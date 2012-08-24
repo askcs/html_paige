@@ -266,7 +266,7 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 
 function alert_timeout(text){
 	if($(".alert").length == 0){
-		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">�</button><strong>Warning!</strong><span></span></div>");
+		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">X</button><strong>Warning!</strong><span></span></div>");
 		$(".alert").alert();
 	}
 	$(".alert span").text(text);

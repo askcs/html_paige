@@ -145,7 +145,7 @@ div.loginPage input {
 #logo #logoImage {
 	height: 50px;
 	width: 50px;
-	background-image: url("../images/logoIcon.png");
+	background-image: url("../images/logo.png");
 	float: left;
 	margin-right: 10px;
 }
