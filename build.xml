@@ -51,7 +51,7 @@
 	</target>
 	
 	<!--  Libs -->
-	<!-- bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js   for admin page  -->
+
 	<target name="libs" depends="concat-libs, copy-libs, minify-libs" />
 	
 	<target name="concat-libs">
@@ -69,9 +69,49 @@
 			<arg line="-o war/js/libs.min.js build/js/libs.js" />
 		</java>
 	</target>
+
+		<!-- bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js   for admin page  -->	
+	<target name="admin-libs" depends="concat-admin-libs, copy-admin-libs, minify-admin-libs" />
+	
+	<target name="concat-admin-libs">
+		<concat destfile="build/js/admin_libs.js">
+			<filelist dir="src/js/libs" files="jquery-1.7.2.min.js,jquery.ui.core-1.8.17.min.js,jquery.ui.widget-1.8.17.min.js,bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js" />
+		</concat>
+	</target>
+	
+	<target name="copy-admin-libs" if="copy">
+		<copy file="build/js/admin_libs.js" tofile="war/admin/js/libs.min.js"/>
+	</target>
+	
+	<target name="minify-admin-libs" if="minify">
+		<java jar="lib/yuicompressor-2.4.7.jar" fork="true">
+			<arg line="-o war/admin/js/libs.min.js build/js/admin_libs.js" />
+		</java>
+	</target>
+	
 	
 	<!--  Core -->
-	<!--  admin.js  -->
+	
+	<target name="admin-core" depends="concat-admin-core, copy-admin-core, minify-admin-core" />
+	
+	<target name="concat-admin-core">
+		<concat destfile="build/js/admin_core.js">
+			<filelist dir="src/js/Paige_core" files="admin.js,settings.js" />
+		</concat>
+	</target>
+	
+	<target name="copy-admin-core" if="copy">
+		<copy file="build/js/core.js" tofile="war/js/core.min.js"/>
+	</target>
+	
+	<target name="minify-admin-core" if="minify">
+		<java jar="lib/yuicompressor-2.4.7.jar" fork="true">
+			<arg line="-o war/js/core.min.js build/js/core.js" />
+		</java>
+	</target>
+	
+		<!--  admin.js  -->
+		
 	<target name="core" depends="concat-core, copy-core, minify-core" />
 	
 	<target name="concat-core">
