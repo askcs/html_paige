@@ -125,7 +125,7 @@
 				
 				
 				if(typeof $('#indexMainContent').data("currentPage") == "undefined"){
-					changeDivPage("timeoutBlock");
+					changeDivPage("timeoutBlock",null,null);
 				}
 			});
 			function blockMove() {
@@ -137,7 +137,7 @@
 			}
 			
 			// display the page
-			var changeDivPage = function(pageId, callback){
+			var changeDivPage = function(pageId, callback,from){
 				if(typeof $('#indexMainContent').data("privPage") == "undefined"){
 					$('#indexMainContent').data("privPage","timeoutBlock");
 				}
@@ -148,8 +148,13 @@
 				$($('#'+pageId)[0]).css('display','block');
 				$('#indexMainContent').data("currentPage",pageId);
 				
-				if(typeof callback != "undefined"){
+				if(typeof callback != "undefined" && callback != null){
 					callback();
+				}
+				
+				if(from != null){
+					$('.footerMenuArrow').remove();
+					$(from).prepend('<div class="footerMenuArrow"></div>');
 				}
 				
 			}

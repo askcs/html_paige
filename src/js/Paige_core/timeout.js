@@ -63,8 +63,14 @@ paigeSession.prototype.logoff = function(){
 		}, function() {
 		});
 		
-		if(typeof window.plugins.intentjs != "undefined"){
-			window.plugins.intentjs.logOff();
+		if(typeof window.plugins.intentjs != undefined){
+			window.plugins.intentjs.logOff(
+					function(r) {
+						console.log('IntentJS: logoff success! result: ' + r);
+					},
+					function(e) {
+						console.log('IntentJS: logoff failure! error: ' + e);
+					});
 		}
 		
 	}
@@ -75,8 +81,7 @@ paigeSession.prototype.logoff = function(){
 		window.plugins.pee.logout();
 	}
 	
-	window.location = "http://" + window.location.host + "/login.html";
-	console.log(window.location);
+	window.location = "login.html";
 }
 
 paigeSession.prototype.addCallback = function(when, callback) {
@@ -267,7 +272,7 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 
 function alert_timeout(text){
 	if($(".alert").length == 0){
-		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong><span></span></div>");
+		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">ï¿½</button><strong>Warning!</strong><span></span></div>");
 		$(".alert").alert();
 	}
 	$(".alert span").text(text);
@@ -561,8 +566,10 @@ function buildFooter(active)
 		{
 			var item = $('<div class="menuItem"></div>');
 			//item.append('<a href="' + menuItems[i] + '.html">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
-			item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\')">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+			//item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\')">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+			item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\',null,this)">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
 		}
+		
 		
 			
 //		var menu = menuNames[i].charAt(0).toUpperCase() + menuNames[i].slice(1);
