@@ -14,8 +14,9 @@ WebViewPG.prototype.touch = function () {
     	cordova.exec(null, null, "WebViewPG", "touch", []);
 };
 
-/* register the plugin */
-if (!window.plugins)
-	window.plugins = {};
-if (!window.plugins.webView)
-	window.plugins.webView = new WebViewPG();
+cordova.addConstructor(function () {
+    if (typeof(window.plugins.webView) == "undefined") {
+    	console.log('registering webViewPG()');
+    	cordova.addPlugin('webView', new WebViewPG());
+    }
+});

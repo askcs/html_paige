@@ -58,8 +58,8 @@ SystemNotification.prototype.beep = function (count) {
     cordova.exec(null, null, "SystemNotification", "beep", [count]);
 };
 
-/* register the plugin */
-if (!window.plugins)
-	window.plugins = {};
-if (!window.plugins.PaigeSystemNotification)
-	window.plugins.PaigeSystemNotification = new SystemNotification();
+cordova.addConstructor(function () {
+    	console.log('registering SystemNotification()');
+    	cordova.addPlugin('PaigeSystemNotification', new SystemNotification());
+    	window.plugins.PaigeSystemNotification.touch();  //this ensures that the plugin is added when phonegap kicks off
+});

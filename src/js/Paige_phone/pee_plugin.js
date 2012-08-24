@@ -123,8 +123,14 @@ PeePlugin.prototype.notify = function(prioCount,unreadCount) {
     return cordova.exec(null, null, 'PeePlugin', 'notify', [ prioCount, unreadCount ]);
 };
 
-/* register the plugin */
-if (!window.plugins)
-	window.plugins = {};
-if (!window.plugins.pee)
-	window.plugins.pee = new PeePlugin();
+cordova.addConstructor(function() {
+    try {
+        cordova.addPlugin("pee", new PeePlugin());
+    } catch (e) {
+        // do it again to fix a bug in iOS:
+        if (!window.plugins)
+            window.plugins = {};
+        if (!window.plugins.pee)
+            window.plugins.pee = new PeePlugin();
+    }
+});

@@ -70,8 +70,10 @@ WebIntent.prototype.sendToSense = function(params, success, fail) {
     }, 'WebIntent', 'sendToSense', [params]);
 };
 
-/* register the plugin */
-if (!window.plugins)
-	window.plugins = {};
-if (!window.plugins.webintent)
-	window.plugins.webintent = new WebIntent();
+cordova.addConstructor(function() {
+	if (typeof(window.plugins.webintent) == "undefined") {
+		console.log('registering webintent()');
+		cordova.addPlugin('webintent', new WebIntent());
+//		navigator.app.addService("WebIntent","nl.ask.paige.plugin.WebIntent");
+	}
+});
