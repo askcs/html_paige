@@ -560,7 +560,7 @@ function buildFooter(active)
 		{
 			var item = $('<div class="menuItem"></div>');
 			//item.append('<a href="' + menuItems[i] + '.html">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
-			item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\')">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
+			item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\',null,this)">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
 		}
 		
 			
