@@ -34,6 +34,21 @@
 					$('#callPopUp').load('contents/callpopup.html');
 				});
 				
+				var buttonObj = {
+					timeoutStop : function(){
+						$("#timeoutButton").removeClass("pushed");
+						$("#timeoutButton").addClass("notPushed");
+						$("#timerTitle").show();
+						$("#timer").hide();
+						$("#timeoutStarted").slideUp();
+						
+						$("#timeoutButton").data("active",false);
+						$("#timeoutButton").data("continued",false);
+					}
+				}
+				
+				$("#callButton").data('buttonObj',buttonObj);
+				
 				var timeoutRenderer = function(json, olddata, cache) {
 					console.log(json);
 					
@@ -75,15 +90,7 @@
 							
 							$("#timeoutButton").data("active",true);
 						}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
-							
-							$("#timeoutButton").removeClass("pushed");
-							$("#timeoutButton").addClass("notPushed");
-							$("#timerTitle").show();
-							$("#timer").hide();
-							$("#timeoutStarted").slideUp();
-							
-							$("#timeoutButton").data("active",false);
-							$("#timeoutButton").data("continued",false);
+							$("#callButton").data('buttonObj').timeoutStop();
 						}
 					}
 				}
@@ -206,7 +213,7 @@
 				function no_time_left() {
 					document.getElementById('javascript_countdown_time').innerHTML = no_time_left_message;
 					document.getElementById('message').innerHTML = finished_message;
-					//caches.showList("getTimeout");
+					$("#callButton").data('buttonObj').timeoutStop();
 				}
 
 				return {

@@ -1,6 +1,6 @@
 <project name="timeout" default="compile" basedir=".">
 	
-	<target name="compile" depends="libs, core, phone, css, states-images, settings-images, home-images" />
+	<target name="compile" depends="libs, core, phone, admin-libs,admin-core , css, states-images, settings-images, home-images" />
 	<target name="clean" depends="clean-libs, clean-core, clean-phone, clean-css" />
 	
 	<!-- Debug parameter -->
@@ -16,8 +16,9 @@
 	
 	<target name="clean-libs">
 		<delete>
-			<fileset dir="build/js" includes="libs.js" />
+			<fileset dir="build/js" includes="libs.js,admin_libs.js" />
 			<fileset dir="war/js" includes="libs.min.js" />
+			<fileset dir="war/admin/js" includes="libs.min.js" />
 		</delete>
 	</target>
 	
@@ -25,6 +26,7 @@
 		<delete>
 			<fileset dir="build/js" includes="core.js" />
 			<fileset dir="war/js" includes="core.min.js" />
+			<fileset dir="war/admin/js" includes="core.min.js" />
 		</delete>
 	</target>
 	
@@ -75,7 +77,7 @@
 	
 	<target name="concat-admin-libs">
 		<concat destfile="build/js/admin_libs.js">
-			<filelist dir="src/js/libs" files="jquery-1.7.2.min.js,jquery.ui.core-1.8.17.min.js,jquery.ui.widget-1.8.17.min.js,bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js" />
+			<filelist dir="src/js/libs" files="jquery-1.7.2.min.js,jquery.ui.core-1.8.17.min.js,jquery.ui.widget-1.8.17.min.js,jquery.rest.min.js,bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js" />
 		</concat>
 	</target>
 	
@@ -96,12 +98,12 @@
 	
 	<target name="concat-admin-core">
 		<concat destfile="build/js/admin_core.js">
-			<filelist dir="src/js/Paige_core" files="admin.js,settings.js" />
+			<filelist dir="src/js/Paige_core" files="admin.js,admin_settings.js" />
 		</concat>
 	</target>
 	
 	<target name="copy-admin-core" if="copy">
-		<copy file="build/js/core.js" tofile="war/js/core.min.js"/>
+		<copy file="build/js/admin_core.js" tofile="war/admin/js/core.min.js"/>
 	</target>
 	
 	<target name="minify-admin-core" if="minify">

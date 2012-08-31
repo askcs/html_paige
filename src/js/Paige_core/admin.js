@@ -25,8 +25,6 @@
 
 })(jQuery);
 
-
-
 var admin_session = new AdminSession();
 
 function AdminSession(sKey) {
@@ -83,7 +81,7 @@ function PaigeData() {
 PaigeData.prototype.get = function(restPath, data, callback) {
 	if (!admin_session.isLogin()) {
 		console.log("Direct data: Info: No session available, not retrying");
-		session.authenticator();
+		admin_session.authenticator();
 		return;
 	}
 	var oldKey = admin_session.sessionKey;
@@ -117,28 +115,28 @@ PaigeData.prototype.get = function(restPath, data, callback) {
 }
 
 PaigeData.prototype.post = function(restPath, data, callback) {
-	if (!session.isSession()) {
+	if (!admin_session.isLogin()) {
 		console.log("Direct data: Info: No session available, not retrying");
-		session.authenticator();
+		admin_session.authenticator();
 		return;
 	}
-	var oldKey = session.sessionKey;
+	var oldKey = admin_session.sessionKey;
 	var dataCon = this;
 	function forbidden() {
-		if (session.sessionKey != oldKey && session.isSession()) {
+		if (admin_session.sessionKey != oldKey && admin_session.isSession()) {
 			console.log("Direct data: Info: New session available, retrying");
 			dataCon.get(restPath, data, callback);
 		} else {
 			console
 					.log("Direct data: Info: Need to login at server, not retrying!");
-			session.authenticator();
+			admin_session.authenticator();
 		}
 	}
 
-	$.Create(session.appServices + restPath, data, {
-		url : session.appServices + restPath,
+	$.Create(admin_session.appServices + restPath, data, {
+		url : admin_session.appServices + restPath,
 		headers : {
-			'X-SESSION_ID' : session.sessionKey
+			'X-SESSION_ID' : admin_session.sessionKey
 		},
 		xhrFields : {
 			withCredentials : true
@@ -150,6 +148,7 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 		},
 		403 : function callback(res) {
 			forbidden();
+			window.location = "admin_login.html";
 		}
 	});
 }

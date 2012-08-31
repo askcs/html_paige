@@ -9,13 +9,11 @@
 		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
 		<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 				
-		<script src="/js/lib.js"></script>
-		<script src="/js/core.js"></script>
+		<script src="/admin/js/libs.min.js"></script>
+		<script src="/admin/js/core.min.js"></script>
 				
 		<script>
 		var login = function(){
-						
-                    	/*code for login from login_classic*/
                         var usrName = $('#adminUser').val().toLowerCase();
                         var passStr = $('#adminPass').val();
                         var passHash = MD5(passStr);

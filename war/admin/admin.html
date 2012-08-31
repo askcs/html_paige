@@ -9,29 +9,45 @@
 		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
 		<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 		
-		<script src="/js/lib.js"></script>
-		<script src="/js/core.js"></script>
+		<script src="/admin/js/libs.min.js"></script>
+		<script src="/admin/js/core.min.js"></script>
 		
 		<script>
 			var save = function(){
 				var idA = $('#emailA').val();
 				var passA = $('#passA').val();
 				var passA_r = $('#passA_retype').val();
+				var phoneA = $('#phoneA').val();
 				
 				var idB = $('#emailB').val();
 				var passB = $('#passB').val();
 				var passB_r = $('#passB_retype').val();
+				var phoneB = $('#phoneA').val();
 				
-				if(idA == "" || passA == "" || idB == "" || passB == ""){
+				var contact = $('#contactName').val();
+				var contactPhone = $('#contactPhone').val();
+				
+				if(idA == "" || passA == "" || idB == "" || passB == "" || phoneA == "" || phoneB == "" ){
 					alert_timeout("Please fill all the blanks");
 					return;
 				}else if(passA != passA_r || passB != passB_r){
 					alert_timeout("Password not matched !");
 					return; 
+				}else if(contact == "" && contactPhone == ""){
+					alert_timeout("Please fill the contact person's info!");
+					return;
 				}else{
 					$('.alert').remove();
 				}				
 				
+				// register the users and setup a timeout for them .
+				var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
+				'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
+				'contact': {'id': contact, 'phone': contactPhone}
+				}};
+				dataCon.post("timeout/setupTimeout",para,function(res){
+					
+				})
 							
 			}
 			
@@ -48,9 +64,24 @@
 			}
 			
 			var checkLogin = function(){
-				if(!admin_session.isLogin()){
-					goHome();
-				}
+				// if(admin_session.isLogin()){
+					// goHome();
+				// }
+				admin_session.authenticator();
+			}
+			
+			var preset = function(){
+				$('#emailA').val("personA@ask-cs.com");
+				$('#emailB').val("personB@ask-cs.com");
+				$('#passA').val("askask");
+				$('#passA_retype').val("askask");
+				$('#phoneA').val("0624384730");
+				$('#passB').val("askask");
+				$('#passB_retype').val("askask");
+				$('#phoneB').val("0614905849");
+				
+				$('#contactName').val("Conatct Person");
+				$('#contactPhone').val("507");
 			}
 		</script>
 	</head>
@@ -69,6 +100,7 @@
 							<input id="passA_retype" type="password" class="input" placeholder="reType password">
 						</td>
 					</tr>
+					<tr><td><input id="phoneA" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
 				</table>
 			</div>
 			<div>
@@ -81,10 +113,25 @@
 							<input id="passB_retype" type="password" class="input" placeholder="reType password">
 						</td>
 					</tr>
+					<tr><td><input id="phoneB" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
+				</table>
+			</div>
+			<div>
+				<table class="table">
+					<tr><td>Contact Person</td></tr>
+					<tr><td><input id="contactName" type="text" class="input" placeholder="Contact's Id" data-provide="typeahead"></td></tr>
+					<tr>
+						<td>
+							<input id="contactPhone" type="text" class="input" placeholder="Contact's Phone Number">
+						</td>
+					</tr>
 				</table>
 			</div>
 			<button id="fat-btn" data-loading-text="Comfirming..." class="btn btn-primary" onclick="javascript:save()">
                     Comfirm
+            </button>
+            <button id="fat-btn" data-loading-text="Perseting..." class="btn btn-primary" onclick="javascript:preset()">
+                    preset (for test)
             </button>
 		</div>
 	</body>
