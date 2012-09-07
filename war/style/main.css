@@ -553,7 +553,7 @@ div.exitIcon {
 	background-image: url("../images/backIcon.png")
 }
 
-#notesOverview #noteHeader #notesMenu #addIcon.menuIconLink {
+#notesOverview #noteHeader #notesMenu #addNoteIcon.menuIconLink {
 	background-image: url("../images/addIcon.png")
 }
 

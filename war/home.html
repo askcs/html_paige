@@ -44,6 +44,21 @@
 						
 						$("#timeoutButton").data("active",false);
 						$("#timeoutButton").data("continued",false);
+					},
+					renderNotes : function(res){
+						var notes = JSON.parse(res);
+						
+						notes.sort(function(a,b){
+							var a_time = new Date(a.creationTime);
+							var b_time = new Date(b.creationTime);
+							return (b_time.getTime() - a_time.getTime());
+						})
+						
+						$('#notesBlock #notesWeekOverview').empty();
+						notes.map(function(note){
+							var createTime = new Date(note.creationTime);
+ 							$('#notesBlock #notesWeekOverview').append("<div class=\"note\"><div class=\"date\">"+createTime.toDateString()+"<span class=\"time\">"+createTime.toLocaleTimeString()+"</span></div>"+note.question_text+"<div class=\"message\"></div></div>");
+						});
 					}
 				}
 				
@@ -95,9 +110,13 @@
 					}
 				}
 				// check the if the sensor is initialized  
-				$(window).scrollTop('0');
-				$("#callPopUp").removeClass("displayNone");
-				$('#callPopUp').load('contents/sensorChecking.html');
+				if(window.plugins.sense && phoneGapAvailable){
+					$(window).scrollTop('0');
+					$("#callPopUp").removeClass("displayNone");
+					$('#callPopUp').load('contents/sensorChecking.html');
+				}else{
+					$("#callButton").data("initSensor",true); 
+				}
 				
 				var checkSensorCount = 0;
 				if (window.plugins.sense && phoneGapAvailable) {
@@ -134,13 +153,14 @@
 				
 				checkSensor();
 				
-				// start to check timeout status every 30 seconds 
+				//start to check timeout status every 30 seconds 
 				var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
 				cache.addRenderer('/home.html', timeoutRenderer,true);
 				
 				setTimeout(function(){
 					caches.showList("getTimeout");
 				},3000);
+				
 				
 				$('#timeoutButton').live('click',function(){
 					if($("#timeoutButton").data("active") == false){
@@ -171,9 +191,29 @@
 				}
 				
 				// notification page
-				
+				$('#notesBlock #addNoteIcon').live("click",function(){
+					changeDivPage("addNotesBlock",null,null);
+				});
 				 
+				$('#addNotesBlock #sendNote').live('click',function(){
+					var note = $.trim($('#addNotesBlock #timeout_note').val());
+					if(note == ""){
+						alert("Note can't be empty");
+						return;
+					}
+					var para = {'members': [session.uuid] , 'content' : note, 'subject' : '', 'new' : false};
+					$('#addNotesBlock #sendingNote').show();
+					$('#addNotesBlock #sendNote').hide();
+					dataCon.post("question/sendDirectMessage",para,function(res){
+						setTimeout(function(){
+							changeDivPage("notesBlock",null,null);
+							$('#addNotesBlock #sendingNote').hide();
+							$('#addNotesBlock #sendNote').show();
+						},3000);
+					})
+				})
 				
+				$('#addNotesBlock #sendingNote').hide();
 				
 				if(typeof $('#indexMainContent').data("currentPage") == "undefined"){
 					changeDivPage("timeoutBlock",null,null);
@@ -208,6 +248,15 @@
 					$(from).prepend('<div class="footerMenuArrow"></div>');
 				}
 				
+				
+				if(pageId == "notesBlock"){
+					if($('#notesBlock #notesOverview .loadingNote').length == 0){
+						$('#notesBlock #notesWeekOverview').append("<div id=\"noteHeader\"><div class=\"title loadingNote\" >loadinghet laden van notities ...</div></div>");
+						dataCon.get("question",null,function(res){
+							$("#callButton").data('buttonObj').renderNotes(res);
+						});
+					}
+				}
 			}
 		</script>
 		
@@ -393,25 +442,29 @@
 					    	<div id="noteHeader">
 					    		<div class="title">Notitie-overzicht</div>
 					    		<div id="notesMenu">
-					    			<div id="addIcon" class="menuIconLink"><a ></a></div>
+					    			<div id="addNoteIcon" class="menuIconLink"><a></a></div>
 					    		</div>
 					    	</div>
 				    		<div id="notesWeekOverview">
-				    			<div class="note" onclick="" style="cursor:pointer;">
-				    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
-				    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
-				    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
-									</div>
-				    			</div>
-				    			<div class="note">
-				    				<div class="date">30-07-1212 <span class="time">10:12 uur</span></div>
-				    				<div class="message">Begonnen met dagactiviteit. Toen ruzie	gekregen om een kleinigheid. Dit liep uit de hand. 
-				    				Daarom de time-out begonnen. Dit werkte gelukkig goed!
-									</div>
-				    			</div>
-				    			
 				    		</div>
 				    	</div>
+				</div>
+				<div id="addNotesBlock" style="display: none;" >
+					<div id="editNoteMainContent" class="mainContent">
+			    	<div id="notesOverview">
+			    		<div id="noteHeader">
+			    		<div id="backIcon" class="menuIconBackLink"><a href="javascript:changeDivPage('notesBlock',null,null);"></a></div>
+				    		<div class="title">Notitie</div>
+				    	</div>
+			    		<div id="notesWeekOverview">
+			    			<div class="note">
+			    				<textarea class="message" id="timeout_note"></textarea>
+								<input type="button" id="sendNote" value="Opslaan">
+								<input type="button" id="sendingNote" value="Sending">
+								<div class="clear"></div>
+			    			</div>
+			    		</div>
+			    	</div>
 				</div>
 			</div>
 			<div id="spaceFooter"></div>

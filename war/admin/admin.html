@@ -131,9 +131,13 @@
 				$(btn).text("Processing ...");
 				var regUserA = function(){
 					dataCon.post("timeout/rgUser",paraA,function(res){
-						alert_timeout("user A "+idA+ " is created ");
-						$(btn).text($(btn).text()+"...");
-						regUserB();
+						if(res == "exists"){
+							alert_timeout(idA+" already exists. Please select other user ID ");
+						}else{
+							alert_timeout("user A "+idA+ " is created ");
+							$(btn).text($(btn).text()+"...");
+							regUserB();
+						}
 					},function(res){
 						alert_timeout("Something wrong when create "+idA);
 					});
@@ -141,9 +145,13 @@
 				
 				var regUserB = function(){
 					dataCon.post("timeout/rgUser",paraB,function(res){
-						alert_timeout("user B "+idB+ " is created ");
-						$(btn).text($(btn).text()+"...");
-						regUserC();
+						if(res == "exists"){
+							alert_timeout(idB+" already exists. Please select other user ID ");
+						}else{
+							alert_timeout("user B "+idB+ " is created ");
+							$(btn).text($(btn).text()+"...");
+							regUserC();
+						}
 					},function(res){
 						alert_timeout("Something wrong when create "+idB);
 					});
@@ -151,11 +159,15 @@
 				
 				var regUserC = function(){
 					dataCon.post("timeout/rgUser",paraContact,function(res){
-						alert_timeout("Contact "+contact+ " is created ");
-						$(btn).text($(btn).text()+"...");
-						setupTimeout();
+						if(res == "exists"){
+							alert_timeout(contact+" already exists. Please select other user ID ");
+						}else{
+							alert_timeout("Contact "+contact+ " is created ");
+							$(btn).text($(btn).text()+"...");
+							setupTimeout();
+						}
 					},function(res){
-						alert_timeout("Something wrong when create "+idB);
+						alert_timeout("Something wrong when create "+contact);
 					});
 				}
 				

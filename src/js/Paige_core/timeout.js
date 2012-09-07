@@ -482,53 +482,27 @@ var MD5 = function(string) {
 }
 
 var senseProfiles = {
-	'timeout': {
-		// General
-		commonsense_rate:			'0',
-		sync_rate:					'1',
-		autostart:					true,
-		
-		// Advanced
-		use_commonsense:			true,
-		//devmode:					false,
-		compression:				true,
-		
-		// Phonestate
-		phonestate_battery:			true,
-		phonestate_screen_activity:	true,
-		phonestate_proximity:		false,
-		phonestate_ip:				false,
-		phonestate_data_connection:	false,
-		phonestate_unread_msg:		false,
-		phonestate_service_state:	false,
-		phonestate_signal_strength:	false,
-		phonestate_call_state:		true,
-		
-		// Ambience
-		ambience_audio_spectrum:	false,
-		ambience_camera_light:		false,
-		ambience_light:				false,
-		ambience_mic:				true,
-		ambience_pressure:			false,
-		ambience_temperature:		false,
-		
-		// Proximity
-		proximity_bt:				false,
-		proximity_wifi:				false,
-		proximity_nfc:				false,
-		
-		// Location
-		location_gps:				false,
-		location_network:			true,
-		automatic_gps:				false,
-			
-		// Motion
-		motion_fall_detector:		false,
-		motion_epimode:				false,
-		motion_unregister:			false,
-		motion_energy:				true,
-		motion_screenoff_fix:		false
-	}
+    'timeout': {
+        // General
+        commonsense_rate:        '1', // lowest sample freq
+        sync_rate:                 '-2', // real time sync
+        autostart:                    true,
+
+        // Ambience: only use the microphone
+        ambience_audio_spectrum:    false,
+        ambience_camera_light:        false,
+        ambience_light:            false,
+        ambience_mic:            true,
+        ambience_pressure:        false,
+        ambience_temperature:        false,
+
+        // Location: use GPS if possible
+        location_gps:                true,
+        location_network:            true,
+        automatic_gps:            true,
+
+        // no other preferences need to be set
+    }
 };
 
 function buildFooter(active)
@@ -590,10 +564,10 @@ function buildHeader()
 	
 	var menuUl = $('<ul></ul>');
 	
-	menuUl.append('<li><a href="javascript:location.reload(true)">Home</a></li>');
+	// menuUl.append('<li><a href="javascript:location.reload(true)">Home</a></li>');
 	menuUl.append('<li><a href="javascript:location.reload(true)">Refresh</a></li>');
-	menuUl.append('<li><a href="">Settings</a></li>');
-	menuUl.append('<li><a href="">Help</a></li>');
+	// menuUl.append('<li><a href="">Settings</a></li>');
+	// menuUl.append('<li><a href="">Help</a></li>');
 	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Logout</a></li>');
 	
 	$(menuUl.find('#button_logout')[0]).live('click',function(){
