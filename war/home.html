@@ -94,6 +94,45 @@
 						}
 					}
 				}
+				// check the if the sensor is initialized  
+				$(window).scrollTop('0');
+				$("#callPopUp").removeClass("displayNone");
+				$('#callPopUp').load('contents/sensorChecking.html');
+				
+				var checkSensorCount = 0;
+				if (window.plugins.sense && phoneGapAvailable) {
+					window.plugins.sense.flushBuffer(function() {
+					}, function() {});
+				}
+				
+				var checkSensor = function(){
+					
+					if($("#callButton").data("initSensor") != true){
+						if(checkSensorCount > 5){
+							if (window.plugins.sense && phoneGapAvailable) {
+								window.plugins.sense.flushBuffer(function() {
+								}, function() {});
+							}
+							checkSensorCount = 0;
+						}
+						
+						console.log("checking the sensor ..."+checkSensorCount);
+						dataCon.get("timeout/checkSensor",null,function(res){
+							console.log(res);
+							if(res == "ok"){
+								$("#callButton").data("initSensor",true);
+								$("#callPopUp").addClass('displayNone');
+							}else{
+								setTimeout(function(){
+									checkSensor();
+								},3000);
+							}
+						});
+						checkSensorCount++;
+					}
+				}
+				
+				checkSensor();
 				
 				// start to check timeout status every 30 seconds 
 				var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);

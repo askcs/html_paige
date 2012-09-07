@@ -79,7 +79,9 @@
   	};
   	
   	
+  	
   	var login = function(){
+  		
   	   	/*code for login from login_classic*/
         var usrName = $('#loginuuid').val().toLowerCase();
         var passStr = $('#loginpass').val();
@@ -90,6 +92,26 @@
         	return false;
         }
         
+        var remember = $($('#contentContainer #rememberLogin')[0]).attr("checked");
+        // console.log($($('#contentContainer #rememberLogin')[0]).is(':checked'));
+        // console.log(remember)
+        // return false;
+        
+        var login_animation = function(){
+        	var dot = ".";
+        	$('#loginButton').val($('#loginButton').val()+dot);
+        	
+        	if($('#loginButton').data("loginFlag")){
+        		setTimeout(function(){
+					login_animation();	        			
+	        	},1000)
+        	}else{
+        		$('#loginButton').val("Inloggen");
+        	}
+        	
+        }
+        $('#loginButton').data("loginFlag",true);
+        login_animation();
         
         console.log(session.appServices);
         $.Read({
@@ -129,11 +151,15 @@
                     			window.plugins.sense.toggleMotion(false);
                     			window.plugins.sense.toggleAmbience(true);
                     			window.plugins.sense.toggleNeighDev(false);
-                            	
+                    			
+                            	$('#loginButton').val("Inloggen");
+                            	$('#loginButton').data("loginFlag",false);
 								window.location = "home.html";
                             }, function(){
                                 alert("Paige can't access your sensors, some functions might not be working");
+                                $('#loginButton').val("Inloggen");
                             });
+                            
                         }else{
                         	console.log("Phone gap and sense plugin is not available");
                         	session.onLogin = null;
@@ -149,14 +175,27 @@
             400: function(data){
                 localStorage['password'] = '';//                              
                 alert("Login failed: Please check your email or password");
+                $('#loginButton').data("loginFlag",false);
             },
             error: function() {
             	alert("Login failed: Connection error.");
+            	$('#loginButton').data("loginFlag",false);
             }
         });
         return false;	
   	}
   	
+  	
+  	$('#contentContainer #rememberLogin').ready(function(){
+  		// read login from cookie 
+  		var userName = getCookie("userName");
+  		var userPass = getCookie("userPass");
+  		if(userName != null && userName != ""){
+  			$($('#contentContainer #rememberLogin')[0]).attr("checked","true");
+  		}
+  		// $("#loginuuid").val("");
+  		// $("#loginpass").val("");
+  	})
 	</script>
     
     
@@ -173,8 +212,8 @@
         <form id='loginForm' name="LoginForm" method='POST' autocomplete='on' data-ajax="false" onsubmit="return login();">
             <input type='text' class="uname" name='uuid' id='loginuuid' placeholder='Emailadres' required/>
             <input type="password" class="pwd" name='pass' id='loginpass' placeholder='Wachtwoord' required/>
-            <label class="label_check" for="sample-check">
-			    <input name="sample-check" id="sample-check" value="1" type="checkbox" class="rememberBox" />
+            <label class="label_check" for="rememberLogin">
+			    <input name="sample-check" id="rememberLogin" value="1" type="checkbox" class="rememberBox" />
 			    Onthoud mij
 			</label>
             

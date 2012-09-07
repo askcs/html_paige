@@ -49,7 +49,10 @@
                         /*code for login_classic ends here */
 		}	
 			
-			
+		$(".container-fluid").ready(function(){
+			// $('#adminUser').val("");
+			// $('#adminPass').val("");
+		})
 			
 		</script>
 	</head>
@@ -58,8 +61,8 @@
 			<h3>Timeout! App Admin Login</h3>
 			<br>
 			
-			<div>
-				<input id="adminUser" type="text" class="input" placeholder="Admin User">
+			<div class="container-fluid" >
+				<input id="adminUser" type="text" class="input" placeholder="Admin User" >
 				<input id="adminPass" type="password" class="input" placeholder="Password">
 				<button id="fat-btn" data-loading-text="login..." class="btn btn-primary" onclick="javascript:login()">
                     Login

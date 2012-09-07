@@ -58,6 +58,21 @@ AdminSession.prototype.authenticator = function(){
 	}
 }
 
+AdminSession.prototype.logoff = function(){
+	// Do serverside logout:
+	$.ajax(this.appServices + "logout/", {
+		headers : {
+			'X-SESSION_ID' : this.sessionKey
+		},
+		xhrFields : {
+			withCredentials : true
+		}
+	});
+	
+	this.setSessionKey("");	
+	window.location = "admin_login.html";
+}
+
 function handle_session(sessionKey, url) {// Has to be global function
 	admin_session.setSessionKey(sessionKey);
 	admin_session.uuid = localStorage['paigeUser'];
@@ -114,7 +129,7 @@ PaigeData.prototype.get = function(restPath, data, callback) {
 	});
 }
 
-PaigeData.prototype.post = function(restPath, data, callback) {
+PaigeData.prototype.post = function(restPath, data, callback,failedCallback) {
 	if (!admin_session.isLogin()) {
 		console.log("Direct data: Info: No session available, not retrying");
 		admin_session.authenticator();
@@ -149,13 +164,17 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 		403 : function callback(res) {
 			forbidden();
 			window.location = "admin_login.html";
+		},
+		500 : function callback(res){
+			if (failedCallback)
+				failedCallback(res.responseText);
 		}
 	});
 }
 
 function alert_timeout(text){
 	if($(".alert").length == 0){
-		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong><span></span></div>");
+		$(".container-fluid").before("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong><span></span></div>");
 		$(".alert").alert();
 	}
 	$(".alert span").text(text);

@@ -13,7 +13,10 @@
 		<script src="/admin/js/core.min.js"></script>
 		
 		<script>
-			var save = function(){
+			var save = function(btn){
+				if($(btn).data("confirmFlag")){
+					return ;
+				}
 				var idA = $('#emailA').val();
 				var passA = $('#passA').val();
 				var passA_r = $('#passA_retype').val();
@@ -45,21 +48,135 @@
 				'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
 				'contact': {'id': contact, 'phone': contactPhone}
 				}};
-				dataCon.post("timeout/setupTimeout",para,function(res){
 					
-				})
-							
+				$(btn).text("Processing");				
+				var login_animation = function(){
+	        		var dot = ".";
+	        		$(btn).text($(btn).text()+dot);
+		        	if($(btn).data("confirmFlag")){
+		        		setTimeout(function(){
+							login_animation();	        			
+			        	},1000)
+		        	}else{
+		        		$(btn).text("confirm");
+	        		}
+		        }
+		        
+		        $(btn).data("confirmFlag",true);
+		        login_animation();
+									
+				
+				var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
+				var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
+				var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
+				
+				dataCon.post("timeout/rgUser",paraA,function(res){
+					$(btn).data("userA_created",true);
+				},function(res){
+					alert_timeout("Something wrong when create "+idA);
+				});
+				
+				dataCon.post("timeout/rgUser",paraB,function(res){
+					$(btn).data("userB_created",true);
+				},function(res){
+					alert_timeout("Something wrong when create "+idB);
+				});
+				
+				dataCon.post("timeout/rgUser",paraContact,function(res){
+					$(btn).data("contact_created",true);
+				},function(res){
+					alert_timeout("Something wrong when create "+contact);
+				});
+				
+				var startSetupTimeout = function(){
+					console.log("still in process of creating creating user ");
+					if($(btn).data("userA_created") && $(btn).data("userB_created") && $(btn).data("contact_created")){
+						$(btn).data("userA_created",false);
+						dataCon.post("timeout/setupTimeout",para,function(res){
+							$(btn).data("confirmFlag",false);
+						});		
+					}else{
+						setTimeout(startSetupTimeout,1000);
+					}
+				}
+					
+				startSetupTimeout();
+			}
+			
+			var saveOneCall = function(btn){
+				var idA = $('#emailA').val();
+				var passA = $('#passA').val();
+				var passA_r = $('#passA_retype').val();
+				var phoneA = $('#phoneA').val();
+				
+				var idB = $('#emailB').val();
+				var passB = $('#passB').val();
+				var passB_r = $('#passB_retype').val();
+				var phoneB = $('#phoneB').val();
+				
+				var contact = $('#contactName').val();
+				var contactPhone = $('#contactPhone').val();
+				
+				var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
+				var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
+				var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
+				
+				var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
+				'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
+				'contact': {'id': contact, 'phone': contactPhone}
+				}};
+				
+				
+				$(btn).data("btnText",$(btn).text());
+				$(btn).text("Processing ...");
+				var regUserA = function(){
+					dataCon.post("timeout/rgUser",paraA,function(res){
+						alert_timeout("user A "+idA+ " is created ");
+						$(btn).text($(btn).text()+"...");
+						regUserB();
+					},function(res){
+						alert_timeout("Something wrong when create "+idA);
+					});
+				}
+				
+				var regUserB = function(){
+					dataCon.post("timeout/rgUser",paraB,function(res){
+						alert_timeout("user B "+idB+ " is created ");
+						$(btn).text($(btn).text()+"...");
+						regUserC();
+					},function(res){
+						alert_timeout("Something wrong when create "+idB);
+					});
+				}
+				
+				var regUserC = function(){
+					dataCon.post("timeout/rgUser",paraContact,function(res){
+						alert_timeout("Contact "+contact+ " is created ");
+						$(btn).text($(btn).text()+"...");
+						setupTimeout();
+					},function(res){
+						alert_timeout("Something wrong when create "+idB);
+					});
+				}
+				
+				var setupTimeout = function(){
+					dataCon.post("timeout/setupTimeout",para,function(res){
+						alert("Timeout successfully setup!");
+						$(btn).text($(btn).data("btnText"));
+					});		
+				}
+				
+				regUserA();
 			}
 			
 			var initAdminPage = function(){
-				dataCon.get("operator/getAllAskatars",null,function(res){
-					console.log(res);
-					var opt = {'source' : ['a','b','c'],
-							'items' : 8
-							}
-					$('#emailA').typeahead(opt);
-				})
-				
+				// dataCon.get("operator/getAllAskatars",null,function(res){
+					// console.log(res);
+					// var opt = {'source' : ['a','b','c'],
+							// 'items' : 8
+							// }
+					// $('#emailA').typeahead(opt);
+				// })
 				
 			}
 			
@@ -71,8 +188,8 @@
 			}
 			
 			var preset = function(){
-				$('#emailA').val("personA@ask-cs.com");
-				$('#emailB').val("personB@ask-cs.com");
+				$('#emailA').val("person_a@ask-cs.com");
+				$('#emailB').val("person_b@ask-cs.com");
 				$('#passA').val("askask");
 				$('#passA_retype').val("askask");
 				$('#phoneA').val("0624384730");
@@ -80,8 +197,38 @@
 				$('#passB_retype').val("askask");
 				$('#phoneB').val("0614905849");
 				
-				$('#contactName').val("Conatct Person");
-				$('#contactPhone').val("507");
+				$('#contactName').val("contact@ask-cs.com");
+				$('#contactPhone').val("506");
+			}
+			
+			var logoff = function(){
+				admin_session.logoff()
+			}
+			
+			var showPage = function(pageId){
+				$('.row-fluid .span10').children("div").map(function(i,tab){
+					if(pageId == tab.id){
+						$(tab).show();
+					}else{
+						$(tab).hide();
+					}
+				})
+			}
+			
+			var removeTimeout = function(){
+				if($('#removeUserId').val() == ''){
+					alert_timeout("Please fill user ID !");
+					return;
+				}
+				var para = {"userId" : $('#removeUserId').val()};
+				dataCon.post("timeout/removeTimeout",para,function(res){
+					if(res == "ok"){
+						alert("Timeout of "+$('#removeUserId').val() + " is removed !");
+					}else{
+						alert("no Timeout config for this user : "+$('#removeUserId').val());
+						alert_timeout(res);
+					}
+				});
 			}
 		</script>
 	</head>
@@ -90,49 +237,80 @@
 			<h3>Timeout! App Admin Console</h3>
 			<br>
 			
-			<div>
-				<table class="table">
-					<tr><td>Person A</td></tr>
-					<tr><td><input id="emailA" type="text" class="input" placeholder="Email" data-provide="typeahead"></td></tr>
-					<tr>
-						<td>
-							<input id="passA" type="password" class="input" placeholder="Password">
-							<input id="passA_retype" type="password" class="input" placeholder="reType password">
-						</td>
-					</tr>
-					<tr><td><input id="phoneA" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
-				</table>
+			<div class="container-fluid">
+			  <div class="row-fluid">
+			    <div class="span2">
+			      <!--Sidebar content-->
+			      	<ul class="nav nav-list">
+					  <li class="nav-header">>Setup Timeout</li>
+					  <li ><a href="javascript:showPage('page_setupTimeout')">add "Timeout" </a></li>
+					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li>
+					  <li ><a href="javascript:logoff()">Logoff </a></li>
+					  
+					</ul>
+			    </div>
+			    <div class="span10">
+			      <!--Body content-->
+			      	<div id="page_setupTimeout">
+					    <div>
+							<table class="table">
+								<tr><td>Person A</td></tr>
+								<tr><td><input id="emailA" type="text" class="input" placeholder="Email" data-provide="typeahead"></td></tr>
+								<tr>
+									<td>
+										<input id="passA" type="password" class="input" placeholder="Password">
+										<input id="passA_retype" type="password" class="input" placeholder="reType password">
+									</td>
+								</tr>
+								<tr><td><input id="phoneA" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
+							</table>
+						</div>
+						<div>
+							<table class="table">
+								<tr><td>Person B</td></tr>
+								<tr><td><input id="emailB" type="text" class="input" placeholder="Email" data-provide="typeahead"></td></tr>
+								<tr>
+									<td>
+										<input id="passB" type="password" class="input" placeholder="Password">
+										<input id="passB_retype" type="password" class="input" placeholder="reType password">
+									</td>
+								</tr>
+								<tr><td><input id="phoneB" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
+							</table>
+						</div>
+						<div>
+							<table class="table">
+								<tr><td>Contact Person</td></tr>
+								<tr><td><input id="contactName" type="text" class="input" placeholder="Contact's Id" data-provide="typeahead"></td></tr>
+								<tr>
+									<td>
+										<input id="contactPhone" type="text" class="input" placeholder="Contact's Phone Number">
+									</td>
+								</tr>
+							</table>
+						</div>
+						<!-- <button id="fat-btn" data-loading-text="Confirming..." class="btn btn-primary" onclick="javascript:save(this)">
+			                    Comfirm
+			            </button> -->
+			            <button id="fat-btn" data-loading-text="Perseting..." class="btn btn-primary" onclick="javascript:preset()">
+			                    preset (for test)
+			            </button>
+			            <button id="fat-btn" data-loading-text="Perseting..." class="btn btn-primary" onclick="javascript:saveOneCall(this)">
+			                    confirm 
+			            </button>
+		            </div>
+		            <div id="page_removeTimeout" style="display : none;">
+		            	<input id="removeUserId" type="text" class="input" placeholder="user id for Timeout" data-provide="typeahead">
+		            	<br>
+		            	<button id="removeTimeout" data-loading-text="remove Timeout" class="btn btn-primary" onclick="javascript:removeTimeout(this)">
+			                    remove Timeout
+			            </button>
+		            </div>
+			    </div>
+			  </div>
 			</div>
-			<div>
-				<table class="table">
-					<tr><td>Person B</td></tr>
-					<tr><td><input id="emailB" type="text" class="input" placeholder="Email" data-provide="typeahead"></td></tr>
-					<tr>
-						<td>
-							<input id="passB" type="password" class="input" placeholder="Password">
-							<input id="passB_retype" type="password" class="input" placeholder="reType password">
-						</td>
-					</tr>
-					<tr><td><input id="phoneB" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
-				</table>
-			</div>
-			<div>
-				<table class="table">
-					<tr><td>Contact Person</td></tr>
-					<tr><td><input id="contactName" type="text" class="input" placeholder="Contact's Id" data-provide="typeahead"></td></tr>
-					<tr>
-						<td>
-							<input id="contactPhone" type="text" class="input" placeholder="Contact's Phone Number">
-						</td>
-					</tr>
-				</table>
-			</div>
-			<button id="fat-btn" data-loading-text="Comfirming..." class="btn btn-primary" onclick="javascript:save()">
-                    Comfirm
-            </button>
-            <button id="fat-btn" data-loading-text="Perseting..." class="btn btn-primary" onclick="javascript:preset()">
-                    preset (for test)
-            </button>
+			
+			
 		</div>
 	</body>
 </html>
