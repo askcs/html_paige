@@ -205,17 +205,19 @@
 				})
 				
 				console.log("c2dmKey:"+localStorage['C2DMKey']);
-				if(localStorage['C2DMKey'] != null){
-					console.log("c2dm:"+localStorage['C2DMKey']);
-					// dataCon.post("resources/?tags={'C2DMKey':'"+localStorage['C2DMKey']+"'}",null,function(){
-						// var t_cache = caches.getList("getTimeout")[0];
-						// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
-					// });						// interval (15 min)
-					
-					dataCon.post("timeout/setC2DM",{"key":"\""+localStorage['C2DMKey']+"\""},function(){
+				if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
+					dataCon.post("resources/?tags={'C2DMKey':'"+localStorage['C2DMKey']+"'}",null,function(){
 						var t_cache = caches.getList("getTimeout")[0];
 						t_cache.setInterval(900000); // Since we have C2DM set dialog to low
 					});						// interval (15 min)
+					
+					// dataCon.post("timeout/setC2DM",{"key":""+localStorage['C2DMKey']+""},function(){
+						// var t_cache = caches.getList("getTimeout")[0];
+						// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+					// });						// interval (15 min)
+				}else{
+					console.log("C2DM Key init wrong! ");
+					session.logoff();
 				}
 				
 				// notification page

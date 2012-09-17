@@ -109,14 +109,18 @@ function handle_session(sessionKey, url) {// Has to be global function
 function receiveC2DM(type, data) {
 
 	console.log("type:" + type);
-	console.log("data:" + data);
+	console.log("c2dmdata:" + data);
 	// alert("Received type: "+type+" data: "+data);
 	if (type == "registered") {
 		// store data as device registration ID
 		
 		// alert("Registered on: "+data);
-		// paigeUser.setData("C2DMKey", data);
+		console.log("C2DMKey_LocalStore");
 		localStorage.setItem("C2DMKey", data);
+		// dataCon.post("resources/?tags={'C2DMKey':'"+data+"'}",null,function(){
+			// var t_cache = caches.getList("getTimeout")[0];
+			// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+		// });	
 	} else if (type == "message") {
 		// Use data to determine which Cache needs to sync right now.
 		if(data == "getQuestion" || data == "getTimeout" ){
