@@ -172,12 +172,27 @@ PaigeData.prototype.post = function(restPath, data, callback,failedCallback) {
 	});
 }
 
-function alert_timeout(text){
-	if($(".alert").length == 0){
-		$(".container-fluid").before("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong><span></span></div>");
-		$(".alert").alert();
+function alert_timeout(text,type){
+	var alertType = "alert";
+	var prompt = "Warning! ";
+	console.log(type);
+	if(type == "info"){
+		alertType = "alert-info";
+		prompt = "Info ";
+	}else if(type == "warn"){
+		alertType = "alert";
+	}else if(type == "error"){
+		alertType = "alert-error";
+		prompt = "Error! ";
+	}else if(type == "success"){
+		prompt = "Successs ! ";
+		alertType = "alert-success";
 	}
-	$(".alert span").text(text);
+	
+	$('#alertbox').remove();
+	
+	$(".container-fluid").before("<div id=\"alertbox\" class=\""+alertType+"\"><button class=\"close\" data-dismiss=\"alert\">X</button><strong>"+prompt+"</strong><span>"+text+"</span></div>");
+	$("."+alertType).alert();
 }
 
 var MD5 = function(string) {
@@ -389,8 +404,8 @@ var MD5 = function(string) {
 	return temp.toLowerCase();
 }
 
-$.import_js('/js/jquery.rest.min.js');
-$.import_js('/js/bootstrap-alert.js');
-$.import_js('/js/bootstrap-button.js');
-$.import_js('/js/bootstrap-typeahead.js');
-$.import_js('/js/settings.js');
+// $.import_js('/js/jquery.rest.min.js');
+// $.import_js('/js/bootstrap-alert.js');
+// $.import_js('/js/bootstrap-button.js');
+// $.import_js('/js/bootstrap-typeahead.js');
+// $.import_js('/js/settings.js');

@@ -19,7 +19,7 @@
                         var passHash = MD5(passStr);
                         
                         if(usrName == "" || passStr == ""){
-                        	alert_timeout("Please fill the user name and password.")
+                        	alert_timeout("Please fill the user name and password.","warn")
                         	return;
                         }
                         
@@ -38,11 +38,11 @@
                             },
                             400: function(data){
                                 localStorage['password'] = '';//                              
-                                alert_timeout("Login failed: Please check your email or password");
+                                alert_timeout("Login failed: Please check your email or password","error");
                             },
                             error: function() {
                             	
-                            	alert_timeout("Login failed: Connection error.");
+                            	alert_timeout("Login failed: Connection error.","error");
                             }
                         });
                         return false;

@@ -13,173 +13,237 @@
 		<script src="/admin/js/core.min.js"></script>
 		
 		<script>
-			var save = function(btn){
-				if($(btn).data("confirmFlag")){
-					return ;
-				}
-				var idA = $('#emailA').val();
-				var passA = $('#passA').val();
-				var passA_r = $('#passA_retype').val();
-				var phoneA = $('#phoneA').val();
-				
-				var idB = $('#emailB').val();
-				var passB = $('#passB').val();
-				var passB_r = $('#passB_retype').val();
-				var phoneB = $('#phoneA').val();
-				
-				var contact = $('#contactName').val();
-				var contactPhone = $('#contactPhone').val();
-				
-				if(idA == "" || passA == "" || idB == "" || passB == "" || phoneA == "" || phoneB == "" ){
-					alert_timeout("Please fill all the blanks");
-					return;
-				}else if(passA != passA_r || passB != passB_r){
-					alert_timeout("Password not matched !");
-					return; 
-				}else if(contact == "" && contactPhone == ""){
-					alert_timeout("Please fill the contact person's info!");
-					return;
-				}else{
-					$('.alert').remove();
-				}				
-				
-				// register the users and setup a timeout for them .
-				var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
-				'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
-				'contact': {'id': contact, 'phone': contactPhone}
-				}};
-					
-				$(btn).text("Processing");				
-				var login_animation = function(){
-	        		var dot = ".";
-	        		$(btn).text($(btn).text()+dot);
-		        	if($(btn).data("confirmFlag")){
-		        		setTimeout(function(){
-							login_animation();	        			
-			        	},1000)
-		        	}else{
-		        		$(btn).text("confirm");
-	        		}
-		        }
-		        
-		        $(btn).data("confirmFlag",true);
-		        login_animation();
-									
-				
-				var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
-				var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
-				var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
-				
-				dataCon.post("timeout/rgUser",paraA,function(res){
-					$(btn).data("userA_created",true);
-				},function(res){
-					alert_timeout("Something wrong when create "+idA);
-				});
-				
-				dataCon.post("timeout/rgUser",paraB,function(res){
-					$(btn).data("userB_created",true);
-				},function(res){
-					alert_timeout("Something wrong when create "+idB);
-				});
-				
-				dataCon.post("timeout/rgUser",paraContact,function(res){
-					$(btn).data("contact_created",true);
-				},function(res){
-					alert_timeout("Something wrong when create "+contact);
-				});
-				
-				var startSetupTimeout = function(){
-					console.log("still in process of creating creating user ");
-					if($(btn).data("userA_created") && $(btn).data("userB_created") && $(btn).data("contact_created")){
-						$(btn).data("userA_created",false);
-						dataCon.post("timeout/setupTimeout",para,function(res){
-							$(btn).data("confirmFlag",false);
-						});		
-					}else{
-						setTimeout(startSetupTimeout,1000);
+			// var save = function(btn){
+				// if($(btn).data("confirmFlag")){
+					// return ;
+				// }
+				// var idA = $('#emailA').val();
+				// var passA = $('#passA').val();
+				// var passA_r = $('#passA_retype').val();
+				// var phoneA = $('#phoneA').val();
+// 				
+				// var idB = $('#emailB').val();
+				// var passB = $('#passB').val();
+				// var passB_r = $('#passB_retype').val();
+				// var phoneB = $('#phoneA').val();
+// 				
+				// var contact = $('#contactName').val();
+				// var contactPhone = $('#contactPhone').val();
+// 				
+				// if(idA == "" || passA == "" || idB == "" || passB == "" || phoneA == "" || phoneB == "" ){
+					// alert_timeout("Please fill all the blanks");
+					// return;
+				// }else if(passA != passA_r || passB != passB_r){
+					// alert_timeout("Password not matched !");
+					// return; 
+				// }else if(contact == "" && contactPhone == ""){
+					// alert_timeout("Please fill the contact person's info!");
+					// return;
+				// }else{
+					// $('.alert').remove();
+				// }				
+// 				
+				// // register the users and setup a timeout for them .
+				// var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
+				// 'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
+				// 'contact': {'id': contact, 'phone': contactPhone}
+				// }};
+// 					
+				// $(btn).text("Processing");				
+				// var login_animation = function(){
+	        		// var dot = ".";
+	        		// $(btn).text($(btn).text()+dot);
+		        	// if($(btn).data("confirmFlag")){
+		        		// setTimeout(function(){
+							// login_animation();	        			
+			        	// },1000)
+		        	// }else{
+		        		// $(btn).text("confirm");
+	        		// }
+		        // }
+// 		        
+		        // $(btn).data("confirmFlag",true);
+		        // login_animation();
+// 									
+// 				
+				// var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
+				// var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
+				// var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
+// 				
+				// dataCon.post("timeout/rgUser",paraA,function(res){
+					// $(btn).data("userA_created",true);
+				// },function(res){
+					// alert_timeout("Something wrong when create "+idA);
+				// });
+// 				
+				// dataCon.post("timeout/rgUser",paraB,function(res){
+					// $(btn).data("userB_created",true);
+				// },function(res){
+					// alert_timeout("Something wrong when create "+idB);
+				// });
+// 				
+				// dataCon.post("timeout/rgUser",paraContact,function(res){
+					// $(btn).data("contact_created",true);
+				// },function(res){
+					// alert_timeout("Something wrong when create "+contact);
+				// });
+// 				
+				// var startSetupTimeout = function(){
+					// console.log("still in process of creating creating user ");
+					// if($(btn).data("userA_created") && $(btn).data("userB_created") && $(btn).data("contact_created")){
+						// $(btn).data("userA_created",false);
+						// dataCon.post("timeout/setupTimeout",para,function(res){
+							// $(btn).data("confirmFlag",false);
+						// });		
+					// }else{
+						// setTimeout(startSetupTimeout,1000);
+					// }
+				// }
+// 					
+				// startSetupTimeout();
+			// }
+			
+			
+			$('#saveTimeout').ready(function(){
+				var btnObj = {
+					reasign : function(btn){
+						$(btn).text($(btn).data("btnText"));
+						$(btn).live('click',function(){
+							$("#saveTimeout").data("btnObj").saveOneCall(btn);
+						})
+					},
+					saveOneCall : function(btn){
+						var idA = $('#emailA').val();
+						var passA = $('#passA').val();
+						var passA_r = $('#passA_retype').val();
+						var phoneA = $('#phoneA').val();
+						
+						
+						var idB = $('#emailB').val();
+						var passB = $('#passB').val();
+						var passB_r = $('#passB_retype').val();
+						var phoneB = $('#phoneB').val();
+						
+						var contact = $('#contactName').val();
+						var contactPhone = $('#contactPhone').val();
+						
+						var address = $('#address').val();
+						var zipcode = $('#zipcode').val();
+						
+						if(idA == "" || passA == "" || idB == "" || passB == "" || phoneA == "" || phoneB == "" ){
+							alert_timeout("Please fill all the blanks","warn");
+							return;
+						}else if(passA != passA_r || passB != passB_r){
+							alert_timeout("Password not matched !","warn");
+							return; 
+						}else if(contact == "" && contactPhone == ""){
+							alert_timeout("Please fill the contact person's info!","warn");
+							return;
+						}else if(address == "" || zipcode == ""){
+							alert_timeout("Please fill the address info!","warn");
+							return;
+						}else{
+							$('.alert').remove();
+						}
+						
+						var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
+						var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
+						var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
+						
+						var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
+						'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
+						'contact': {'id': contact, 'phone': contactPhone},
+						'address': {'address': address , 'zipcode': zipcode , 'country': 'the Netherlands'}
+						}};
+						
+						var paraUsers = [idA,idB,contact];
+						
+						$(btn).data("btnText",$(btn).text());
+						$(btn).text("Processing ...");
+						
+						var validUsers = function(){
+							alert_timeout("check if all the usernames are already exists.","info");
+							$(btn).die();
+							dataCon.post("timeout/validUser",paraUsers,function(res){
+								console.log(res);
+								if(res == "ok"){
+									$(btn).text($(btn).text()+"...");
+									regUserA();
+								}else{
+									var json = JSON.parse(res);
+									var ids = "";
+									$.each(json,function(i,id){
+										ids += "<b>"+id+"</b>,";
+									});
+									alert_timeout(ids +" already exists. Please select other user ID ","warn");
+									$(btn).data("btnObj").reasign(btn);									
+								}
+							});
+						}
+						
+						var regUserA = function(){
+							dataCon.post("timeout/rgUser",paraA,function(res){
+								if(res == "exists"){
+									alert_timeout(idA+" already exists. Please select other user ID ","warn");
+									$(btn).data("btnObj").reasign(btn);
+								}else{
+									alert_timeout("user A "+idA+ " is created ","info");
+									$(btn).text($(btn).text()+"...");
+									regUserB();
+								}
+							},function(res){
+								alert_timeout("Something wrong when create "+idA,"error");
+							});
+						}
+						
+						var regUserB = function(){
+							dataCon.post("timeout/rgUser",paraB,function(res){
+								if(res == "exists"){
+									alert_timeout(idB+" already exists. Please select other user ID ","warn");
+									$(btn).data("btnObj").reasign(btn);
+								}else{
+									alert_timeout("user B "+idB+ " is created ","info");
+									$(btn).text($(btn).text()+"...");
+									regUserC();
+								}
+							},function(res){
+								alert_timeout("Something wrong when create "+idB,"error");
+							});
+						}
+						
+						var regUserC = function(){
+							dataCon.post("timeout/rgUser",paraContact,function(res){
+								if(res == "exists"){
+									alert_timeout(contact+" already exists. Please select other user ID ","warn");
+									$(btn).data("btnObj").reasign(btn);
+								}else{
+									alert_timeout("Contact "+contact+ " is created ","info");
+									$(btn).text($(btn).text()+"...");
+									setupTimeout();
+								}
+							},function(res){
+								alert_timeout("Something wrong when create "+contact,"error");
+							});
+						}
+						
+						var setupTimeout = function(){
+							dataCon.post("timeout/setupTimeout",para,function(res){
+								alert("Timeout successfully setup!");
+								$(btn).data("btnObj").reasign(btn);
+							});		
+						}
+						
+						validUsers();
 					}
 				}
-					
-				startSetupTimeout();
-			}
-			
-			var saveOneCall = function(btn){
-				var idA = $('#emailA').val();
-				var passA = $('#passA').val();
-				var passA_r = $('#passA_retype').val();
-				var phoneA = $('#phoneA').val();
 				
-				var idB = $('#emailB').val();
-				var passB = $('#passB').val();
-				var passB_r = $('#passB_retype').val();
-				var phoneB = $('#phoneB').val();
+				console.log(btnObj);
+				$('#saveTimeout').data("btnObj",btnObj);
 				
-				var contact = $('#contactName').val();
-				var contactPhone = $('#contactPhone').val();
-				
-				var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
-				var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
-				var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
-				
-				var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
-				'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
-				'contact': {'id': contact, 'phone': contactPhone}
-				}};
-				
-				
-				$(btn).data("btnText",$(btn).text());
-				$(btn).text("Processing ...");
-				var regUserA = function(){
-					dataCon.post("timeout/rgUser",paraA,function(res){
-						if(res == "exists"){
-							alert_timeout(idA+" already exists. Please select other user ID ");
-						}else{
-							alert_timeout("user A "+idA+ " is created ");
-							$(btn).text($(btn).text()+"...");
-							regUserB();
-						}
-					},function(res){
-						alert_timeout("Something wrong when create "+idA);
-					});
-				}
-				
-				var regUserB = function(){
-					dataCon.post("timeout/rgUser",paraB,function(res){
-						if(res == "exists"){
-							alert_timeout(idB+" already exists. Please select other user ID ");
-						}else{
-							alert_timeout("user B "+idB+ " is created ");
-							$(btn).text($(btn).text()+"...");
-							regUserC();
-						}
-					},function(res){
-						alert_timeout("Something wrong when create "+idB);
-					});
-				}
-				
-				var regUserC = function(){
-					dataCon.post("timeout/rgUser",paraContact,function(res){
-						if(res == "exists"){
-							alert_timeout(contact+" already exists. Please select other user ID ");
-						}else{
-							alert_timeout("Contact "+contact+ " is created ");
-							$(btn).text($(btn).text()+"...");
-							setupTimeout();
-						}
-					},function(res){
-						alert_timeout("Something wrong when create "+contact);
-					});
-				}
-				
-				var setupTimeout = function(){
-					dataCon.post("timeout/setupTimeout",para,function(res){
-						alert("Timeout successfully setup!");
-						$(btn).text($(btn).data("btnText"));
-					});		
-				}
-				
-				regUserA();
-			}
+				$('#saveTimeout').live("click",function(){
+					$("#saveTimeout").data("btnObj").saveOneCall($("#saveTimeout"));
+				})
+			})
 			
 			var initAdminPage = function(){
 				// dataCon.get("operator/getAllAskatars",null,function(res){
@@ -211,6 +275,9 @@
 				
 				$('#contactName').val("contact@ask-cs.com");
 				$('#contactPhone').val("506");
+				
+				$('#address').val("Kralingseweg 219");
+				$('#zipcode').val("3062 CE Rotterdam");
 			}
 			
 			var logoff = function(){
@@ -301,13 +368,25 @@
 								</tr>
 							</table>
 						</div>
+						<div>
+							<table class="table">
+								<tr><td>Home address</td></tr>
+								<tr><td><input id="address" type="text" class="input" placeholder="home address" data-provide="typeahead"></td></tr>
+								<tr>
+									<td>
+										<input id="zipcode" type="text" class="input" placeholder="zip code & region eg. 3333 AB Rotterdam">
+									</td>
+								</tr>
+								<!-- <tr><td><input id="country" type="text" class="input" placeholder="country eg. the Netherlands" data-provide="typeahead"></td></tr> -->
+							</table>
+						</div>
 						<!-- <button id="fat-btn" data-loading-text="Confirming..." class="btn btn-primary" onclick="javascript:save(this)">
 			                    Comfirm
 			            </button> -->
 			            <button id="fat-btn" data-loading-text="Perseting..." class="btn btn-primary" onclick="javascript:preset()">
 			                    preset (for test)
 			            </button>
-			            <button id="fat-btn" data-loading-text="Perseting..." class="btn btn-primary" onclick="javascript:saveOneCall(this)">
+			            <button id="saveTimeout" data-loading-text="Perseting..." class="btn btn-primary" >
 			                    confirm 
 			            </button>
 		            </div>

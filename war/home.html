@@ -44,6 +44,7 @@
 						
 						$("#timeoutButton").data("active",false);
 						$("#timeoutButton").data("continued",false);
+						javascript_countdown.stop();
 					},
 					renderNotes : function(res){
 						var notes = JSON.parse(res);
@@ -70,6 +71,10 @@
 					if(json != null ){
 						var toOjb = json[0];
 						
+						if($("#timeoutButton").data("inStarting")){
+							return;
+						}
+						
 						if(typeof toOjb != "undefined" && toOjb.status == "active"){
 							
 							var continued = toOjb.now-toOjb.startTime;
@@ -78,14 +83,17 @@
 							for(var i=0 ; i < itvs.length ; i++){
 								duration += parseInt(itvs[i]);
 							}
-							duration = duration*60;
+							// duration = duration*60;
 							 
-							var countdownNumber = duration-continued; 
-							
+							var countdownNumber = duration-continued;
+							 
+							javascript_countdown.enable();
 							if(typeof $("#timeoutButton").data("continued") == "undefined"
 								|| $("#timeoutButton").data("continued") == false){
-								console.log("Start counting ... ", countdownNumber);
+								console.log("Start counting ... "+ countdownNumber);
+								
 								javascript_countdown.init(countdownNumber);
+								
 								$("#timeoutButton").data("continued",true);
 							}
 							
@@ -105,20 +113,20 @@
 							
 							$("#timeoutButton").data("active",true);
 						}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
+							console.log("Timeout stoped ! ");
 							$("#callButton").data('buttonObj').timeoutStop();
 						}
 					}
 				}
 				// check the if the sensor is initialized  
-				if(window.plugins.sense && phoneGapAvailable){
-					$(window).scrollTop('0');
-					$("#callPopUp").removeClass("displayNone");
-					$('#callPopUp').load('contents/sensorChecking.html');
-				}else{
-					$("#callButton").data("initSensor",true); 
-				}
+				
+				$(window).scrollTop('0');
+				$("#callPopUp").removeClass("displayNone");
+				$('#callPopUp').load('contents/sensorChecking.html');
+				
 				
 				var checkSensorCount = 0;
+				var initSensorLimit = 0;
 				if (window.plugins.sense && phoneGapAvailable) {
 					window.plugins.sense.flushBuffer(function() {
 					}, function() {});
@@ -127,10 +135,18 @@
 				var checkSensor = function(){
 					
 					if($("#callButton").data("initSensor") != true){
+						if(initSensorLimit > 20){
+							alert("Something wrong in your sensor ! Please try to login again ! ");
+							session.logoff();
+							return;
+						}
+						
 						if(checkSensorCount > 5){
 							if (window.plugins.sense && phoneGapAvailable) {
 								window.plugins.sense.flushBuffer(function() {
 								}, function() {});
+							}else{
+								$("#callButton").data("initSensor",true); 
 							}
 							checkSensorCount = 0;
 						}
@@ -148,6 +164,7 @@
 							}
 						});
 						checkSensorCount++;
+						initSensorLimit++;
 					}
 				}
 				
@@ -163,17 +180,23 @@
 				
 				
 				$('#timeoutButton').live('click',function(){
+					// start timeout !! 
+					console.log("active: "+$("#timeoutButton").data("active"));
 					if($("#timeoutButton").data("active") == false){
 						$("#timeoutButton").data("active",true);
+						$("#timeoutButton").data("inStarting",true);
 						
 						$(this).removeClass("notPushed");
 						$(this).addClass("pushed");
 						$("#timerTitle").hide();
 						$("#timer").show();
 						$("#timeoutStarted").slideDown();
+						$("#javascript_countdown_time").text("Starting...");
 					
 						dataCon.get("timeout/start",null,function(res){
 							console.log(res);
+							$("#timeoutButton").data("inStarting",false);
+							$("#timeoutButton").data("continued",false);
 							setTimeout(function(){
 								caches.showList("getTimeout");
 							},3000);
@@ -181,13 +204,18 @@
 					}
 				})
 				
+				console.log("c2dmKey:"+localStorage['C2DMKey']);
 				if(localStorage['C2DMKey'] != null){
 					console.log("c2dm:"+localStorage['C2DMKey']);
-					dataCon.post("resources/?tags={'C2DMKey':'"+localStorage['C2DMKey']+"'}",null,function(){
+					// dataCon.post("resources/?tags={'C2DMKey':'"+localStorage['C2DMKey']+"'}",null,function(){
+						// var t_cache = caches.getList("getTimeout")[0];
+						// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+					// });						// interval (15 min)
+					
+					dataCon.post("timeout/setC2DM",{"key":"\""+localStorage['C2DMKey']+"\""},function(){
 						var t_cache = caches.getList("getTimeout")[0];
 						t_cache.setInterval(900000); // Since we have C2DM set dialog to low
 					});						// interval (15 min)
-					// paigeUser.setData("C2DMKey", localStorage['C2DMKey']);
 				}
 				
 				// notification page
@@ -215,6 +243,7 @@
 				
 				$('#addNotesBlock #sendingNote').hide();
 				
+				console.log($('#indexMainContent').data("currentPage"));
 				if(typeof $('#indexMainContent').data("currentPage") == "undefined"){
 					changeDivPage("timeoutBlock",null,null);
 				}
@@ -266,7 +295,7 @@
 				//number of seconds for countdown
 				var keep_counting = 1;
 				var no_time_left_message = '00:00';
-				var finished_message = '<p><span class="bold">De time-out is finished.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
+				var finished_message = '<p><span class="bold">De time-out is over.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
 				function countdown() {
 					if(time_left < 2) {
 						keep_counting = 0;
@@ -311,6 +340,7 @@
 					},
 					timer : function() {
 						javascript_countdown.count();
+						// console.log("in timer "+ time_left);
 						if(keep_counting) {
 							setTimeout("javascript_countdown.timer();", 1000);
 						} else {
@@ -320,6 +350,12 @@
 					init : function(n) {
 						time_left = n;
 						javascript_countdown.timer();
+					},
+					stop : function(){
+						keep_counting = 0;
+					},
+					enable : function(){
+						keep_counting = 1;
 					}
 				};
 			}();
@@ -360,7 +396,6 @@
 							
 							// put a message after user input their emotion
 							$('#timeoutStarted #message p').empty();
-							$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
 							// this is for 0 - 5 min
 							$('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.");
 							

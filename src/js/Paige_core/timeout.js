@@ -117,11 +117,9 @@ function receiveC2DM(type, data) {
 		// alert("Registered on: "+data);
 		// paigeUser.setData("C2DMKey", data);
 		localStorage.setItem("C2DMKey", data);
-		
-		
 	} else if (type == "message") {
 		// Use data to determine which Cache needs to sync right now.
-		if(data == "getQuestion"){
+		if(data == "getQuestion" || data == "getTimeout" ){
 			var cache = caches.getList("getTimeout")[0];
 			cache.sync();
 		}
@@ -264,13 +262,7 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 	});
 }
 
-function alert_timeout(text){
-	if($(".alert").length == 0){
-		$(".container br").after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">X</button><strong>Warning!</strong><span></span></div>");
-		$(".alert").alert();
-	}
-	$(".alert span").text(text);
-}
+
 
 var MD5 = function(string) {
 	function RotateLeft(lValue, iShiftBits) {
