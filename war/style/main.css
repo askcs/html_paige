@@ -42,17 +42,14 @@ table {
 	src: url("fonts/squadaOne/squadaone-regular-webfont.eot?#iefix") format('embedded-opentype'),
 		url("fonts/squadaOne/squadaone-regular-webfont.woff") format('woff'),
 		url("fonts/squadaOne/squadaone-regular-webfont.ttf") format('truetype'),
-		url("fonts/squadaOne/squadaone-regular-webfont.svg#webfont") format('svg');
-}
+		url("fonts/squadaOne/squadaone-regular-webfont.svg#webfont") format('svg');}
 
 * {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	outline: none;
-}
+	outline: none;}
 
 *:focus {
-	outline: none;
-}
+	outline: none;}
 
 body {
 	background-color: #ccc;
@@ -61,42 +58,33 @@ body {
 	padding: 0;
 	margin: 0;
 	font-family: arial, verdana;
-	font-size: 14px;
+	font-size: 15px;
 	color: #000;
-	width: 100%;
-}
+	width: 100%;}
 
 a {
 	color: #fff;
-	text-decoration: none;
-}
+	text-decoration: none;}
 
 .displayNone {
-	display: none;
-}
+	display: none;}
 
 .bold {
-	font-weight: bold;
-}
+	font-weight: bold;}
 
 .clear {
-	clear: both;
-}
+	clear: both;}
 
 #contentContainer {
-	margin: 0 auto;
-}
+	margin: 0 auto;}
 
 .button {
-	font-size: 14px;
-	text-align: center;
-	padding: 6px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-khtml-border-radius: 5px;
-	border-radius: 5px;
-	margin: 20px 0 0;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#003366), to(#002b56) ); /* Saf4+, Chrome */
+	font-size:15px; 
+	text-align:center; 
+	padding:8px; 
+	-moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; 
+	margin:22px 0 0;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#003366), to(#002b56)); /* Saf4+, Chrome */
 	background-image: -webkit-linear-gradient(top, #003366, #002b56); /* Chrome 10+, Saf5.1+ */
 	background-image: -moz-linear-gradient(top, #003366, #002b56); /* FF3.6 */
 	background-image: -ms-linear-gradient(top, #003366, #002b56); /* IE10 */
@@ -108,32 +96,29 @@ a {
 	box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
 	border: none;
 	color: #fff;
-	cursor: pointer;
-}
+	cursor: pointer;}
 
 .bgWhite {
-	background: #FFF url("../images/bgWhite.png") repeat scroll 0 0;
-}
+	background: #FFF url("../images/bgWhite.png") repeat scroll 0 0;}
 
 .bgRed {
-	background: #fd6464 url("../images/bgRed.png") repeat scroll 0 0;
-}
+	background: #fd6464 url("../images/bgRed.png") repeat scroll 0 0;}
 
 .bgGreen {
-	background: #64c064 url("../images/bgGreen.png") repeat scroll 0 0;
-}
+	background: #64c064 url("../images/bgGreen.png") repeat scroll 0 0;}
 
 .bgBlue {
-	background: #FFF url("../images/bgBlue.png") repeat scroll 0 0;
-}
+	background: #FFF url("../images/bgBlue.png") repeat scroll 0 0;}
+
+
+
+
+
 
 /* ------------- LOGIN ------------- */
-div.loginPage {
-	font-size: 14px;
-}
 
 div.loginPage input {
-	font-size: 14px;
+	font-size: 15px;
 }
 
 #logo {
@@ -164,38 +149,36 @@ div.loginPage input {
 }
 
 #loginForm label {
-	color: #fff;
-	margin: 10px 0 0 0;
-	display: block;
-}
+	color:#fff; 
+	margin:16px 0 0 0; 
+	display:block;}
 
-#loginForm input.uname {
-	-moz-border-radius: 5px 5px 0 0;
-	-webkit-border-radius: 5px 5px 0 0;
-	-khtml-border-radius: 5px 5px 0 0;
-	border-radius: 5px 5px 0 0;
-	color: #AA99AA;
-	padding: 6px 0;
-	width: 100%;
-	margin-bottom: 0;
-	border: 1px solid #cccccc;
-}
+#loginForm input.uname{ 
+	-moz-border-radius: 5px 5px 0 0; 
+	-webkit-border-radius: 5px 5px 0 0; -khtml-border-radius: 5px 5px 0 0; border-radius: 5px 5px 0 0; 
+	color:#AA99AA; 
+	padding:8px 0 8px 2px; 
+	width: 100%; 
+	margin-bottom:0; 
+	border:1px solid #cccccc;}
 
-#loginForm input.pwd {
-	-moz-border-radius: 0 0 5px 5px;
-	-webkit-border-radius: 0 0 5px 5px;
-	-khtml-border-radius: 0 0 5px 5px;
-	border-radius: 0 0 5px 5px;
-	color: #AA99AA;
-	padding: 6px 0;
-	width: 100%;
-	margin-top: 0;
-	border: 1px solid #cccccc;
-}
+#loginForm input.pwd{
+	-moz-border-radius: 0 0 5px 5px; -webkit-border-radius: 0 0 5px 5px; -khtml-border-radius: 0 0 5px 5px; border-radius: 0 0 5px 5px; 
+	color:#AA99AA; 
+	padding:8px 0 8px 2px; 
+	width: 100%; 
+	margin-top:0; 
+	border:1px solid #cccccc;}
 
 #loginForm #loginButton {
-	width: 100%;
+	width: 100%;}
+	
+#forgotpassRegister {
+	margin-top:10px;
+	text-align:right;
 }
+	
+	
 
 /* ------------- RADIO AND CHECKBOX STYLE ------------- */
 .has-js .label_check,.has-js .label_radio {
@@ -385,7 +368,7 @@ div.mainContent #timeoutBlock #blueField p {
 #message {
 	padding: 5px 15px 20px 15px;
 	color: #0099cc;
-	line-height: 16px;
+	line-height: 18px;
 }
 
 div.countDown {
@@ -436,9 +419,9 @@ div.exitIcon {
 }
 
 .triggerContent {
-	position: absolute;
+	position: fixed;
 	width: 100%;
-	z-index: 101;
+	z-index: 110;
 	margin: 0 auto;
 }
 
@@ -580,7 +563,7 @@ div.exitIcon {
 	border-color: #cccccc;
 	border-width: 0 0 1px 0;
 	padding: 10px 15px 8px 10px;
-	font-size: 12px;
+	font-size: 14px;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e5e5e5) ); /* Saf4+, Chrome */
 	background-image: -webkit-linear-gradient(top, #fff, #e5e5e5); /* Chrome 10+, Saf5.1+ */
 	background-image: -moz-linear-gradient(top, #fff, #e5e5e5); /* FF3.6 */
@@ -607,6 +590,7 @@ div.exitIcon {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
+	padding-bottom:1px;
 }
 
 a.editNote {
@@ -669,7 +653,7 @@ div.footerMenu div.menuItem {
 	width: 25%;
 	margin: 0;
 	padding: 0;
-	font-size: 12px;
+	font-size: 15px;
 	float: left;
 	text-align: center;
 }
@@ -694,6 +678,8 @@ div.footerMenu div.menuItem span.footerMenuTitle {
 	margin-top: 2px;
 	display: block;
 	font-family: 'Squada One', cursive;
+	overflow:hidden; 
+	text-overflow: clip;
 }
 
 div.footerMenu div.menuItem div#home.menuIcon {
