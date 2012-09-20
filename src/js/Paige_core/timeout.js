@@ -117,10 +117,10 @@ function receiveC2DM(type, data) {
 		// alert("Registered on: "+data);
 		console.log("C2DMKey_LocalStore");
 		localStorage.setItem("C2DMKey", data);
-		// dataCon.post("resources/?tags={'C2DMKey':'"+data+"'}",null,function(){
-			// var t_cache = caches.getList("getTimeout")[0];
-			// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
-		// });	
+		dataCon.post("resources/?tags={'C2DMKey':'"+data+"'}",null,function(){
+			var t_cache = caches.getList("getTimeout")[0];
+			t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+		});	
 	} else if (type == "message") {
 		// Use data to determine which Cache needs to sync right now.
 		if(data == "getQuestion" || data == "getTimeout" ){
