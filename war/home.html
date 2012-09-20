@@ -58,7 +58,7 @@
 						$('#notesBlock #notesWeekOverview').empty();
 						notes.map(function(note){
 							var createTime = new Date(note.creationTime);
- 							$('#notesBlock #notesWeekOverview').append("<div class=\"note\"><div class=\"date\">"+createTime.toDateString()+"<span class=\"time\">"+createTime.toLocaleTimeString()+"</span></div>"+note.question_text+"<div class=\"message\"></div></div>");
+ 							$('#notesBlock #notesWeekOverview').append("<div class=\"note\"><div class=\"date\">"+createTime.toDateString()+"<span class=\"time\">"+createTime.toLocaleTimeString()+"</span></div>"+note.content+"<div class=\"message\"></div></div>");
 						});
 					}
 				}
@@ -88,6 +88,7 @@
 							var countdownNumber = duration-continued;
 							 
 							javascript_countdown.enable();
+							
 							if(typeof $("#timeoutButton").data("continued") == "undefined"
 								|| $("#timeoutButton").data("continued") == false){
 								console.log("Start counting ... "+ countdownNumber);
@@ -95,6 +96,8 @@
 								javascript_countdown.init(countdownNumber);
 								
 								$("#timeoutButton").data("continued",true);
+							}else{
+								javascript_countdown.setTimeLeft(countdownNumber);
 							}
 							
 							$("#timeoutButton").removeClass("notPushed");
@@ -106,7 +109,10 @@
 							$.map(toOjb.attendees,function(v,k){
 								if(k == session.uuid ){
 									$('#timeoutStarted #message p').empty();
-									$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
+									if(countdownNumber < 150){
+										$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
+									}
+									
 									$('#timeoutStarted #message p').append((v.msg == null && typeof v.msg == "undefined")? "": v.msg );
 								}
 							});
@@ -120,9 +126,9 @@
 				}
 				// check the if the sensor is initialized  
 				
-				$(window).scrollTop('0');
-				$("#callPopUp").removeClass("displayNone");
-				$('#callPopUp').load('contents/sensorChecking.html');
+				// $(window).scrollTop('0');
+				// $("#callPopUp").removeClass("displayNone");
+				// $('#callPopUp').load('contents/sensorChecking.html');
 				
 				
 				var checkSensorCount = 0;
@@ -168,7 +174,7 @@
 					}
 				}
 				
-				checkSensor();
+				// checkSensor();
 				
 				//start to check timeout status every 30 seconds 
 				var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
@@ -206,18 +212,12 @@
 				
 				console.log("c2dmKey:"+localStorage['C2DMKey']);
 				if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
-					dataCon.post("resources/?tags={'C2DMKey':'"+localStorage['C2DMKey']+"'}",null,function(){
+					dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
 						var t_cache = caches.getList("getTimeout")[0];
 						t_cache.setInterval(900000); // Since we have C2DM set dialog to low
 					});						// interval (15 min)
-					
-					// dataCon.post("timeout/setC2DM",{"key":""+localStorage['C2DMKey']+""},function(){
-						// var t_cache = caches.getList("getTimeout")[0];
-						// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
-					// });						// interval (15 min)
 				}else{
 					console.log("C2DM Key init wrong! ");
-					session.logoff();
 				}
 				
 				// notification page
@@ -231,14 +231,15 @@
 						alert("Note can't be empty");
 						return;
 					}
-					var para = {'members': [session.uuid] , 'content' : note, 'subject' : '', 'new' : false};
+					var para = {'content' : note};
 					$('#addNotesBlock #sendingNote').show();
 					$('#addNotesBlock #sendNote').hide();
-					dataCon.post("question/sendDirectMessage",para,function(res){
+					dataCon.post("timeout/notes",para,function(res){
 						setTimeout(function(){
 							changeDivPage("notesBlock",null,null);
 							$('#addNotesBlock #sendingNote').hide();
 							$('#addNotesBlock #sendNote').show();
+							$('#addNotesBlock #timeout_note').val("");
 						},3000);
 					})
 				})
@@ -283,7 +284,7 @@
 				if(pageId == "notesBlock"){
 					if($('#notesBlock #notesOverview .loadingNote').length == 0){
 						$('#notesBlock #notesWeekOverview').append("<div id=\"noteHeader\"><div class=\"title loadingNote\" >loadinghet laden van notities ...</div></div>");
-						dataCon.get("question",null,function(res){
+						dataCon.get("timeout/notes",null,function(res){
 							$("#callButton").data('buttonObj').renderNotes(res);
 						});
 					}
@@ -298,11 +299,15 @@
 				var keep_counting = 1;
 				var no_time_left_message = '00:00';
 				var finished_message = '<p><span class="bold">De time-out is over.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
+				var duration = 0;
+				var startpoint = 0;
 				function countdown() {
 					if(time_left < 2) {
 						keep_counting = 0;
 					}
-					time_left = time_left - 1;
+					//time_left = time_left - 1;
+					var now = (new Date().getTime() * 0.001)|0;
+					time_left = duration - (now - startpoint); 
 				}
 
 				function add_leading_zero(n) {
@@ -314,6 +319,15 @@
 				}
 
 				function format_output() {
+					// var hours, minutes, seconds;
+					// seconds = time_left % 60;
+					// minutes = Math.floor(time_left / 60) % 60;
+					// hours = Math.floor(time_left / 3600);
+					// seconds = add_leading_zero(seconds);
+					// minutes = add_leading_zero(minutes);
+					// hours = add_leading_zero(hours);
+					// use device clock
+					 
 					var hours, minutes, seconds;
 					seconds = time_left % 60;
 					minutes = Math.floor(time_left / 60) % 60;
@@ -351,6 +365,10 @@
 					},
 					init : function(n) {
 						time_left = n;
+						// other solution using device time 
+						duration = n;
+						startpoint = (new Date().getTime() * 0.001)|0;
+						console.log(startpoint);
 						javascript_countdown.timer();
 					},
 					stop : function(){
@@ -358,6 +376,9 @@
 					},
 					enable : function(){
 						keep_counting = 1;
+					},
+					setTimeLeft : function(left){
+						time_left = left;
 					}
 				};
 			}();

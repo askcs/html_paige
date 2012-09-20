@@ -16,14 +16,13 @@
     <script type="text/javascript">
   	$(document).ready(function(){
 		
-  		$("#toggleMenu").click(function () {
-		    $(this).toggleClass("notActive, active");
-		    $("#headerMenu").toggleClass("displayNone");
-	    }); 
-  		
-  		$("#timeoutButton").click(function () {
-		    $(this).toggleClass("notPushed, pushed");
-	    });    
+  		$('#loginuuid').live("change",function(){
+  			if($('#loginuuid').val() == getCookie("userName")){
+  				$('#loginpass').val(getCookie("userPass"));
+  			}else{
+  				$('#loginpass').val("");
+  			}
+  		})    
 
 	});
 	
@@ -92,10 +91,31 @@
         	return false;
         }
         
-        var remember = $($('#contentContainer #rememberLogin')[0]).attr("checked");
+        var remember = $($($('.label_check')[0])[0]).attr("class");
+        var rem_status = remember.replace("label_check c_","");
         // console.log($($('#contentContainer #rememberLogin')[0]).is(':checked'));
-        // console.log(remember)
-        // return false;
+        
+        var passSaved = getCookie("userPass");
+        var userSaved = getCookie("userName");
+        
+        if(rem_status == "on"){
+        	setCookie("remember",true);
+        	setCookie("userName",usrName);
+        	
+        	
+        	if(typeof passSaved == "undefined" || passSaved == "" || userSaved != usrName){
+        		setCookie("userPass",passHash);
+        	}else{
+        		passHash = getCookie("userPass");
+        	}
+        }else if(rem_status == "off"){
+        	if(passSaved == $('#loginpass').val() && passSaved != ""){
+        		passHash = passSaved; 
+        	}
+        	setCookie("remember",false);
+        	setCookie("userName","",7);
+        	setCookie("userPass","",7);
+        }
         
         var login_animation = function(){
         	var dot = ".";
@@ -125,7 +145,7 @@
             },
             200: function(data){
                 console.log("received 200 ok on login.");
-                var remember = $('#loginForm .rememberBox');
+                
                 // console.log(remember.attr("checked")); return false;
                 session.addCallback('login', function() {
                     	if (phoneGapAvailable && window.plugins.sense) {
@@ -190,11 +210,16 @@
   		// read login from cookie 
   		var userName = getCookie("userName");
   		var userPass = getCookie("userPass");
+  		var remember = getCookie("remember");
+  		
+  		console.log("userName "+userName);
+  		console.log("userPass "+userPass);
+  		console.log("remember "+remember);
   		if(userName != null && userName != ""){
   			$($('#contentContainer #rememberLogin')[0]).attr("checked","true");
+  			$("#loginuuid").val(userName);
+  			$("#loginpass").val(userPass);
   		}
-  		// $("#loginuuid").val("");
-  		// $("#loginpass").val("");
   	})
 	</script>
     
