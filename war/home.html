@@ -77,7 +77,30 @@
 						
 						if(typeof toOjb != "undefined" && toOjb.status == "active"){
 							
+							// set sense sample rate 
+							if (window.plugins.sense && phoneGapAvailable) {
+								window.plugins.sense.setPref("commonsense_rate", "-1", function(res){}, function(error){
+									console.log(error);
+								}); 
+							}
+							console.log("gap calc ");
+							var jsnow = (new Date().getTime() * 0.001)|0;
+							console.log("js now " + jsnow);
+							var gap = jsnow - toOjb.now;
+							console.log("gap between server and client " + gap);
+							
 							var continued = toOjb.now-toOjb.startTime;
+							if(gap > 5 || gap < -5){
+								console.log("gap starttime local "+localStorage['startTime']);
+								if(typeof localStorage['startTime'] == "undefined"){
+									localStorage.setItem('startTime',jsnow);
+								}
+								console.log("gap gap "+(toOjb.startTime-localStorage['startTime']));
+								if((toOjb.startTime-localStorage['startTime']) < 5){
+									continued = jsnow - localStorage['startTime'];
+								}
+							}
+							
 							var itvs = toOjb.interval.split(',');
 							var duration = 0;
 							for(var i=0 ; i < itvs.length ; i++){
@@ -88,7 +111,7 @@
 							var countdownNumber = duration-continued;
 							 
 							javascript_countdown.enable();
-							
+							console.log("countdownNumber is -> "+ countdownNumber);
 							if(typeof $("#timeoutButton").data("continued") == "undefined"
 								|| $("#timeoutButton").data("continued") == false){
 								console.log("Start counting ... "+ countdownNumber);
@@ -109,7 +132,7 @@
 							$.map(toOjb.attendees,function(v,k){
 								if(k == session.uuid ){
 									$('#timeoutStarted #message p').empty();
-									if(countdownNumber < 150){
+									if(countdownNumber >= (duration-parseInt(itvs[0]))){
 										$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
 									}
 									
@@ -121,14 +144,21 @@
 						}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
 							console.log("Timeout stoped ! ");
 							$("#callButton").data('buttonObj').timeoutStop();
+							// set sense sample rate 
+							if (window.plugins.sense && phoneGapAvailable) {
+								window.plugins.sense.setPref("commonsense_rate", "1", function(res){}, function(error){
+									console.log(error);
+								}); 
+							}
+							localStorage.removeItem('startTime');
 						}
 					}
 				}
 				// check the if the sensor is initialized  
 				
-				// $(window).scrollTop('0');
-				// $("#callPopUp").removeClass("displayNone");
-				// $('#callPopUp').load('contents/sensorChecking.html');
+				$(window).scrollTop('0');
+				$("#callPopUp").removeClass("displayNone");
+				$('#callPopUp').load('contents/sensorChecking.html');
 				
 				
 				var checkSensorCount = 0;
@@ -142,7 +172,8 @@
 					
 					if($("#callButton").data("initSensor") != true){
 						if(initSensorLimit > 20){
-							alert("Something wrong in your sensor ! Please try to login again ! ");
+							//Something wrong in your sensor ! Please try to login again ! 
+							alert("Is er iets in uw sensor! Probeer opnieuw in te loggen!");
 							session.logoff();
 							return;
 						}
@@ -174,7 +205,7 @@
 					}
 				}
 				
-				// checkSensor();
+				checkSensor();
 				
 				//start to check timeout status every 30 seconds 
 				var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
@@ -198,14 +229,18 @@
 						$("#timer").show();
 						$("#timeoutStarted").slideDown();
 						$("#javascript_countdown_time").text("Starting...");
-					
+						
 						dataCon.get("timeout/start",null,function(res){
 							console.log(res);
 							$("#timeoutButton").data("inStarting",false);
 							$("#timeoutButton").data("continued",false);
-							setTimeout(function(){
-								caches.showList("getTimeout");
-							},3000);
+							
+							var start = (new Date().getTime() * 0.001)|0;
+							localStorage.setItem("startTime",start);
+							console.log("gap start! time "+ localStorage['startTime']);
+							// setTimeout(function(){
+								// caches.showList("getTimeout");
+							// },3000);
 						});
 					}
 				})
@@ -393,44 +428,37 @@
 	  		
 	  		$('#emotionBlock #saveEmotion').live("click",function(){
 	  			if($('#emotionBlock #saveEmotion').data("submited") == true){
-	  				$('#emotionMainContent #button').text("Sending the emotion ... ");
+	  				$('#emotionMainContent .button').text("Sending the emotion ... Please be patient.");
 	  				setTimeout(function(){
-	  					$('#emotionMainContent #button').text("Opslaan ... ");
+	  					$('#emotionMainContent .button').text("Opslaan");
 	  				},3000);
 	  				return;
 	  			}
 	  			
 	  			var val = $('#emotionMainContent #button').affectbutton('affect');
 	  			$('#emotionBlock #saveEmotion').data("submited",true);
-	  			$('#emotionMainContent #button').text("Submitting ... ");
+	  			$('#emotionMainContent .button').text("Submitting ... ");
 	  			
 				if (window.plugins.sense && phoneGapAvailable) {
 					window.plugins.sense.addDataPoint('emotion', 'Emotie', 'Timeout'
 					, 'json', JSON.stringify(val) , (new Date()).getTime()
 					, function() {
 						// success!
-						window.plugins.sense.flushBuffer(function() {
-							$('#emotionBlock #saveEmotion').data("submited",false);
-							$('#emotionMainContent #button').text("Opslaan");
-							
-							changeDivPage("timeoutBlock",function(){
-								// caches.showList("getTimeout");
-							});
-							
-							// put a message after user input their emotion
-							$('#timeoutStarted #message p').empty();
-							// this is for 0 - 5 min
-							$('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.");
-							
-							// this is for 5 - 10 min
-							// $('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie. Fijn dat het weer beter met je gaat. De time-out loopt nog steeds. Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.");
-						}, function() {});
+						$('#emotionBlock #saveEmotion').data("submited",false);
+						$('#emotionMainContent .button').text("Opslaan");
+						
+						changeDivPage("timeoutBlock",null,$('#navBtn_timeoutBlock'));
+						
+						// put a message after user input their emotion
+						$('#timeoutStarted #message p').empty();
+						// this is for 0 - 5 min
+						$('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.");
 						
 					}, function() {
 						console.log('Failed to write data to Sense!');
 					});
 				}else{
-					
+					$('#emotionMainContent .button').text("Opslaan");
 					// no phonegap and sense  , start to simulate the call for changing the emotion
 					$('#timeoutStarted #message p').empty();
 					$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
@@ -438,9 +466,7 @@
 					
 					$('#emotionBlock #saveEmotion').data("submited",false);
 					
-					changeDivPage("timeoutBlock",function(){
-						// caches.showList("getTimeout");
-					});
+					changeDivPage("timeoutBlock",null,$('#navBtn_timeoutBlock'));
 				}
 	  		});
 		</script>
