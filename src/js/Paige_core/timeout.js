@@ -529,15 +529,9 @@ function buildFooter(active)
 		else
 		{
 			var item = $('<div class="menuItem"></div>');
-			//item.append('<a href="' + menuItems[i] + '.html">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
 			item.append('<a onclick="changeDivPage(\'' + menuLinks[i] + '\',null,this)" id="navBtn_'+menuLinks[i]+'">' + arrow + '<div class="menuIcon" id="' + menuItems[i] + '"></div><span class="footerMenuTitle">' + menuNames[i] + '</span></a>');
 		}
 		
-			
-//		var menu = menuNames[i].charAt(0).toUpperCase() + menuNames[i].slice(1);
-
-		
-
 		navbar.append(item);
 	}
 	
@@ -563,37 +557,43 @@ function buildHeader()
 	// menuUl.append('<li><a href="javascript:location.reload(true)">Home</a></li>');
 	menuUl.append('<li><a href="javascript:location.reload(true)">Refresh</a></li>');
 	// menuUl.append('<li><a href="">Settings</a></li>');
-	// menuUl.append('<li><a href="">Help</a></li>');
+	menuUl.append('<li><a href="javascript:" id="button_help" >Help</a></li>');
 	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Logout</a></li>');
 	
 	$(menuUl.find('#button_logout')[0]).live('click',function(){
 		session.logoff();
 	})
+	
+	$(menuUl.find('#button_help')[0]).live('click',function(){
+		// $(window).scrollTop('0');
+		$("#callPopUp").removeClass("displayNone");
+		$('#callPopUp').load('contents/help.html');
+	})
+	
 	headerMenu.append(menuUl);
 	
 	
 	$('#header').append(headerTop, headerMenu); 
 }
 
-function setCookie(c_name,value,exdays)
-{
-var exdate=new Date();
-exdate.setDate(exdate.getDate() + exdays);
-var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-document.cookie=c_name + "=" + c_value;
+
+function setCookie(c_name, value, exdays) {
+	var exdate = new Date();
+	exdate.setDate(exdate.getDate() + exdays);
+	var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+	document.cookie = c_name + "=" + c_value;
 }
 
-function getCookie(c_name)
-{
-var i,x,y,ARRcookies=document.cookie.split(";");
-for (i=0;i<ARRcookies.length;i++)
-{
-  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-  x=x.replace(/^\s+|\s+$/g,"");
-  if (x==c_name)
-    {
-    return unescape(y);
-    }
-  }
+
+
+function getCookie(c_name) {
+	var i, x, y, ARRcookies = document.cookie.split(";");
+	for( i = 0; i < ARRcookies.length; i++) {
+		x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+		y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+		x = x.replace(/^\s+|\s+$/g, "");
+		if(x == c_name) {
+			return unescape(y);
+		}
+	}
 }

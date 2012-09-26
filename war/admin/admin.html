@@ -13,97 +13,7 @@
 		<script src="/admin/js/core.min.js"></script>
 		
 		<script>
-			// var save = function(btn){
-				// if($(btn).data("confirmFlag")){
-					// return ;
-				// }
-				// var idA = $('#emailA').val();
-				// var passA = $('#passA').val();
-				// var passA_r = $('#passA_retype').val();
-				// var phoneA = $('#phoneA').val();
-// 				
-				// var idB = $('#emailB').val();
-				// var passB = $('#passB').val();
-				// var passB_r = $('#passB_retype').val();
-				// var phoneB = $('#phoneA').val();
-// 				
-				// var contact = $('#contactName').val();
-				// var contactPhone = $('#contactPhone').val();
-// 				
-				// if(idA == "" || passA == "" || idB == "" || passB == "" || phoneA == "" || phoneB == "" ){
-					// alert_timeout("Please fill all the blanks");
-					// return;
-				// }else if(passA != passA_r || passB != passB_r){
-					// alert_timeout("Password not matched !");
-					// return; 
-				// }else if(contact == "" && contactPhone == ""){
-					// alert_timeout("Please fill the contact person's info!");
-					// return;
-				// }else{
-					// $('.alert').remove();
-				// }				
-// 				
-				// // register the users and setup a timeout for them .
-				// var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
-				// 'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
-				// 'contact': {'id': contact, 'phone': contactPhone}
-				// }};
-// 					
-				// $(btn).text("Processing");				
-				// var login_animation = function(){
-	        		// var dot = ".";
-	        		// $(btn).text($(btn).text()+dot);
-		        	// if($(btn).data("confirmFlag")){
-		        		// setTimeout(function(){
-							// login_animation();	        			
-			        	// },1000)
-		        	// }else{
-		        		// $(btn).text("confirm");
-	        		// }
-		        // }
-// 		        
-		        // $(btn).data("confirmFlag",true);
-		        // login_animation();
-// 									
-// 				
-				// var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
-				// var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
-				// var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
-// 				
-				// dataCon.post("timeout/rgUser",paraA,function(res){
-					// $(btn).data("userA_created",true);
-				// },function(res){
-					// alert_timeout("Something wrong when create "+idA);
-				// });
-// 				
-				// dataCon.post("timeout/rgUser",paraB,function(res){
-					// $(btn).data("userB_created",true);
-				// },function(res){
-					// alert_timeout("Something wrong when create "+idB);
-				// });
-// 				
-				// dataCon.post("timeout/rgUser",paraContact,function(res){
-					// $(btn).data("contact_created",true);
-				// },function(res){
-					// alert_timeout("Something wrong when create "+contact);
-				// });
-// 				
-				// var startSetupTimeout = function(){
-					// console.log("still in process of creating creating user ");
-					// if($(btn).data("userA_created") && $(btn).data("userB_created") && $(btn).data("contact_created")){
-						// $(btn).data("userA_created",false);
-						// dataCon.post("timeout/setupTimeout",para,function(res){
-							// $(btn).data("confirmFlag",false);
-						// });		
-					// }else{
-						// setTimeout(startSetupTimeout,1000);
-					// }
-				// }
-// 					
-				// startSetupTimeout();
-			// }
-			
-			
+		
 			$('#saveTimeout').ready(function(){
 				var btnObj = {
 					reasign : function(btn){
@@ -146,17 +56,17 @@
 							$('.alert').remove();
 						}
 						
-						var paraA =  {'id': idA, 'pass': MD5(passA), 'phone':phoneA};
-						var paraB =  {'id': idB, 'pass': MD5(passB), 'phone':phoneB};
-						var paraContact =  {'id': contact, 'pass': MD5("contact"), 'phone':contactPhone};
+						var paraA =  {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA};
+						var paraB =  {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB};
+						var paraContact =  {'id': contact.toLowerCase(), 'pass': MD5("contact"), 'phone':contactPhone};
 						
-						var para = {'timeout': {'personA': {'id': idA, 'pass': MD5(passA), 'phone':phoneA},
-						'personB': {'id': idB, 'pass': MD5(passB), 'phone':phoneB },
-						'contact': {'id': contact, 'phone': contactPhone},
+						var para = {'timeout': {'personA': {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA},
+						'personB': {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB },
+						'contact': {'id': contact.toLowerCase(), 'phone': contactPhone},
 						'address': {'address': address , 'zipcode': zipcode , 'country': 'the Netherlands'}
 						}};
 						
-						var paraUsers = [idA,idB,contact];
+						var paraUsers = [idA.toLowerCase(),idB.toLowerCase(),contact.toLowerCase()];
 						
 						$(btn).data("btnText",$(btn).text());
 						$(btn).text("Processing ...");
@@ -245,17 +155,6 @@
 				})
 			})
 			
-			var initAdminPage = function(){
-				// dataCon.get("operator/getAllAskatars",null,function(res){
-					// console.log(res);
-					// var opt = {'source' : ['a','b','c'],
-							// 'items' : 8
-							// }
-					// $('#emailA').typeahead(opt);
-				// })
-				
-			}
-			
 			var checkLogin = function(){
 				// if(admin_session.isLogin()){
 					// goHome();
@@ -309,11 +208,15 @@
 					}
 				});
 			}
+			
+			$('#hid_test').live("dblclick",function(){
+				preset();
+			})
 		</script>
 	</head>
-	<body onload="checkLogin(); initAdminPage();">
+	<body onload="checkLogin();">
 		<div class="container">
-			<h3>Timeout! App Admin Console</h3>
+			<h3>Timeout! App Admin <span id="hid_test">Console</span></h3>
 			<br>
 			
 			<div class="container-fluid">
@@ -377,15 +280,8 @@
 										<input id="zipcode" type="text" class="input" placeholder="zip code & region eg. 3333 AB Rotterdam">
 									</td>
 								</tr>
-								<!-- <tr><td><input id="country" type="text" class="input" placeholder="country eg. the Netherlands" data-provide="typeahead"></td></tr> -->
 							</table>
 						</div>
-						<!-- <button id="fat-btn" data-loading-text="Confirming..." class="btn btn-primary" onclick="javascript:save(this)">
-			                    Comfirm
-			            </button> -->
-			            <button id="fat-btn" data-loading-text="Perseting..." class="btn btn-primary" onclick="javascript:preset()">
-			                    preset (for test)
-			            </button>
 			            <button id="saveTimeout" data-loading-text="Perseting..." class="btn btn-primary" >
 			                    confirm 
 			            </button>
