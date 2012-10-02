@@ -566,8 +566,9 @@ function buildHeader()
 	
 	$(menuUl.find('#button_help')[0]).live('click',function(){
 		// $(window).scrollTop('0');
-		$("#callPopUp").removeClass("displayNone");
-		$('#callPopUp').load('contents/help.html');
+		// $("#callPopUp").removeClass("displayNone");
+		// $('#callPopUp').load('contents/help.html');
+		changeDivPage('helpBlock',null,$('#navBtn_timeoutBlock'));
 	})
 	
 	headerMenu.append(menuUl);
