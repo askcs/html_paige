@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html manifest="/timeout.manifest">
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no; minimum-scale=1.0;">
@@ -62,8 +62,8 @@
 				$("#callButton").data('buttonObj',buttonObj);
 				
 				var timeoutRenderer = function(json, olddata, cache) {
-					console.log(json);
-					
+					console.log("render "+json);
+					console.log("render "+ olddata);
 					if(json != null ){
 						var toOjb = json[0];
 						
@@ -87,9 +87,14 @@
 							console.log("gap between server and client " + gap);
 							
 							if(typeof localStorage['startTime'] == "undefined"){
-								var diff_ser_clt = toOjb.startTime - jsnow;
+								var diff_ser_clt = jsnow - toOjb.startTime;
 								console.log("gap diff ser clt "+ diff_ser_clt);
-								localStorage.setItem('startTime',jsnow);
+								if(diff_ser_clt > 30){
+									localStorage.setItem('startTime',toOjb.startTime-3);
+								}else{
+									localStorage.setItem('startTime',jsnow);
+								}
+ 								
 							}
 							
 							var continued = jsnow-localStorage['startTime'];
@@ -225,6 +230,7 @@
 						$("#timer").show();
 						$("#timeoutStarted").slideDown();
 						$("#javascript_countdown_time").text("Starting...");
+						$('#timeoutStarted #message p').empty();
 						
 						dataCon.get("timeout/start",null,function(res){
 							console.log(res);
@@ -326,7 +332,8 @@
 				//number of seconds for countdown
 				var keep_counting = 1;
 				var no_time_left_message = '00:00';
-				var finished_message = '<p><span class="bold">De time-out is over.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
+				// var finished_message = '<p><span class="bold">De time-out is over.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
+				 
 				var duration = 0;
 				var startpoint = 0;
 				function countdown() {
@@ -364,8 +371,8 @@
 
 				function no_time_left() {
 					document.getElementById('javascript_countdown_time').innerHTML = no_time_left_message;
-					document.getElementById('message').innerHTML = finished_message;
-					$("#callButton").data('buttonObj').timeoutStop();
+					// document.getElementById('message').innerHTML = finished_message;
+					// $("#callButton").data('buttonObj').timeoutStop();
 				}
 
 				return {
@@ -453,6 +460,14 @@
 					changeDivPage("timeoutBlock",null,$('#navBtn_timeoutBlock'));
 				}
 	  		});
+	  		
+	  		$('#triggerContainer').ready(function(){
+  			
+	  			$('#triggerContainer #helpContent p.helpsubContent').hide();
+	  			$('#triggerContainer #helpContent p span.helpTitle').live("click",function(event){
+	  				$(event.target).parent('p').next('p').toggle();
+	  			});
+	  		})
 		</script>
 		<title>Time out!</title>
 	</head>
@@ -501,6 +516,8 @@
 				    		<canvas id="button" width="262px" height="262px" >
 								(Canvas not supported!)
 							</canvas>
+							<br>
+							<br>
 							<div id="saveEmotion"  class="button">Opslaan</div>
 						</div>
 			    	</div>
@@ -519,22 +536,79 @@
 				</div>
 				<div id="addNotesBlock" style="display: none;" >
 					<div id="editNoteMainContent" class="mainContent">
-			    	<div id="notesOverview">
-			    		<div id="noteHeader">
-			    		<div id="backIcon" class="menuIconBackLink"><a href="javascript:changeDivPage('notesBlock',null,null);"></a></div>
-				    		<div class="title">Notitie</div>
+				    	<div id="notesOverview">
+				    		<div id="noteHeader">
+				    		<div id="backIcon" class="menuIconBackLink"><a href="javascript:changeDivPage('notesBlock',null,null);"></a></div>
+					    		<div class="title">Notitie</div>
+					    	</div>
+				    		<div id="notesWeekOverview">
+				    			<div class="note">
+				    				<textarea class="message" id="timeout_note"></textarea>
+									<input type="button" id="sendNote" value="Opslaan">
+									<input type="button" id="sendingNote" value="Sending">
+									<div class="clear"></div>
+				    			</div>
+				    		</div>
 				    	</div>
-			    		<div id="notesWeekOverview">
-			    			<div class="note">
-			    				<textarea class="message" id="timeout_note"></textarea>
-								<input type="button" id="sendNote" value="Opslaan">
-								<input type="button" id="sendingNote" value="Sending">
-								<div class="clear"></div>
-			    			</div>
-			    		</div>
-			    	</div>
+					</div>
 				</div>
-			</div>
+				<div id="helpBlock" style="display: none;">
+					<div class="popUpHelpBg">
+						<div id="triggerContainer">
+							<p>
+								<span class="bold">Algemene uitleg Time out!</span>
+							</p>
+							<br>
+							<div id="helpContent">
+								<p>
+									<span class="helpTitle bold underlinde">Wat doet deze app?</span>
+								</p>
+								<p class="helpsubContent">
+									<br>
+									Binnen elke relatie is wel eens ruzie. Meestal lukt het om daar zelf uit te komen en ruzies uit te praten. Maar als ruzies vaak voorkomen, uitmonden in geweld en het niet meer lukt om rustig naar een oplossing te zoeken kan Time out! een oplossing bieden.
+									<br>
+									Time out helpt partners die te maken hebben met huiselijk geweld en daar samen uit willen komen om escalaties van ruzies te voorkomen en de relatie zonder geweld voort te zetten. Een hulpverlener blijft uiteraard beschikbaar op momenten dat men daar zelf voor kiest.
+								</p>
+								<br>
+								<p>
+									<span class="helpTitle bold underlinde">Hoe kom ik aan een login?</span>
+								</p>
+								<p class="helpsubContent">
+									<br>
+									Om gebruik te kunnen maken van Time out! heeft u een login nodig. Deze login is beschikbaar voor mensen die met ondersteuning van het Steunpunt Huiselijk Geweld Eindhoven en de Kempen een eind willen maken aan geweld in hun relatie.
+									<br>
+									Voor meer informatie over de login kunt u contact opnemen met het Steunpunt Huiselijk Geweld Eindhoven en de Kempen via info@huiselijkgeweld-eindhovendekempen.nl of telefoonnummer 0900-1262626. Geeft u dan in het keuzemenu postcode 5600 aan.
+								</p>
+								<br>
+								<p>
+									<span class="helpTitle bold underlinde">Wie heeft deze app laten maken?</span>
+								</p>
+								<p class="helpsubContent">
+									<br>
+									Time out! is ontwikkeld door het Steunpunt Huiselijk Geweld Eindhoven en de Kempen in samenwerking met Sense Observation Systems en de Lumens Groep.
+									<br>
+									Sense Observation Systems is een technologiebedrijf wat context bewust communicatie en transactie te ondersteunt. Naarmate het aantal sensoren in onze samenleving toeneemt, neemt ook de noodzaak toe van slimme oplossingen die ondersteuning bieden voor onze communicatie en transacties op basis van alle beschikbare informatie. Sense Observation Systems biedt integrale oplossingen waardoor optimaal gebruik gemaakt kan worden van de beschikbaarheid van sensoren.
+									<br>
+									De Lumens Groep is een Brabantse welzijnsorganisatie. Mensen, daar draait het om bij de Lumens Groep. Mensen die allemaal een kans verdienen om deel te nemen aan de maatschappij. Wij leveren diensten op het gebied van mensenwerk. Ons uitgangspunt? De vragen en behoeften van mensen. Onze werkzaamheden bestaan uit veel verschillende activiteiten waarbij we (groepen) mensen mogelijkheden bieden om mee te doen in de maatschappij. De Lumens Groep vormt een professionele partner voor tal van organisaties, zoals gemeenten, woningbouwcorporaties en organisaties op het terrein van veiligheid, onderwijs, zorg en leefbaarheid.
+									<br>
+								</p>
+								<br>
+								<p>
+									<span class="helpTitle bold underlinde">Hoe kom ik aan meer informatie? Kan ik een nummer bellen? </span>
+								</p>
+								
+								<p class="helpsubContent">
+									<br>
+									Voor meer informatie over Time out! in de praktijk of de login-mogelijkheden kunt u contact opnemen met het Steunpunt Huiselijk Geweld Eindhoven en de Kempen via info@huiselijkgeweld-eindhovendekempen.nl of telefoonnummer 0900-1262626. Geeft u dan in het keuzemenu postcode 5600 aan.
+									<br>
+									Voor informatie over de toepassing van Time out! voor uw organisatie kunt u contact opnemen met de Lumens Groep via info@lumensgroep.nl of telefoonnummer 040-2193300
+									Voor meer informatie over de technologische aspecten van Time out! kunt u contact opnemen met Sense Observation Systems via info@sense-os.nl of telefoonnummer 010-3030600.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				
 			<div id="spaceFooter"></div>
 		</div>
 		</div>

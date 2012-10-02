@@ -74,6 +74,10 @@ a {
 
 .clear {
 	clear: both;}
+	
+.underlinde {
+	text-decoration:underline;
+}
 
 #contentContainer {
 	margin: 0 auto;}
@@ -407,6 +411,14 @@ div.popUpBg {
 	-moz-opacity: 0.95;
 	-khtml-opacity: 0.95;
 	opacity: 0.95;
+}
+
+div.popUpHelpBg #triggerContainer {
+	height: 200px;
+	text-align: left;
+/*	overflow: auto;*/
+	color: #fff;
+	-webkit-overflow-scrolling: touch;
 }
 
 div.exitIcon {
