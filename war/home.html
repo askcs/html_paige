@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html manifest="/timeout.manifest">
+<!-- <html> -->
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no; minimum-scale=1.0;">
@@ -40,7 +41,9 @@
 						
 						$("#timeoutButton").data("active",false);
 						$("#timeoutButton").data("continued",false);
+						console.log("stop timeout -- stop count");
 						javascript_countdown.stop();
+						console.log("stop timeout -- " + javascript_countdown.getTimeLeft());
 					},
 					renderNotes : function(res){
 						var notes = JSON.parse(res);
@@ -56,105 +59,135 @@
 							var createTime = new Date(note.creationTime);
  							$('#notesBlock #notesWeekOverview').append("<div class=\"note\"><div class=\"date\">"+createTime.toDateString()+"<span class=\"time\">"+createTime.toLocaleTimeString()+"</span></div>"+note.content+"<div class=\"message\"></div></div>");
 						});
+					},
+					timeoutRenderer : function(json) {
+						console.log("render data is ",json);
+						console.log(json);
+						// console.log("render new ? "+ olddata);
+						if(json != null ){
+							var toOjb = json;
+							
+							// if($("#timeoutButton").data("inStarting")){
+								// return;
+							// }
+							
+							if(typeof toOjb != "undefined" && toOjb.status == "active"){
+								
+								// set sense sample rate 
+								if (window.plugins.sense && phoneGapAvailable) {
+									window.plugins.sense.setPref("commonsense_rate", "-1", function(res){}, function(error){
+										console.log(error);
+									}); 
+								}
+								console.log("gap calc ");
+								var jsnow = (new Date().getTime() * 0.001)|0;
+								console.log("gap js now " + jsnow);
+								
+								var gap = jsnow - toOjb.now;
+								console.log("gap between server and client " + gap);
+								
+								if(typeof localStorage['startTime'] == "undefined"){
+									var diff_ser_clt = jsnow - toOjb.startTime;
+									console.log("gap diff ser clt "+ diff_ser_clt);
+									if(diff_ser_clt > 30){
+										localStorage.setItem('startTime',toOjb.startTime-3);
+									}else{
+										localStorage.setItem('startTime',jsnow);
+									}
+	 								
+								}
+								
+								var continued = jsnow-localStorage['startTime'];
+								
+								var itvs = toOjb.interval.split(',');
+								$('#timeoutButton').data("intervals",itvs);
+								var duration = 0;
+								for(var i=0 ; i < itvs.length ; i++){
+									duration += parseInt(itvs[i]);
+								}
+								
+								
+								// duration = duration*60;
+								console.log("gap at last the continued is " + continued); 
+								var countdownNumber = duration-continued;
+								 
+								javascript_countdown.enable();
+								console.log("countdownNumber is -> "+ countdownNumber);
+								if(typeof $("#timeoutButton").data("continued") == "undefined"
+									|| $("#timeoutButton").data("continued") == false){
+									console.log("Start counting ... "+ countdownNumber);
+									
+									javascript_countdown.init(countdownNumber);
+									
+									$("#timeoutButton").data("continued",true);
+								}else{
+									javascript_countdown.setTimeLeft(countdownNumber);
+								}
+								
+								$("#timeoutButton").removeClass("notPushed");
+								$("#timeoutButton").addClass("pushed");
+								$("#timerTitle").hide();
+								$("#timer").show();
+								$("#timeoutStarted").slideDown();
+								
+								$.map(toOjb.attendees,function(v,k){
+									if(k == session.uuid ){
+										$('#timeoutStarted #message p').empty();
+										if(countdownNumber >= (duration-parseInt(itvs[0]))){
+											$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
+										}
+										
+										$('#timeoutStarted #message p').append((v.msg == null && typeof v.msg == "undefined")? "": v.msg );
+									}
+								});
+								
+								$("#timeoutButton").data("active",true);
+							}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
+								console.log("Timeout stoped ! ");
+								$('#timeoutStarted #message p').empty();
+								$("#callButton").data('buttonObj').timeoutStop();
+								$.removeData($('#timeoutButton'),"intervals");
+								
+								// set sense sample rate 
+								if (window.plugins.sense && phoneGapAvailable) {
+									window.plugins.sense.setPref("commonsense_rate", "1", function(res){}, function(error){
+										console.log(error);
+									}); 
+								}
+								localStorage.removeItem('startTime');
+							}
+						}
+					},
+					startTimeout : function(){
+						console.log("active: "+$("#timeoutButton").data("active"));
+						if($("#timeoutButton").data("active") == false || typeof $("#timeoutButton").data("active") == "undefined"){
+							$("#timeoutButton").data("active",true);
+							// $("#timeoutButton").data("inStarting",true);
+							
+							$(this).removeClass("notPushed");
+							$(this).addClass("pushed");
+							$("#timerTitle").hide();
+							$("#timer").show();
+							$("#timeoutStarted").slideDown();
+							$("#javascript_countdown_time").text("Starting...");
+							$('#timeoutStarted #message p').empty();
+							
+							dataCon.get("timeout/start",null,function(res){
+								console.log(res);
+								// $("#timeoutButton").data("inStarting",false);
+								$("#timeoutButton").data("continued",false);
+								
+								// setTimeout(function(){
+									// caches.showList("getTimeout");
+								// },3000);
+							});
+						}
 					}
 				}
 				
 				$("#callButton").data('buttonObj',buttonObj);
 				
-				var timeoutRenderer = function(json, olddata, cache) {
-					console.log("render "+json);
-					console.log("render "+ olddata);
-					if(json != null ){
-						var toOjb = json[0];
-						
-						if($("#timeoutButton").data("inStarting")){
-							return;
-						}
-						
-						if(typeof toOjb != "undefined" && toOjb.status == "active"){
-							
-							// set sense sample rate 
-							if (window.plugins.sense && phoneGapAvailable) {
-								window.plugins.sense.setPref("commonsense_rate", "-1", function(res){}, function(error){
-									console.log(error);
-								}); 
-							}
-							console.log("gap calc ");
-							var jsnow = (new Date().getTime() * 0.001)|0;
-							console.log("gap js now " + jsnow);
-							
-							var gap = jsnow - toOjb.now;
-							console.log("gap between server and client " + gap);
-							
-							if(typeof localStorage['startTime'] == "undefined"){
-								var diff_ser_clt = jsnow - toOjb.startTime;
-								console.log("gap diff ser clt "+ diff_ser_clt);
-								if(diff_ser_clt > 30){
-									localStorage.setItem('startTime',toOjb.startTime-3);
-								}else{
-									localStorage.setItem('startTime',jsnow);
-								}
- 								
-							}
-							
-							var continued = jsnow-localStorage['startTime'];
-							
-							var itvs = toOjb.interval.split(',');
-							var duration = 0;
-							for(var i=0 ; i < itvs.length ; i++){
-								duration += parseInt(itvs[i]);
-							}
-							// duration = duration*60;
-							console.log("gap at last the continued is " + continued); 
-							var countdownNumber = duration-continued;
-							 
-							javascript_countdown.enable();
-							console.log("countdownNumber is -> "+ countdownNumber);
-							if(typeof $("#timeoutButton").data("continued") == "undefined"
-								|| $("#timeoutButton").data("continued") == false){
-								console.log("Start counting ... "+ countdownNumber);
-								
-								javascript_countdown.init(countdownNumber);
-								
-								$("#timeoutButton").data("continued",true);
-							}else{
-								javascript_countdown.setTimeLeft(countdownNumber);
-							}
-							
-							$("#timeoutButton").removeClass("notPushed");
-							$("#timeoutButton").addClass("pushed");
-							$("#timerTitle").hide();
-							$("#timer").show();
-							$("#timeoutStarted").slideDown();
-							
-							$.map(toOjb.attendees,function(v,k){
-								if(k == session.uuid ){
-									$('#timeoutStarted #message p').empty();
-									if(countdownNumber >= (duration-parseInt(itvs[0]))){
-										$('#timeoutStarted #message p').append("<span class=\"bold\">De time-out is begonnen.</span><br><br>");
-									}
-									
-									$('#timeoutStarted #message p').append((v.msg == null && typeof v.msg == "undefined")? "": v.msg );
-								}
-							});
-							
-							$("#timeoutButton").data("active",true);
-						}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
-							console.log("Timeout stoped ! ");
-							$('#timeoutStarted #message p').empty();
-							$("#callButton").data('buttonObj').timeoutStop();
-							
-							// set sense sample rate 
-							if (window.plugins.sense && phoneGapAvailable) {
-								window.plugins.sense.setPref("commonsense_rate", "1", function(res){}, function(error){
-									console.log(error);
-								}); 
-							}
-							localStorage.removeItem('startTime');
-							
-						}
-					}
-				}
+				
 				// check the if the sensor is initialized  
 				
 				$(window).scrollTop('0');
@@ -174,7 +207,7 @@
 					if($("#callButton").data("initSensor") != true){
 						if(initSensorLimit > 20){
 							//Something wrong in your sensor ! Please try to login again ! 
-							alert("Is er iets in uw sensor! Probeer opnieuw in te loggen!");
+							alert("Er is een probleem met het controleren van uw accountgegevens.");
 							session.logoff();
 							return;
 						}
@@ -209,47 +242,35 @@
 				checkSensor();
 				
 				//start to check timeout status every 30 seconds 
-				var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
-				cache.addRenderer('/home.html', timeoutRenderer,true);
+				// var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
+				// cache.addRenderer('/home.html', timeoutRenderer,true);
 				
-				setTimeout(function(){
-					caches.showList("getTimeout");
-				},3000);
+				// setTimeout(function(){
+					// caches.showList("getTimeout");
+				// },3000);
+				
+				$('#timeoutButton').ready(function(){
+					dataCon.get("timeout",null,function(res){
+						var json = JSON.parse(res);
+						$("#callButton").data('buttonObj').timeoutRenderer(json);
+						if(typeof json.contactPhone != "undefined"){
+			  				localStorage.setItem("contactPhone",json.contactPhone);
+			  			}
+					});
+				})
 				
 				
 				$('#timeoutButton').live('click',function(){
 					// start timeout !! 
-					console.log("active: "+$("#timeoutButton").data("active"));
-					if($("#timeoutButton").data("active") == false){
-						$("#timeoutButton").data("active",true);
-						$("#timeoutButton").data("inStarting",true);
-						
-						$(this).removeClass("notPushed");
-						$(this).addClass("pushed");
-						$("#timerTitle").hide();
-						$("#timer").show();
-						$("#timeoutStarted").slideDown();
-						$("#javascript_countdown_time").text("Starting...");
-						$('#timeoutStarted #message p').empty();
-						
-						dataCon.get("timeout/start",null,function(res){
-							console.log(res);
-							$("#timeoutButton").data("inStarting",false);
-							$("#timeoutButton").data("continued",false);
-							
-							setTimeout(function(){
-								caches.showList("getTimeout");
-							},3000);
-						});
-					}
+					$("#callButton").data('buttonObj').startTimeout();
 				})
 				
 				console.log("c2dmKey:"+localStorage['C2DMKey']);
 				if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
 					dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
-						var t_cache = caches.getList("getTimeout")[0];
-						t_cache.setInterval(900000); // Since we have C2DM set dialog to low
-					});						// interval (15 min)
+						// var t_cache = caches.getList("getTimeout")[0];
+						// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+					});					
 				}else{
 					console.log("C2DM Key init wrong! ");
 				}
@@ -317,7 +338,7 @@
 				
 				if(pageId == "notesBlock"){
 					if($('#notesBlock #notesOverview .loadingNote').length == 0){
-						$('#notesBlock #notesWeekOverview').append("<div id=\"noteHeader\"><div class=\"title loadingNote\" >loadinghet laden van notities ...</div></div>");
+						$('#notesBlock #notesWeekOverview').append("<div id=\"noteHeader\"><div class=\"title loadingNote\" >Notities laden...</div></div>");
 						dataCon.get("timeout/notes",null,function(res){
 							$("#callButton").data('buttonObj').renderNotes(res);
 						});
@@ -339,6 +360,9 @@
 				function countdown() {
 					if(time_left < 2) {
 						keep_counting = 0;
+					}else if(keep_counting == 0){
+						time_left = 1;
+						return;
 					}
 					//time_left = time_left - 1;
 					var now = (new Date().getTime() * 0.001)|0;
@@ -405,6 +429,9 @@
 					},
 					setTimeLeft : function(left){
 						time_left = left;
+					},
+					getTimeLeft : function(){
+						return time_left;
 					}
 				};
 			}();
@@ -443,7 +470,43 @@
 						// put a message after user input their emotion
 						$('#timeoutStarted #message p').empty();
 						// this is for 0 - 5 min
-						$('#timeoutStarted #message p').append("Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.");
+						
+						var timeleft = javascript_countdown.getTimeLeft();
+						var intervals = $('#timeoutButton').data("intervals");
+						var msg_started = "Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.";
+						var msg_happy = "Bedankt voor het invullen van je emotie. Fijn dat het weer beter met je gaat.  De time-out loopt nog steeds. Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.";
+						var msg_unhappy = "Bedankt voor het invullen van je emotie. Neem nog wat meer tijd om tot rust te komen.Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.";
+						var pleasure = parseFloat(val.pleasure);
+						
+						console.log("em1 time_left "+javascript_countdown.getTimeLeft());
+						console.log("em1 emotion value "+val.pleasure);
+						
+						console.log("em1 interval "+intervals);
+						if(typeof intervals != "undefined"){
+							// 0 -5 or > 5 
+							var second_period = parseInt(intervals[2])+parseInt(intervals[3]);
+							if(timeleft >= second_period){
+								$('#timeoutStarted #message p').append(msg_started);
+							}else if(timeleft > 10){
+								if(pleasure >= 0){
+									$('#timeoutStarted #message p').append(msg_happy);
+								}else{
+									$('#timeoutStarted #message p').append(msg_unhappy);
+								}
+							}
+							
+							// if(pleasure >= 0){
+								// alert("happy");
+								// alert(second_period);
+							// }else{
+								// if(timeleft < second_period){
+									// alert(intervals[0]);	
+									// alert(parseInt(intervals[0]));
+								// }
+								// alert("unhappy");
+							// }
+						}
+						
 						
 					}, function() {
 						console.log('Failed to write data to Sense!');
@@ -543,9 +606,10 @@
 					    	</div>
 				    		<div id="notesWeekOverview">
 				    			<div class="note">
+				    				<input type="button" id="sendNote" value="Opslaan">
+									<input type="button" id="sendingNote" value="Bezig...">
 				    				<textarea class="message" id="timeout_note"></textarea>
-									<input type="button" id="sendNote" value="Opslaan">
-									<input type="button" id="sendingNote" value="Sending">
+									
 									<div class="clear"></div>
 				    			</div>
 				    		</div>

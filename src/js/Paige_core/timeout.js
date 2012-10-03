@@ -30,12 +30,13 @@ paigeSession.prototype.setSessionKey = function(sKey) {
 
 paigeSession.prototype.authenticator = function(){
 	if(!this.isLogin()){
-		// window.location = "login.html";
 		this.logoff();
+		// window.location = "login.html";
 	}
 }
 
 paigeSession.prototype.logoff = function(){
+	console.log("loging off ");
 	$.ajax(this.appServices + "logout/", {
 		headers : {
 			'X-SESSION_ID' : this.sessionKey
@@ -45,6 +46,7 @@ paigeSession.prototype.logoff = function(){
 		}
 	});
 	
+	console.log("loging off from app service");
 	// local cleanup:
 	document.cookies = "";
 	// TODO Doesn't work, cookie is on other domain!
@@ -53,10 +55,6 @@ paigeSession.prototype.logoff = function(){
 	// make this explicit to fix race conditions
 
 	localStorage.clear();
-	// if (localStorage['forget']) {
-		// localStorage.clear();
-	// }
-	// localStorage.removeItem('autologin');
 	
 	if (phoneGapAvailable && window.plugins.sense) {
 		window.plugins.sense.toggleMain(false, function() {
@@ -94,7 +92,9 @@ paigeSession.prototype.addCallback = function(when, callback) {
 	}
 }
 
-
+paigeSession.prototype.isSession = function() {
+	return (this.sessionKey != null && this.sessionKey != "");
+}
 
 function handle_session(sessionKey, url) {// Has to be global function
 	session.setSessionKey(sessionKey);
@@ -118,14 +118,27 @@ function receiveC2DM(type, data) {
 		console.log("C2DMKey_LocalStore");
 		localStorage.setItem("C2DMKey", data);
 		dataCon.post("resources/?tags={'C2DMKey':'"+data+"'}",null,function(){
-			var t_cache = caches.getList("getTimeout")[0];
-			t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+			// var t_cache = caches.getList("getTimeout")[0];
+			// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
 		});	
 	} else if (type == "message") {
 		// Use data to determine which Cache needs to sync right now.
 		if(data == "getQuestion" || data == "getTimeout" ){
-			var cache = caches.getList("getTimeout")[0];
-			cache.sync();
+			// var cache = caches.getList("getTimeout")[0];
+			// cache.sync();
+			$('#timeoutStarted #message p').empty();
+			$('#timeoutStarted #message p').append("Laden bericht ...");
+			console.log("render C2DM is comming ...");
+			//caches.showList("getTimeout");
+			dataCon.get("timeout",null,function(res){
+				var json = JSON.parse(res);
+				$("#callButton").data('buttonObj').timeoutRenderer(json);
+			})
+			
+		}else if(data == "aggression"){
+			$('#timeoutStarted #message p').empty();
+			$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je weer kunt te kalmeren.");
+			$("#timeoutStarted").slideDown();
 		}
 	}
 }
@@ -195,8 +208,9 @@ function PaigeData() {
 
 PaigeData.prototype.get = function(restPath, data, callback) {
 	if (!session.isLogin()) {
-		console.log("Direct data: Info: No session available, not retrying");
-		session.authenticator();
+		console.log("Direct data: Info: No session available, now retrying");
+		//session.authenticator();
+		session.logoff();
 		return;
 	}
 	var oldKey = session.sessionKey;
@@ -206,8 +220,9 @@ PaigeData.prototype.get = function(restPath, data, callback) {
 			console.log("Direct data: Info: New session available, retrying");
 			dataCon.get(restPath, data, callback);
 		} else {
-			console.log("Direct data: Info: Need to login at server, not retrying!");
-			session.authenticator();
+			console.log("Direct data: Info: Need to login at server, nu retrying!");
+			// session.authenticator();
+			session.logoff();
 		}
 	}
 
@@ -265,7 +280,6 @@ PaigeData.prototype.post = function(restPath, data, callback) {
 		}
 	});
 }
-
 
 
 var MD5 = function(string) {

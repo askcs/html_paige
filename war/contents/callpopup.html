@@ -5,13 +5,21 @@
   		
   		$('#call_contact').ready(function(){
   			
-  			var cache = caches.getList("getTimeout")[0];
-  			var objs = cache.getArray();
-  			if(typeof objs[0].contactPhone != "undefined"){
-  				$('#call_contact').attr("href","tel:"+objs[0].contactPhone);
+  			if(typeof localStorage['contactPhone'] != "undefined"){
+  				$('#call_contact').attr("href","tel:"+localStorage['contactPhone']);
   			}else{
   				$('#call_contact').attr("href","tel: geen");
   			}
+  			
+  			// dataCon.get("timeout",null,function(res){
+				// var json = JSON.parse(res);
+				// console.log(json);
+				// if(typeof json.contactPhone != "undefined"){
+	  				// $('#call_contact').attr("href","tel:"+json.contactPhone);
+	  			// }else{
+	  				// $('#call_contact').attr("href","tel: geen");
+	  			// }
+			// })
   		});
 </script>
 	  	

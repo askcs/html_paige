@@ -529,7 +529,7 @@ CacheRegister.prototype.showList = function(key){
 	if (myCaches){
 		myCaches.map(function(cache){
 			cache.sync();
-			cache.restart();
+			//cache.restart();
 		});
 	}
 }
