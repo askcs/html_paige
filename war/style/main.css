@@ -184,7 +184,7 @@ div.loginPage input {
 	
 	
 
-/* ------------- RADIO AND CHECKBOX STYLE ------------- */
+	/* ------------- RADIO AND CHECKBOX STYLE ------------- */
 .has-js .label_check,.has-js .label_radio {
 	padding: 3px 0 0 30px;
 }
@@ -277,6 +277,8 @@ div.registerPage #registerContent {
 #header #headerMenu {
 	padding: 0;
 	clear: both;
+	width:100%;
+	background-color:#003366;
 }
 
 #header #headerMenu ul {
@@ -289,7 +291,7 @@ div.registerPage #registerContent {
 
 #header #headerMenu ul li {
 	display: block;
-	width: 20%;
+	width: 33.33%;
 	margin: 0;
 	padding: 10px 0;
 	list-style: none;
@@ -315,6 +317,37 @@ div.registerPage #registerContent {
 #header #headerMenu ul li a.noBorder {
 	border: none;
 }
+
+
+
+/* ------------- HELP ------------- */
+#helpBlock {
+	display: none;
+	padding: 0 20px;}
+	
+#helpBlock span.helpTitleTitle {
+	font-style:italic;
+	font-weight:bold;
+	font-size:20px;
+	
+}
+
+#helpContent {
+	padding-bottom:100px;
+	display:block;}
+
+#helpContent span.helpTitle {
+	cursor:pointer;
+	text-decoration:underline;
+	font-weight:bold;
+	margin-top:10px;
+	display:block;}
+
+p.helpsubContent{
+	line-height:16px;
+}
+
+
 
 /* ------------- HOMEPAGE ------------- */
 div.mainContent {
@@ -463,6 +496,9 @@ div.exitIcon {
 	-webkit-box-shadow: 0 10px 10px rgba(0, 0, 0, .3);
 	box-shadow: 0 10px 10px rgba(0, 0, 0, .3);
 }
+
+.triggerContent #triggerContainer #triggerChoice #call_contact.triggerOption {
+	margin-left:20px;}
 
 .triggerContent #triggerContainer #triggerChoice a.triggerOption span {
 	margin-top: 40px;
@@ -656,9 +692,12 @@ div.footerMenu {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	-moz-box-shadow: 0 -3px 10px rgba(0, 0, 0, .3);
-	-webkit-box-shadow: 0 -3px 10px rgba(0, 0, 0, .3);
-	box-shadow: 0 -3px 10px rgba(0, 0, 0, .3);
+	margin:0;
+	padding:0;
+	border-top:1px solid #666666;
+/* 	-moz-box-shadow: 0 0 10px rgba(0, 0, 0, .3); */
+/* 	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .3); */
+/* 	box-shadow: 0 0 10px rgba(0, 0, 0, .3); */
 }
 
 div.footerMenu div.menuItem {
