@@ -56,6 +56,11 @@
 							$('.alert').remove();
 						}
 						
+						// valid the phone number 
+						phoneA = phoneA.replace(/[- _A-Za-z]/g,"");
+						phoneB = phoneB.replace(/[- _A-Za-z]/g,"");
+						contactPhone = contactPhone.replace(/[- _A-Za-z]/g,"");
+						
 						var paraA =  {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA};
 						var paraB =  {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB};
 						var paraContact =  {'id': contact.toLowerCase(), 'pass': MD5("contact"), 'phone':contactPhone};
@@ -244,7 +249,7 @@
 										<input id="passA_retype" type="password" class="input" placeholder="reType password">
 									</td>
 								</tr>
-								<tr><td><input id="phoneA" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
+								<tr><td><input id="phoneA" type="text" class="input" placeholder="telefoonnummer eg. 0612345678" data-provide="typeahead"></td></tr>
 							</table>
 						</div>
 						<div>
@@ -257,7 +262,7 @@
 										<input id="passB_retype" type="password" class="input" placeholder="reType password">
 									</td>
 								</tr>
-								<tr><td><input id="phoneB" type="text" class="input" placeholder="Phone Number" data-provide="typeahead"></td></tr>
+								<tr><td><input id="phoneB" type="text" class="input" placeholder="telefoonnummer eg. 0612345678" data-provide="typeahead"></td></tr>
 							</table>
 						</div>
 						<div>
@@ -266,7 +271,7 @@
 								<tr><td><input id="contactName" type="text" class="input" placeholder="Contact's Id" data-provide="typeahead"></td></tr>
 								<tr>
 									<td>
-										<input id="contactPhone" type="text" class="input" placeholder="Contact's Phone Number">
+										<input id="contactPhone" type="text" class="input" placeholder="telefoonnummer eg. 0612345678">
 									</td>
 								</tr>
 							</table>
