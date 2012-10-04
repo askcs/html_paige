@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html manifest="/timeout.manifest">
+<html>
 <!-- <html> -->
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -64,6 +64,10 @@
 						console.log("render data is ",json);
 						console.log(json);
 						// console.log("render new ? "+ olddata);
+						if(phoneGapAvailable && window.plugins.pee){
+							window.plugins.pee.notify(0,0);
+						}	
+						
 						if(json != null ){
 							var toOjb = json;
 							
@@ -171,6 +175,9 @@
 							$("#timeoutStarted").slideDown();
 							$("#javascript_countdown_time").text("Starting...");
 							$('#timeoutStarted #message p').empty();
+							
+							javascript_countdown.enable()
+							javascript_countdown.init(600);
 							
 							dataCon.get("timeout/start",null,function(res){
 								console.log(res);
@@ -525,7 +532,6 @@
 	  		});
 	  		
 	  		$('#triggerContainer').ready(function(){
-  			
 	  			$('#triggerContainer #helpContent p.helpsubContent').hide();
 	  			$('#triggerContainer #helpContent p span.helpTitle').live("click",function(event){
 	  				$(event.target).parent('p').next('p').toggle();
