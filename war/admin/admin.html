@@ -61,8 +61,9 @@
 						phoneB = phoneB.replace(/[- _A-Za-z]/g,"");
 						contactPhone = contactPhone.replace(/[- _A-Za-z]/g,"");
 						
-						var paraA =  {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA};
-						var paraB =  {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB};
+						
+						var paraA =  {'id': idA.toLowerCase(), 'pass': MD5(passA), 'clear': passA, 'phone':phoneA};
+						var paraB =  {'id': idB.toLowerCase(), 'pass': MD5(passB), 'clear': passB, 'phone':phoneB};
 						var paraContact =  {'id': contact.toLowerCase(), 'pass': MD5("contact"), 'phone':contactPhone};
 						
 						var para = {'timeout': {'personA': {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA},
