@@ -76,8 +76,7 @@
   	
   	
   	var login = function(){
-  		
-  	   	/*code for login from login_classic*/
+  		/*code for login from login_classic*/
         var usrName = $('#loginuuid').val().toLowerCase();
         var passStr = $('#loginpass').val();
         var passHash = MD5(passStr);
@@ -94,7 +93,7 @@
         var passSaved = getCookie("userPass");
         var userSaved = getCookie("userName");
         
-        if(rem_status == "on"){
+        if(rem_status.indexOf('off') === -1){
         	setCookie("remember",true);
         	setCookie("userName",usrName);
         	
@@ -132,6 +131,7 @@
         console.log(session.appServices);
         $.Read({
             url: session.appServices + 'login',
+            cache: false,
             xhrFields: {
                 withCredentials: true
             },
@@ -139,60 +139,61 @@
                 "uuid": '' + usrName,
                 "pass": '' + passHash
             },
-            200: function(data){
-                console.log("received 200 ok on login.");
-                
-                // console.log(remember.attr("checked")); return false;
-                session.addCallback('login', function() {
-                    	if (phoneGapAvailable && window.plugins.sense) {
-                            window.plugins.sense.changeLogin(usrName, passHash, function(){
-                            	window.plugins.sense.toggleMain(true);
-			                        			
-                    			// set sense profile
-                    			var profile = "timeout";
-                    			if (profile && (sp = senseProfiles[profile])) {
-                    				$.each(sp, function(k, v) {
-                    					window.plugins.sense.setPref(k, v, function() {
-                    					}, function() {
-                    						console.log("Failed to set sense setting: " + k + ' = ' + v);
-                    					});
-                    				});
-                    			}
-                    			
-                    			// start sense modules
-                    			// TODO we don't need to start modules if none of their
-                    			// corresponding prefs are enabled I guess?
-                    			window.plugins.sense.togglePhoneState(false);
-                    			window.plugins.sense.togglePosition(true);
-                    			window.plugins.sense.toggleMotion(false);
-                    			window.plugins.sense.toggleAmbience(true);
-                    			window.plugins.sense.toggleNeighDev(false);
-                    			
-                            	$('#loginButton').val("Inloggen");
-                            	$('#loginButton').data("loginFlag",false);
-								window.location = "home.html";
-                            }, function(){
-                                alert("Paige can't access your sensors, some functions might not be working");
-                                $('#loginButton').val("Inloggen");
-                            });
-                            
-                        }else{
-                        	console.log("Phone gap and sense plugin is not available");
-                        	session.onLogin = null;
-                        	
-                        	handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]);
-                        	window.location = "home.html";
-                        }
-                });
-                
-                window.handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]);
-                localStorage.setItem("PaigeUser",usrName);
-            },
-            400: function(data){
-                localStorage['password'] = '';//                              
-                alert("Login failed: Please check your email or password");
-                $('#loginButton').data("loginFlag",false);
-            },
+               200: function(data){
+	                console.log("received 200 ok on login.");
+	                
+	                // console.log(remember.attr("checked")); return false;
+	                session.addCallback('login', function() {
+	                    	if (phoneGapAvailable && window.plugins.sense) {
+	                    		window.plugins.sense.changeLogin(usrName, passHash, function(){
+	                            	window.plugins.sense.toggleMain(true);
+				                        			
+	                    			// set sense profile
+	                    			var profile = "timeout";
+	                    			if (profile && (sp = senseProfiles[profile])) {
+	                    				$.each(sp, function(k, v) {
+	                    					window.plugins.sense.setPref(k, v, function() {
+	                    					}, function() {
+	                    						console.log("Failed to set sense setting: " + k + ' = ' + v);
+	                    					});
+	                    				});
+	                    			}
+	                    			
+	                    			// start sense modules
+	                    			// TODO we don't need to start modules if none of their
+	                    			// corresponding prefs are enabled I guess?
+	                    			window.plugins.sense.togglePhoneState(false);
+	                    			window.plugins.sense.togglePosition(true);
+	                    			window.plugins.sense.toggleMotion(false);
+	                    			window.plugins.sense.toggleAmbience(true);
+	                    			window.plugins.sense.toggleNeighDev(false);
+	                    			
+	                            	$('#loginButton').val("Inloggen");
+	                            	$('#loginButton').data("loginFlag",false);
+									window.location = "home.html";
+	                            }, function(){
+	                                alert("Paige can't access your sensors, some functions might not be working");
+	                                $('#loginButton').val("Inloggen");
+	                            });
+	                            
+	                        }else{
+	                        	console.log("Phone gap and sense plugin is not available");
+	                        	session.onLogin = null;
+	                        	
+	                        	handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]);
+	                        	window.location = "home.html";
+	                        }
+	                });
+	                
+	                window.handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]);
+	                localStorage.setItem("PaigeUser",usrName);
+	            },
+	            400: function(data){
+	                localStorage['password'] = '';//                              
+	                alert("Login failed: Please check your email or password");
+	                $('#loginButton').data("loginFlag",false);
+	            },
+            
             error: function() {
             	alert("Login failed: Connection error.");
             	$('#loginButton').data("loginFlag",false);
@@ -211,10 +212,13 @@
   		console.log("userName "+userName);
   		console.log("userPass "+userPass);
   		console.log("remember "+remember);
-  		if(userName != null && userName != ""){
+  		if(remember && userName != null && userName != "" && userPass != null && userPass != "" ){
   			$($('#contentContainer #rememberLogin')[0]).attr("checked","true");
   			$("#loginuuid").val(userName);
   			$("#loginpass").val(userPass);
+  			if ( getCookie('autologin') !== 'false') {
+  				login();
+  			}
   		}
   	})
 	</script>
@@ -234,7 +238,7 @@
 			<input type='text' class="uname" name='uuid' id='loginuuid' placeholder='Emailadres' required/>
 			<input type="password" class="pwd" name='pass' id='loginpass' placeholder='Wachtwoord' required/>
 			<label class="label_check" for="rememberLogin">
-				<input name="sample-check" id="rememberLogin" value="1" type="checkbox" class="rememberBox" />
+				<input name="sample-check" id="rememberLogin" value="1" type="checkbox" class="rememberBox" checked="checked" />
 				Onthoud mij </label>
 			<input type="submit" id="loginButton" class="button" value='Inloggen'/>
 			<div id="forgotpassRegister">
