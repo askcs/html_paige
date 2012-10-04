@@ -50,6 +50,11 @@ paigeSession.prototype.logoff = function(){
 	// local cleanup:
 	document.cookies = "";
 	// TODO Doesn't work, cookie is on other domain!
+	setCookie('autologin', 'false');
+	
+	//setCookie("userPass", "");
+    //setCookie("userName", "");
+	
 	this.setSessionKey("");
 	session.loading = false;
 	// make this explicit to fix race conditions
