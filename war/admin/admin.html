@@ -11,8 +11,10 @@
 		
 		<script src="/admin/js/libs.min.js"></script>
 		<script src="/admin/js/core.min.js"></script>
-		
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
 		<script>
+		
+		
 		
 			$('#saveTimeout').ready(function(){
 				var btnObj = {
@@ -78,8 +80,7 @@
 						$(btn).text("Processing ...");
 						
 						var validUsers = function(){
-							alert_timeout("check if all the usernames are already exists.","info");
-							$(btn).die();
+							alert_timeout("check if all the usernames are already exists.","info");							
 							dataCon.post("timeout/validUser",paraUsers,function(res){
 								console.log(res);
 								if(res == "ok"){
@@ -149,7 +150,37 @@
 							});		
 						}
 						
-						validUsers();
+						// validUsers();
+						
+						var validAdderss = function(address,zipcode){
+							alert_timeout("checking if the address is valid.","info");
+							$(btn).die();
+							
+							var addressString = address+","+zipcode+",the Netherlands";
+							var geocoder = new google.maps.Geocoder();
+							geocoder.geocode( { 'address': addressString}, function(results, status) {
+								console.log(results);
+								if (status == google.maps.GeocoderStatus.OK) {
+									if(results.length > 0){
+										if(results[0].geometry.location_type == "ROOFTOP"){
+											validUsers();
+										}else{
+											if(window.confirm("Please make sure your address : ["+results[0].formatted_address+"]is correct, Press YES to continue. ")){
+												validUsers();
+											}else{
+												$(btn).data("btnObj").reasign(btn);
+											}
+										}
+									}
+								}else{
+									console.log("google map api error");
+									alert("Address validation error, Please contact the admin if you can't start the timeout.The registraion will continue.");
+									validUsers();
+								}
+							});
+						} 
+						
+						validAdderss(address,zipcode);
 					}
 				}
 				

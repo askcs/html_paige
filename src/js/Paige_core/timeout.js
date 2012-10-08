@@ -127,7 +127,12 @@ function receiveC2DM(type, data) {
 			// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
 		});	
 	} else if (type == "message") {
-		// Use data to determine which Cache needs to sync right now.
+		// if(phoneGapAvailable && window.plugins.pee){
+			// if(data == "aggression" || data == "getQuestion" ){
+				// window.plugins.pee.notify(0,1);
+			// }
+		// }
+		
 		if(data == "getQuestion" || data == "getTimeout" ){
 			// var cache = caches.getList("getTimeout")[0];
 			// cache.sync();
@@ -135,6 +140,7 @@ function receiveC2DM(type, data) {
 			$('#timeoutStarted #message p').append("Laden bericht ...");
 			console.log("render C2DM is comming ...");
 			//caches.showList("getTimeout");
+			
 			dataCon.get("timeout",null,function(res){
 				var json = JSON.parse(res);
 				$("#callButton").data('buttonObj').timeoutRenderer(json);
@@ -145,6 +151,7 @@ function receiveC2DM(type, data) {
 			$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je weer kunt te kalmeren.");
 			$("#timeoutStarted").slideDown();
 		}
+			
 	}
 }
 

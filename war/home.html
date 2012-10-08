@@ -180,8 +180,12 @@
 							
 							dataCon.get("timeout/start",null,function(res){
 								console.log(res);
-								// $("#timeoutButton").data("inStarting",false);
-								$("#timeoutButton").data("continued",false);
+								if(res == "nosensors"){
+									alert("Je sensoren zijn niet goed geinstalleerd. Probeer over een tijdje opnieuw in te loggen.");
+									$("#callButton").data('buttonObj').timeoutStop();
+								}else{
+									$("#timeoutButton").data("continued",false);
+								}
 								
 								// setTimeout(function(){
 									// caches.showList("getTimeout");
