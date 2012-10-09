@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="/timeout.manifest">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no; minimum-scale=1.0;">
@@ -139,7 +139,7 @@
                 "uuid": '' + usrName,
                 "pass": '' + passHash
             },
-               200: function(data){
+	        200: function(data){
 	                console.log("received 200 ok on login.");
 	                
 	                // console.log(remember.attr("checked")); return false;
@@ -188,13 +188,13 @@
 	                window.handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]);
 	                localStorage.setItem("PaigeUser",usrName);
 	            },
-	            400: function(data){
-	                localStorage['password'] = '';//                              
-	                alert("Login failed: Please check your email or password");
-	                $('#loginButton').data("loginFlag",false);
-	            },
-            
-            error: function() {
+            400: function(data){
+                localStorage['password'] = '';//                              
+                alert("Login failed: Please check your email or password");
+                $('#loginButton').data("loginFlag",false);
+            },
+            error: function(res) {
+            	console.log(res);
             	alert("Login failed: Connection error.");
             	$('#loginButton').data("loginFlag",false);
             }
