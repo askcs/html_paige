@@ -59,6 +59,9 @@ paigeSession.prototype.logoff = function(){
 	session.loading = false;
 	// make this explicit to fix race conditions
 
+	if(typeof localStorage["getTimeout"] != "undefined"){
+		clearInterval(localStorage['getTimeout']);
+	}
 	localStorage.clear();
 	
 	if (phoneGapAvailable && window.plugins.sense) {
@@ -624,3 +627,20 @@ function getCookie(c_name) {
 		}
 	}
 }
+
+
+var appCache = window.applicationCache;
+function logEvent(e) {
+       console.log("Cache ",e);
+}
+function logError(e) {
+       console.log("Cache: error ", e);
+};
+appCache.addEventListener('cached', logEvent, false);
+appCache.addEventListener('checking', logEvent, false);
+appCache.addEventListener('downloading', logEvent, false);
+appCache.addEventListener('error', logError, false);
+appCache.addEventListener('noupdate', logEvent, false);
+appCache.addEventListener('obsolete', logEvent, false);
+appCache.addEventListener('progress', logEvent, false);
+appCache.addEventListener('updateready', logEvent, false);

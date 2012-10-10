@@ -23,11 +23,17 @@
 				});
 
 				buildFooter('Home');
-
+				
 				$("#callButton").click(function() {
 					$(window).scrollTop('0');
 					$("#callPopUp").removeClass("displayNone");
-					$('#callPopUp').load('contents/callpopup.html');
+					// $('#callPopUp').load('/contents/callpopup.html',function(res){
+						// alert($("#callPopUp").attr("class"));
+					// });
+					$("#callPopUp").empty();
+					$('#callEmerge').clone().appendTo('#callPopUp');
+					$('#callEmerge').show();
+					// $('#callPopUp').load('contents/callpopup.html');
 				});
 				
 				var buttonObj = {
@@ -197,20 +203,9 @@
 				
 				$("#callButton").data('buttonObj',buttonObj);
 				
-				
-				// check the if the sensor is initialized  
-				
-				$(window).scrollTop('0');
-				$("#callPopUp").removeClass("displayNone");
-				$('#callPopUp').load('contents/sensorChecking.html');
-				
-				
 				var checkSensorCount = 0;
 				var initSensorLimit = 0;
-				if (window.plugins.sense && phoneGapAvailable) {
-					window.plugins.sense.flushBuffer(function() {
-					}, function() {});
-				}
+				
 				
 				var checkSensor = function(){
 					
@@ -238,6 +233,9 @@
 							if(res == "ok"){
 								$("#callButton").data("initSensor",true);
 								$("#callPopUp").addClass('displayNone');
+								$("#callPopUp").empty();
+								$('#sensorCheckBlock').hide();
+								localStorage.setItem("initedSensor","true");
 							}else{
 								setTimeout(function(){
 									checkSensor();
@@ -249,7 +247,22 @@
 					}
 				}
 				
-				checkSensor();
+				if(typeof localStorage["initedSensor"] == "undefined"){
+					
+					// check the if the sensor is initialized  
+					
+					$(window).scrollTop('0');
+					$("#callPopUp").removeClass("displayNone");
+					// $('#callPopUp').load('contents/sensorChecking.html');
+					$('#sensorCheckBlock').clone().appendTo('#callPopUp');
+					$('#sensorCheckBlock').show();
+					
+					if (window.plugins.sense && phoneGapAvailable) {
+						window.plugins.sense.flushBuffer(function() {
+						}, function() {});
+					}
+					checkSensor();
+				}
 				
 				//start to check timeout status every 30 seconds 
 				// var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
@@ -260,13 +273,40 @@
 				// },3000);
 				
 				$('#timeoutButton').ready(function(){
-					dataCon.get("timeout",null,function(res){
-						var json = JSON.parse(res);
-						$("#callButton").data('buttonObj').timeoutRenderer(json);
-						if(typeof json.contactPhone != "undefined"){
-			  				localStorage.setItem("contactPhone",json.contactPhone);
-			  			}
-					});
+					
+					if(typeof localStorage["getTimeout"] != "undefined"){
+						clearInterval(localStorage['getTimeout']);
+					}
+					
+					var getTimeoutfunc = function(){
+						dataCon.get("timeout",null,function(res){
+							var json = JSON.parse(res);
+							$("#callButton").data('buttonObj').timeoutRenderer(json);
+							if(typeof json.contactPhone != "undefined"){
+				  				localStorage.setItem("contactPhone",json.contactPhone);
+				  			}
+						});
+					}
+					getTimeoutfunc();
+					var getTimeoutIntId = setInterval(function(){
+						getTimeoutfunc();
+					},60000);
+					
+					localStorage.setItem("getTimeout",getTimeoutIntId);
+					
+					if(typeof localStorage["initedSensor"] != "undefined" && localStorage["initedSensor"] == "true"){
+						return;
+					}
+					
+					console.log("c2dmKey:"+localStorage['C2DMKey']);
+					if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
+						dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
+							// var t_cache = caches.getList("getTimeout")[0];
+							// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+						});					
+					}else{
+						console.log("C2DM Key init wrong! ");
+					}
 				})
 				
 				
@@ -274,16 +314,6 @@
 					// start timeout !! 
 					$("#callButton").data('buttonObj').startTimeout();
 				})
-				
-				console.log("c2dmKey:"+localStorage['C2DMKey']);
-				if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
-					dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
-						// var t_cache = caches.getList("getTimeout")[0];
-						// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
-					});					
-				}else{
-					console.log("C2DM Key init wrong! ");
-				}
 				
 				// notification page
 				$('#notesBlock #addNoteIcon').live("click",function(){
@@ -681,7 +711,47 @@
 						</div>
 					</div>
 				</div>
-				
+				<div id="callEmerge" class="displayNone">
+					<script>
+				  		$('#call_contact').ready(function(){
+				  			$("div.exitIcon").click(function() {
+					  			$("#callEmerge").addClass('displayNone');
+					  			$("#callEmerge").hide();	
+					  		});
+				  			
+				  			if(typeof localStorage['contactPhone'] != "undefined"){
+				  				$('#call_contact').attr("href","tel:"+localStorage['contactPhone']);
+				  			}else{
+				  				$('#call_contact').attr("href","tel: geen");
+				  			}
+				  			
+				  		});
+					</script>
+						  	
+					<div class="popUpBg">
+					</div>
+					<div class="triggerContent call">
+						<div class="exitIcon"></div>
+						<div id="triggerContainer">
+					  		<p><span class="bold">Noodoproep</span></p>
+							<div id="triggerChoice">
+								<a href="tel:112" class="triggerOption bgRed" id=""><span class="small">Bel<span class="large">112</span></span></a>
+								<a href="" class="triggerOption bgGreen" id="call_contact"><span class="small">Bel<span class="medium">Contact- persoon</span></span></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="sensorCheckBlock" class="displayNone">
+					<div class="popUpBg">
+					</div>
+					<div class="triggerContent call">
+						<div id="triggerContainer">
+							
+					<!-- 		Checking if the sensors are initialized -->
+					  		<p><span class="bold"> Bezig met controleren van accountgegevens ...</span></p>
+						</div>
+					</div>
+				</div>
 			<div id="spaceFooter"></div>
 		</div>
 		</div>
