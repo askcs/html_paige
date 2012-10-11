@@ -1,10 +1,4 @@
 document.addEventListener('deviceready', function() {
-	var now = new Date();
-	console.log("Device ready after: "+(now.getTime() - start.getTime())+" (ms)");
-}, false);
-
-document.addEventListener('deviceready', function() {
-	
 	setTimeout( function() {
 		console.log("phoneGapAvailable to True!");
 		phoneGapAvailable = true;
@@ -28,52 +22,6 @@ document.addEventListener('deviceready', function() {
 			
 		});
 	
-		// default
-		/*session.addCallback('login', function() {
-			var email = localStorage.getItem("email");
-			var passwd = localStorage.getItem("passwd");
-			//var sesID = localStorage.getItem("SesID");
-			console.log("Ik zit weer in de login!");
-			if (phoneGapAvailable && window.plugins.sense) {
-				window.plugins.sense.changeLogin(email, passwd, function() {
-					console.log("Login: Successfully logged into Sense");
-					window.plugins.sense.toggleMain(true);
-	
-					// set sense profile
-					var profile = paigeProfiles.getProfile(paigeProfileName);
-					if (profile && (sp = senseProfiles[profile.senseProfile])) {
-						$.each(sp, function(k, v) {
-							window.plugins.sense.setPref(k, v, function() {
-							}, function() {
-								console.log("Login: Failed to set sense setting: " + k
-										+ ' = ' + v);
-							});
-						});
-					}
-	
-					// start sense modules
-					// TODO we don't need to start modules if none of their
-					// corresponding prefs are enabled I guess?
-					window.plugins.sense.togglePhoneState(true);
-					window.plugins.sense.togglePosition(true);
-					window.plugins.sense.toggleMotion(true);
-					window.plugins.sense.toggleAmbience(true);
-					window.plugins.sense.toggleNeighDev(true);
-	
-				}, function() {
-					alert("Login: Failed to login into Sense!");
-				});
-	
-			}
-			
-		});
-		
-		if(localStorage.getItem("sesID") != null){
-			handle_session(localStorage.getItem("sesID"));
-		} else {
-			session.authenticator();
-		}*/
-	
 		// ecare
 		session.addCallback("login", function() {
 			var username = $('#Ecare_loginuuid').val();
@@ -95,8 +43,6 @@ document.addEventListener('deviceready', function() {
 	
 		// $(document).live("backbutton", onBackButtonDown);
 		document.addEventListener("backbutton", onBackButtonDown, false);
-		var now = new Date();
-		console.log("Loading took: "+(now.getTime()-start.getTime())+" (ms)");
 	}, 1000);
 	
 }, false);
