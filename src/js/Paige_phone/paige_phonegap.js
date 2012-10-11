@@ -1,94 +1,104 @@
 document.addEventListener('deviceready', function() {
-	console.log("phoneGapAvailable to True!");
-	phoneGapAvailable = true;
-	window.plugins.sense.init();
+	var now = new Date();
+	console.log("Device ready after: "+(now.getTime() - start.getTime())+" (ms)");
+}, false);
 
-	session.addCallback("logoff", function() {
-		localStorage.removeItem("sesID");
-		console.log(localStorage.getItem("sesID"));
-		console.log("callback: Logoff");
-		try {
-			window.plugins.sense.toggleMain(false, function() {
-				console.log("Logoff: Stopped Sense");
-			}, function() {
-				console.log("Logoff: Failed to stop Sense");
-			});
-			//go back to login paige in native app TODO
+document.addEventListener('deviceready', function() {
+	
+	setTimeout( function() {
+		console.log("phoneGapAvailable to True!");
+		phoneGapAvailable = true;
+		window.plugins.sense.init();
+	
+		session.addCallback("logoff", function() {
+			localStorage.removeItem("sesID");
+			console.log(localStorage.getItem("sesID"));
+			console.log("callback: Logoff");
+			try {
+				window.plugins.sense.toggleMain(false, function() {
+					console.log("Logoff: Stopped Sense");
+				}, function() {
+					console.log("Logoff: Failed to stop Sense");
+				});
+				//go back to login paige in native app TODO
+				
+			} catch (e) {
+				console.log('Logoff: Sense logoff failed');
+			}
 			
-		} catch (e) {
-			console.log('Logoff: Sense logoff failed');
-		}
-		
-	});
-
-	// default
-	/*session.addCallback('login', function() {
-		var email = localStorage.getItem("email");
-		var passwd = localStorage.getItem("passwd");
-		//var sesID = localStorage.getItem("SesID");
-		console.log("Ik zit weer in de login!");
-		if (phoneGapAvailable && window.plugins.sense) {
-			window.plugins.sense.changeLogin(email, passwd, function() {
-				console.log("Login: Successfully logged into Sense");
-				window.plugins.sense.toggleMain(true);
-
-				// set sense profile
-				var profile = paigeProfiles.getProfile(paigeProfileName);
-				if (profile && (sp = senseProfiles[profile.senseProfile])) {
-					$.each(sp, function(k, v) {
-						window.plugins.sense.setPref(k, v, function() {
-						}, function() {
-							console.log("Login: Failed to set sense setting: " + k
-									+ ' = ' + v);
+		});
+	
+		// default
+		/*session.addCallback('login', function() {
+			var email = localStorage.getItem("email");
+			var passwd = localStorage.getItem("passwd");
+			//var sesID = localStorage.getItem("SesID");
+			console.log("Ik zit weer in de login!");
+			if (phoneGapAvailable && window.plugins.sense) {
+				window.plugins.sense.changeLogin(email, passwd, function() {
+					console.log("Login: Successfully logged into Sense");
+					window.plugins.sense.toggleMain(true);
+	
+					// set sense profile
+					var profile = paigeProfiles.getProfile(paigeProfileName);
+					if (profile && (sp = senseProfiles[profile.senseProfile])) {
+						$.each(sp, function(k, v) {
+							window.plugins.sense.setPref(k, v, function() {
+							}, function() {
+								console.log("Login: Failed to set sense setting: " + k
+										+ ' = ' + v);
+							});
 						});
-					});
-				}
-
-				// start sense modules
-				// TODO we don't need to start modules if none of their
-				// corresponding prefs are enabled I guess?
+					}
+	
+					// start sense modules
+					// TODO we don't need to start modules if none of their
+					// corresponding prefs are enabled I guess?
+					window.plugins.sense.togglePhoneState(true);
+					window.plugins.sense.togglePosition(true);
+					window.plugins.sense.toggleMotion(true);
+					window.plugins.sense.toggleAmbience(true);
+					window.plugins.sense.toggleNeighDev(true);
+	
+				}, function() {
+					alert("Login: Failed to login into Sense!");
+				});
+	
+			}
+			
+		});
+		
+		if(localStorage.getItem("sesID") != null){
+			handle_session(localStorage.getItem("sesID"));
+		} else {
+			session.authenticator();
+		}*/
+	
+		// ecare
+		session.addCallback("login", function() {
+			var username = $('#Ecare_loginuuid').val();
+			var passwd = $('#Ecare_loginpass').val();
+			if (username && passwd) {
+				window.plugins.sense.changeLogin(username, passwd, function() {
+					console.log("Ecare: Successfully logged into Sense");
+				}, function() {
+					console.log("Paige can't access your sensors, some functions might not be working");
+				});
+				window.plugins.sense.toggleMain(true);
 				window.plugins.sense.togglePhoneState(true);
 				window.plugins.sense.togglePosition(true);
 				window.plugins.sense.toggleMotion(true);
 				window.plugins.sense.toggleAmbience(true);
 				window.plugins.sense.toggleNeighDev(true);
-
-			}, function() {
-				alert("Login: Failed to login into Sense!");
-			});
-
-		}
-		
-	});
+			}
+		});
 	
-	if(localStorage.getItem("sesID") != null){
-		handle_session(localStorage.getItem("sesID"));
-	} else {
-		session.authenticator();
-	}*/
-
-	// ecare
-	session.addCallback("login", function() {
-		var username = $('#Ecare_loginuuid').val();
-		var passwd = $('#Ecare_loginpass').val();
-		if (username && passwd) {
-			window.plugins.sense.changeLogin(username, passwd, function() {
-				console.log("Ecare: Successfully logged into Sense");
-			}, function() {
-				console.log("Paige can't access your sensors, some functions might not be working");
-			});
-			window.plugins.sense.toggleMain(true);
-			window.plugins.sense.togglePhoneState(true);
-			window.plugins.sense.togglePosition(true);
-			window.plugins.sense.toggleMotion(true);
-			window.plugins.sense.toggleAmbience(true);
-			window.plugins.sense.toggleNeighDev(true);
-		}
-	});
-
-	// $(document).live("backbutton", onBackButtonDown);
-	document.addEventListener("backbutton", onBackButtonDown, false);
-
+		// $(document).live("backbutton", onBackButtonDown);
+		document.addEventListener("backbutton", onBackButtonDown, false);
+		var now = new Date();
+		console.log("Loading took: "+(now.getTime()-start.getTime())+" (ms)");
+	}, 1000);
+	
 }, false);
 
 function takePicture() {
