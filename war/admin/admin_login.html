@@ -23,6 +23,8 @@
                         	return;
                         }
                         
+                        $('#admin_login_btn').text("logging ... Please wait");
+                        
                         $.Read({
                             url: admin_session.appServices + 'login',
                             xhrFields: {
@@ -37,11 +39,12 @@
                                 window.handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]); 
                             },
                             400: function(data){
+                            	$('#admin_login_btn').text("login");
                                 localStorage['password'] = '';//                              
                                 alert_timeout("Login failed: Please check your email or password","error");
                             },
                             error: function() {
-                            	
+                            	$('#admin_login_btn').text("login");
                             	alert_timeout("Login failed: Connection error.","error");
                             }
                         });
@@ -64,7 +67,7 @@
 			<div class="container-fluid" >
 				<input id="adminUser" type="text" class="input" placeholder="Admin User" >
 				<input id="adminPass" type="password" class="input" placeholder="Password">
-				<button id="fat-btn" data-loading-text="login..." class="btn btn-primary" onclick="javascript:login()">
+				<button id="admin_login_btn" data-loading-text="login..." class="btn btn-primary" onclick="javascript:login()">
                     Login
             	</button>
 			</div>

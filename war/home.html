@@ -233,7 +233,7 @@
 						}else{
 							setTimeout(function(){
 								checkSensor();
-							},3000);
+							},1000);
 						}
 						
 						checkSensorCount++;
@@ -289,11 +289,11 @@
 						getTimeoutfunc();
 					}, 1000);
 					
-					var getTimeoutIntId = setInterval(function(){
-						getTimeoutfunc();
-					},60000);
+					// var getTimeoutIntId = setInterval(function(){
+						// getTimeoutfunc();
+					// },60000);
 					
-					localStorage.setItem("getTimeout",getTimeoutIntId);
+					// localStorage.setItem("getTimeout",getTimeoutIntId);
 					
 					if(typeof localStorage["initedSensor"] != "undefined" && localStorage["initedSensor"] == "true"){
 						return;
