@@ -46,7 +46,8 @@
 						$("#timeoutStarted").slideUp();
 						
 						$("#timeoutButton").data("active",false);
-						$("#timeoutButton").data("continued",false);
+						// $("#timeoutButton").data("continued",false);
+						localStorage.setItem("continued","false");
 						console.log("stop timeout -- stop count");
 						javascript_countdown.stop();
 						console.log("stop timeout -- " + javascript_countdown.getTimeLeft());
@@ -123,15 +124,17 @@
 								 
 								javascript_countdown.enable();
 								console.log("countdownNumber is -> "+ countdownNumber);
-								if(typeof $("#timeoutButton").data("continued") == "undefined"
-									|| $("#timeoutButton").data("continued") == false){
+								if(typeof localStorage["continued"] == "undefined"
+									|| localStorage["continued"] == "false"){
 									console.log("Start counting ... "+ countdownNumber);
 									
 									javascript_countdown.init(countdownNumber);
 									
-									$("#timeoutButton").data("continued",true);
+									// $("#timeoutButton").data("continued",true);
+									localStorage.setItem("continued","true");
 								}else{
 									javascript_countdown.setTimeLeft(countdownNumber);
+									javascript_countdown.init(countdownNumber);
 								}
 								
 								$("#timeoutButton").removeClass("notPushed");
@@ -191,7 +194,8 @@
 									alert("Je sensoren zijn niet goed geinstalleerd. Probeer over een tijdje opnieuw in te loggen.");
 									$("#callButton").data('buttonObj').timeoutStop();
 								}else{
-									$("#timeoutButton").data("continued",false);
+									// $("#timeoutButton").data("continued",false);
+									localStorage.setItem("continued","false");
 								}
 								
 								// setTimeout(function(){
@@ -285,6 +289,13 @@
 				  			}
 						});
 					}
+					
+					if(typeof localStorage["continued"] != "undefined" && localStorage["continued"] == "true"){
+						$("#timeoutStarted").slideDown();
+						$('#timeoutStarted #message p').empty();
+						$('#timeoutStarted #message p').append("Laden bericht ...");
+					}
+					
 					setTimeout(function() {
 						getTimeoutfunc();
 					}, 1000);
