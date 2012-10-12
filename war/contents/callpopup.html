@@ -1,0 +1,27 @@
+<script>
+	  	$("div.exitIcon").click(function() {
+  			$("#callPopUp").addClass('displayNone');	
+  		});
+  		
+  		$('#call_contact').ready(function(){
+  			
+  			if(typeof localStorage['contactPhone'] != "undefined"){
+  				$('#call_contact').attr("href","tel:"+localStorage['contactPhone']);
+  			}else{
+  				$('#call_contact').attr("href","tel: geen");
+  			}
+  		});
+</script>
+
+<div class="popUpBg">
+</div>
+<div class="triggerContent call">
+	<div class="exitIcon"></div>
+	<div id="triggerContainer">
+  		<p><span class="bold">Noodoproep</span></p>
+		<div id="triggerChoice">
+			<a href="tel:112" class="triggerOption bgRed" id=""><span class="small">Bel<span class="large">112</span></span></a>
+			<a href="" class="triggerOption bgGreen" id="call_contact"><span class="small">Bel<span class="medium">Contact- persoon</span></span></a>
+		</div>
+	</div>
+</div>

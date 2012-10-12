@@ -1,7 +1,8 @@
 CACHE MANIFEST
 
 #You need to change the file to force a flush in the client... Just change this date:
-#20 Sept
+# 11 okt 16:50
+
 
 # TODO organize this a bit
 
@@ -10,6 +11,8 @@ CACHE:
 /favicon.ico
 /home.html
 /login.html
+/contents/callpopup.html
+/contents/sensorChecking.html
 /js/core.min.js
 /js/libs.min.js
 /js/phone.min.js
