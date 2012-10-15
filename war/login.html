@@ -97,7 +97,6 @@
         	setCookie("remember",true);
         	setCookie("userName",usrName);
         	
-        	
         	if(typeof passSaved == "undefined" || passSaved == "" || userSaved != usrName){
         		setCookie("userPass",passHash);
         	}else{
@@ -141,8 +140,8 @@
             },
 	        200: function(data){
 	                console.log("received 200 ok on login.");
-	                
-	                // console.log(remember.attr("checked")); return false;
+	                setCookie('autologin', 'true');
+	  				// console.log(remember.attr("checked")); return false;
 	                session.addCallback('login', function() {
 	                    	if (phoneGapAvailable && window.plugins.sense) {
 	                    		window.plugins.sense.changeLogin(usrName, passHash, function(){
