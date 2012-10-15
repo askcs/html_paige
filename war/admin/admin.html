@@ -199,6 +199,16 @@
 				admin_session.authenticator();
 			}
 			
+			var sessionCheck = function(){
+				dataCon.post("timeout/remoteChange", null, function(){
+					setTimeout(function(){
+						sessionCheck();
+					},10000);					
+				},null);
+			}
+			
+			sessionCheck();
+			
 			var preset = function(){
 				$('#emailA').val("person_a@ask-cs.com");
 				$('#emailB').val("person_b@ask-cs.com");

@@ -69,10 +69,6 @@ paigeSession.prototype.logoff = function(){
 		}, function() {
 		});
 		
-		if(typeof window.plugins.intentjs != "undefined"){
-			window.plugins.intentjs.logOff();
-		}
-		
 	}
 
 	if (phoneGapAvailable && window.plugins.pee) {

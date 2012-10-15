@@ -138,7 +138,7 @@
 	
 	<target name="concat-phone">
 		<concat destfile="build/js/phone.js">
-			<filelist dir="src/js/Paige_phone" files="phonegap-toast.js,pee_plugin.js,sense_platform.js,IntentJS.js,WebView.js,SystemNotification.js,paige_phonegap.js" />
+			<filelist dir="src/js/Paige_phone" files="pee_plugin.js,sense_platform.js,paige_phonegap.js" />
 		</concat>
 	</target>
 	
