@@ -165,6 +165,10 @@
 									}); 
 								}
 								localStorage.removeItem('startTime');
+							}else if(typeof toOjb != "undefined" && toOjb.status == "aggression"){
+								$('#timeoutStarted #message p').empty();
+								$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je weer kunt te kalmeren.");
+								$("#timeoutStarted").slideDown();
 							}
 						}
 					},

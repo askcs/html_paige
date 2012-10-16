@@ -112,8 +112,8 @@ function handle_session(sessionKey, url) {// Has to be global function
 
 function receiveC2DM(type, data) {
 
-	console.log("type:" + type);
-	console.log("c2dmdata:" + data);
+	console.log("c2dm type:" + type);
+	console.log("c2dm data:" + data);
 	// alert("Received type: "+type+" data: "+data);
 	if (type == "registered") {
 		// store data as device registration ID
@@ -130,7 +130,7 @@ function receiveC2DM(type, data) {
 				// window.plugins.pee.notify(0,1);
 			// }
 		// }
-		
+		console.log("c2dm "+ data);
 		if(data == "getQuestion" || data == "getTimeout" ){
 			// var cache = caches.getList("getTimeout")[0];
 			// cache.sync();
