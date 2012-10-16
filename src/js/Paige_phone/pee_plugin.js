@@ -14,7 +14,7 @@ function PeePlugin() {
  * Checks the GPS sensor state.
  */
 PeePlugin.prototype.checkGpsState = function(success, failure) {
-	return cordova.exec(success, failure, 'PeePlugin', ' checkGpsState', []);
+	return cordova.exec(success, failure, 'PeePlugin', 'checkGpsState', []);
 }
 
 /**
