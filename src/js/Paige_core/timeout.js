@@ -30,8 +30,8 @@ paigeSession.prototype.setSessionKey = function(sKey) {
 
 paigeSession.prototype.authenticator = function(){
 	if(!this.isLogin()){
-		this.logoff();
-		// window.location = "login.html";
+		//this.logoff();
+		window.location = "login.html";
 	}
 }
 
