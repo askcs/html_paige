@@ -167,7 +167,7 @@
 								localStorage.removeItem('startTime');
 							}else if(typeof toOjb != "undefined" && toOjb.status == "aggression"){
 								$('#timeoutStarted #message p').empty();
-								$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je weer kunt te kalmeren.");
+								$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je kunt kalmeren.");
 								$("#timeoutStarted").slideDown();
 							}
 						}
@@ -273,7 +273,7 @@
 							if(res == "enabled"){
 								console.log("check GPS is on ");
 							}else if(res == "disabled"){
-								alert("Waarschuwing: GPS is uitgeschakeld voor deze telefoon. Zet de GPS sensor aan in de Android instellingen voor de beste werking van de Timeout app.");
+								alert("Waarschuwing: GPS is uitgeschakeld op deze telefoon. Zet de GPS-sensor aan in de Android-instellingen voor de beste werking van Time out!.");
 							}
 						},function(res){
 							console.log("check GPS is not working well : "+res);
@@ -425,7 +425,7 @@
 				//number of seconds for countdown
 				var keep_counting = 1;
 				var no_time_left_message = '00:00';
-				// var finished_message = '<p><span class="bold">De time-out is over.</span></br></br>Jullie zijn beiden gekalmeerd, jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
+				// var finished_message = '<p><span class="bold">De time-out is over.</span></br></br>Jullie zijn beiden gekalmeerd. Jullie kunnen bij elkaar komen om het verder uit te praten.</p>';
 				 
 				var duration = 0;
 				var startpoint = 0;
@@ -545,9 +545,9 @@
 						
 						var timeleft = javascript_countdown.getTimeLeft();
 						var intervals = $('#timeoutButton').data("intervals");
-						var msg_started = "Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.";
-						var msg_happy = "Bedankt voor het invullen van je emotie. Fijn dat het weer beter met je gaat.  De time-out loopt nog steeds. Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.";
-						var msg_unhappy = "Bedankt voor het invullen van je emotie. Neem nog wat meer tijd om tot rust te komen. Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.";
+						var msg_started = "Bedankt voor het invullen van je emotie. Zodra jullie beiden weer rustig zijn en de minimale time-outtijd verstreken is, stopt de time-out.";
+						var msg_happy = "Bedankt voor het invullen van je emotie. Fijn dat het weer beter met je gaat. De time-out loopt nog steeds. Zodra jullie beiden weer helemaal rustig zijn, stopt de time-out.";
+						var msg_unhappy = "Bedankt voor het invullen van je emotie. Neem nog wat tijd om tot rust te komen. Zodra jullie beiden weer helemaal rustig zijn, stopt de time-out.";
 						var pleasure = parseFloat(val.pleasure);
 						
 						console.log("em1 time_left "+javascript_countdown.getTimeLeft());
@@ -703,7 +703,7 @@
 									<br>
 									Binnen elke relatie is wel eens ruzie. Meestal lukt het om daar zelf uit te komen en ruzies uit te praten. Maar als ruzies vaak voorkomen, uitmonden in geweld en het niet meer lukt om rustig naar een oplossing te zoeken kan Time out! een oplossing bieden.
 									<br>
-									Time out helpt partners die te maken hebben met huiselijk geweld en daar samen uit willen komen om escalaties van ruzies te voorkomen en de relatie zonder geweld voort te zetten. Een hulpverlener blijft uiteraard beschikbaar op momenten dat men daar zelf voor kiest.
+									Time out! helpt partners die te maken hebben met huiselijk geweld en daar samen uit willen komen om escalaties van ruzies te voorkomen en de relatie zonder geweld voort te zetten. Een hulpverlener blijft uiteraard beschikbaar op momenten dat men daar zelf voor kiest.
 								</p>
 								<br>
 								<p>
