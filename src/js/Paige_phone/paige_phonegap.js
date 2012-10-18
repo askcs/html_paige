@@ -2,6 +2,11 @@ document.addEventListener('deviceready', function() {
 	setTimeout( function() {
 		console.log("phoneGapAvailable to True!");
 		phoneGapAvailable = true;
+		
+		// hide the splash screen
+		navigator.splashscreen.hide();
+		
+		// initialize the Sense plugin
 		window.plugins.sense.init();
 	
 		session.addCallback("logoff", function() {

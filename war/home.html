@@ -10,9 +10,6 @@
 		</script>
 		<script src="js/libs.min.js" type="text/javascript"></script>
 		<script src="js/core.min.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			paigeUser.init();
-		</script>
 		<script src="js/phone.min.js" type="text/javascript"></script>
 
 		<script type="text/javascript">
@@ -168,6 +165,10 @@
 									}); 
 								}
 								localStorage.removeItem('startTime');
+							}else if(typeof toOjb != "undefined" && toOjb.status == "aggression"){
+								$('#timeoutStarted #message p').empty();
+								$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je weer kunt te kalmeren.");
+								$("#timeoutStarted").slideDown();
 							}
 						}
 					},
@@ -214,7 +215,6 @@
 				
 				
 				var checkSensor = function(){
-					
 					if($("#callButton").data("initSensor") != true){
 						if(initSensorLimit > 20){
 							//Something wrong in your sensor ! Please try to login again ! 
@@ -265,6 +265,25 @@
 					checkSensor();
 				}
 				
+				var checkGPS = function(){
+					if(phoneGapAvailable && window.plugins.pee ){
+						console.log("check GPS ");
+						window.plugins.pee.checkGpsState(function(res){
+							console.log("check GPS is  :"+res);
+							if(res == "enabled"){
+								console.log("check GPS is on ");
+							}else if(res == "disabled"){
+								alert("Waarschuwing: GPS is uitgeschakeld voor deze telefoon. Zet de GPS sensor aan in de Android instellingen voor de beste werking van de Timeout app.");
+							}
+						},function(res){
+							console.log("check GPS is not working well : "+res);
+							
+						})
+					}
+					setTimeout(checkGPS,5000);
+				}
+				
+				checkGPS();
 				//start to check timeout status every 30 seconds 
 				// var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
 				// cache.addRenderer('/home.html', timeoutRenderer,true);
@@ -528,7 +547,7 @@
 						var intervals = $('#timeoutButton').data("intervals");
 						var msg_started = "Bedankt voor het invullen van je emotie. Als jullie je allebei weer rustig voelen zijn en de minimale time-outtijd verstreken wordt de time-out gestopt.";
 						var msg_happy = "Bedankt voor het invullen van je emotie. Fijn dat het weer beter met je gaat.  De time-out loopt nog steeds. Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.";
-						var msg_unhappy = "Bedankt voor het invullen van je emotie. Neem nog wat meer tijd om tot rust te komen.Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.";
+						var msg_unhappy = "Bedankt voor het invullen van je emotie. Neem nog wat meer tijd om tot rust te komen. Zodra jullie beiden weer helemaal rustig zijn stopt de time-out.";
 						var pleasure = parseFloat(val.pleasure);
 						
 						console.log("em1 time_left "+javascript_countdown.getTimeLeft());

@@ -11,6 +11,13 @@ function PeePlugin() {
 }
 
 /**
+ * Checks the GPS sensor state.
+ */
+PeePlugin.prototype.checkGpsState = function(success, failure) {
+	return cordova.exec(success, failure, 'PeePlugin', 'checkGpsState', []);
+}
+
+/**
  * Returns the phone's IMEI number.
  * 
  * @param successCallback
