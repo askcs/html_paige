@@ -219,8 +219,7 @@ function PaigeData() {
 PaigeData.prototype.get = function(restPath, data, callback) {
 	if (!session.isLogin()) {
 		console.log("Direct data: Info: No session available, now retrying");
-		//session.authenticator();
-		session.logoff();
+		session.authenticator();
 		return;
 	}
 	var oldKey = session.sessionKey;
@@ -231,8 +230,7 @@ PaigeData.prototype.get = function(restPath, data, callback) {
 			dataCon.get(restPath, data, callback);
 		} else {
 			console.log("Direct data: Info: Need to login at server, nu retrying!");
-			// session.authenticator();
-			session.logoff();
+			session.authenticator();
 		}
 	}
 
