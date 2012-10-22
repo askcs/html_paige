@@ -89,16 +89,18 @@
 										console.log(error);
 									});
                                     // enable GPS sampling
-                                    window.plugins.sense.setPref("location_gps", true, function(result) {}, function(error) {
-                                        console.log("failed to disable GPS sampling: " + error);
-                                    });
-                                    // restart location sensor
-                                    window.plugins.sense.togglePosition(false, function(result) {}, function(error) {
-                                        console.log("failed to stop location sensor: " + error);
-                                    });
-                                    window.plugins.sense.togglePosition(true, function(result) {}, function(error) {
-                                        console.log("failed to restart location sensor: " + error);
-                                    });
+                                    window.plugins.sense.setPref("location_gps", true, function(result) {
+                                                // restart location sensor
+                                                window.plugins.sense.togglePosition(false, function(result) {}, function(error) {
+                                                    console.log("failed to stop location sensor: " + error);
+                                                });
+                                                window.plugins.sense.togglePosition(true, function(result) {}, function(error) {
+                                                    console.log("failed to restart location sensor: " + error);
+                                                });
+                                            }, function(error) {
+                                                console.log("failed to disable GPS sampling: " + error);
+                                            });
+                                    
 								}
 								console.log("gap calc ");
 								var jsnow = (new Date().getTime() * 0.001)|0;
