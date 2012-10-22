@@ -81,11 +81,24 @@
 							
 							if(typeof toOjb != "undefined" && toOjb.status == "active"){
 								
-								// set sense sample rate 
+								// high power sense mode
 								if (window.plugins.sense && phoneGapAvailable) {
+								    console.log("Set Sense high-power mode");
+								    // sample often
 									window.plugins.sense.setPref("commonsense_rate", "-1", function(res){}, function(error){
 										console.log(error);
-									}); 
+									});
+                                    // enable GPS sampling
+                                    window.plugins.sense.setPref("location_gps", true, function(result) {}, function(error) {
+                                        console.log("failed to disable GPS sampling: " + error);
+                                    });
+                                    // restart location sensor
+                                    window.plugins.sense.togglePosition(false, function(result) {}, function(error) {
+                                        console.log("failed to stop location sensor: " + error);
+                                    });
+                                    window.plugins.sense.togglePosition(true, function(result) {}, function(error) {
+                                        console.log("failed to restart location sensor: " + error);
+                                    });
 								}
 								console.log("gap calc ");
 								var jsnow = (new Date().getTime() * 0.001)|0;
@@ -158,11 +171,24 @@
 								$("#callButton").data('buttonObj').timeoutStop();
 								$.removeData($('#timeoutButton'),"intervals");
 								
-								// set sense sample rate 
+								// low energy mode for sense
 								if (window.plugins.sense && phoneGapAvailable) {
-									window.plugins.sense.setPref("commonsense_rate", "1", function(res){}, function(error){
-										console.log(error);
-									}); 
+                                    console.log("Set Sense low-power mode");
+								    // normal sample rate
+									window.plugins.sense.setPref("commonsense_rate", "1", function(res) {}, function(error){
+										console.log("failed to set sample rate: " + error);
+									});
+                                    // disable GPS sampling
+                                    window.plugins.sense.setPref("location_gps", false, function(result) {}, function(error) {
+                                        console.log("failed to disable GPS sampling: " + error);
+                                    });
+                                    // restart location sensor
+                                    window.plugins.sense.togglePosition(false, function(result) {}, function(error) {
+                                        console.log("failed to stop location sensor: " + error);
+                                    });
+                                    window.plugins.sense.togglePosition(true, function(result) {}, function(error) {
+                                        console.log("failed to restart location sensor: " + error);
+                                    });
 								}
 								localStorage.removeItem('startTime');
 							}else if(typeof toOjb != "undefined" && toOjb.status == "aggression"){

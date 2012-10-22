@@ -517,7 +517,7 @@ var senseProfiles = {
         ambience_temperature:        false,
 
         // Location: use GPS if possible
-        location_gps:                true,
+        location_gps:                false,
         location_network:            true,
         automatic_gps:            true,
 
