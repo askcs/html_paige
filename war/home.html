@@ -293,17 +293,14 @@
 				
 				var checkGPS = function(){
 					if(phoneGapAvailable && window.plugins.pee ){
-						console.log("check GPS ");
 						window.plugins.pee.checkGpsState(function(res){
-							console.log("check GPS is  :"+res);
 							if(res == "enabled"){
-								console.log("check GPS is on ");
+								// nothing to do
 							}else if(res == "disabled"){
 								alert("Waarschuwing: GPS is uitgeschakeld op deze telefoon. Zet de GPS-sensor aan in de Android-instellingen voor de beste werking van Time out!.");
 							}
-						},function(res){
-							console.log("check GPS is not working well : "+res);
-							
+						},function(error){
+							console.log("Failed to check GPS state! Error: " + error);
 						})
 					}
 					setTimeout(checkGPS,5000);
