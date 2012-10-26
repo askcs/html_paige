@@ -199,12 +199,27 @@
 				admin_session.authenticator();
 			}
 			
+			 
 			var sessionCheck = function(){
 				dataCon.post("timeout/remoteChange", null, function(){
 					setTimeout(function(){
 						sessionCheck();
-					},10000);					
-				},null);
+					},10000);
+					if(typeof $('#page_setupTimeout').data("sessionTime") == "undefined"){
+						$('#page_setupTimeout').data("sessionTime",0);
+					}else{
+						var sessTime = $('#page_setupTimeout').data("sessionTime");
+						sessTime++;
+						$('#page_setupTimeout').data("sessionTime",sessTime);
+						if(sessTime > 60){
+							console.log("Admin console session timeout");
+							admin_session.logoff()
+						}
+					}
+				},function(res){
+					console.log("failed "+res);
+					admin_session.logoff()
+				});
 			}
 			
 			sessionCheck();
@@ -258,6 +273,12 @@
 			
 			$('#hid_test').live("dblclick",function(){
 				preset();
+			})
+			
+			$('body').ready(function(){
+				$('body').mousemove(function(event){
+					$('#page_setupTimeout').data("sessionTime",0);
+				})
 			})
 		</script>
 	</head>
