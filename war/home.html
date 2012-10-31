@@ -169,6 +169,20 @@
 								$("#timeoutButton").data("active",true);
 							}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
 								console.log("Timeout stoped ! ");
+								
+								$.map(toOjb.attendees,function(v,k){
+									if(k == session.uuid ){
+										if(typeof localStorage["continued"] != "undefined" && localStorage["continued"] == "true"){
+											alert(v.msg);
+											// alert("Timeout is nu over .");
+										}
+										$('#timeoutStarted #message p').empty();
+										$('#timeoutStarted #message p').append((v.msg == null && typeof v.msg == "undefined")? "": v.msg );
+									}
+								});
+								
+								console.log("timeoutButton " , $("#timeoutButton").attr("class"));
+								
 								$('#timeoutStarted #message p').empty();
 								$("#callButton").data('buttonObj').timeoutStop();
 								$.removeData($('#timeoutButton'),"intervals");
