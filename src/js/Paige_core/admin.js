@@ -168,6 +168,12 @@ PaigeData.prototype.post = function(restPath, data, callback,failedCallback) {
 		500 : function callback(res){
 			if (failedCallback)
 				failedCallback(res.responseText);
+		},
+		complete : function(res){
+			if(res.status == 0 && res.statusText == "error"){
+				if(failedCallback)
+					failedCallback(res.responseText);
+			}
 		}
 	});
 }
