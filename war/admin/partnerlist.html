@@ -1,0 +1,28 @@
+<div>
+      <!--Body content-->
+	  Search: <input ng-model="query">
+      Sort by:
+      <select ng-model="orderProp">
+        <option value="name">Alphabetical</option>
+        <option value="age">Newest</option>
+      </select>
+      
+      <table class="table table-hover">
+      	<thead>
+      		<tr>
+				<th>person A</th>
+				<th>person B</th>
+				<th>Contact</th>
+			</tr>
+      	</thead>
+		<tbody>
+		<tr ng-repeat="partner in partners | filter:query | orderBy:orderProp" >
+			<td>{{partner.personA}}</td>
+			<td>{{partner.personB}}</td>
+			<td>{{partner.contact}}</td>
+		</tr>
+		</tbody>
+	  </table>
+	  
+	  {{error}}
+</div>

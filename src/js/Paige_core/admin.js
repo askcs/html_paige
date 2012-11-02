@@ -403,9 +403,3 @@ var MD5 = function(string) {
 	var temp = WordToHex(a) + WordToHex(b) + WordToHex(c) + WordToHex(d);
 	return temp.toLowerCase();
 }
-
-// $.import_js('/js/jquery.rest.min.js');
-// $.import_js('/js/bootstrap-alert.js');
-// $.import_js('/js/bootstrap-button.js');
-// $.import_js('/js/bootstrap-typeahead.js');
-// $.import_js('/js/settings.js');

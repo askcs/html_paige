@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="timeoutAdmin">
 	<head>
 		<meta charset="utf-8">
 		<title>Timeout ! Admin</title>
@@ -261,7 +261,7 @@
 			})
 		</script>
 	</head>
-	<body onload="checkLogin();">
+	<body onload="checkLogin();"  ng-controller="PartnerListCtrl">
 		<div class="container">
 			<h3>Timeout! App Admin <span id="hid_test">Console</span></h3>
 			<br>
@@ -274,6 +274,7 @@
 					  <li class="nav-header">>Setup Timeout</li>
 					  <li ><a href="javascript:showPage('page_setupTimeout')">add "Timeout" </a></li>
 					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li>
+					  <li ><a href="javascript:showPage('page_listTimeout')">list "Timeout" </a></li>
 					  <li ><a href="javascript:logoff()">Logoff </a></li>
 					  
 					</ul>
@@ -339,6 +340,9 @@
 		            	<button id="removeTimeout" data-loading-text="remove Timeout" class="btn btn-primary" onclick="javascript:removeTimeout(this)">
 			                    remove Timeout
 			            </button>
+		            </div>
+		            <div id="page_listTimeout" style="display : none;">
+		            	<div ng-view></div>
 		            </div>
 			    </div>
 			  </div>
