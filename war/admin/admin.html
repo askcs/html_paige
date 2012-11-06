@@ -68,8 +68,8 @@
 						var paraB =  {'id': idB.toLowerCase(), 'pass': MD5(passB), 'clear': passB, 'phone':phoneB};
 						var paraContact =  {'id': contact.toLowerCase(), 'pass': MD5("contact"), 'clear': "contact",'phone':contactPhone};
 						
-						var para = {'timeout': {'personA': {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA},
-						'personB': {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB },
+						var para = {'timeout': {'personA': {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA ,'clear': passA},
+						'personB': {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB ,'clear': passB},
 						'contact': {'id': contact.toLowerCase(), 'phone': contactPhone},
 						'address': {'address': address , 'zipcode': zipcode , 'country': 'the Netherlands'}
 						}};
@@ -85,7 +85,8 @@
 								console.log(res);
 								if(res == "ok"){
 									$(btn).text($(btn).text()+"...");
-									regUserA();
+									// regUserA();
+									regAsync();
 								}else{
 									var json = JSON.parse(res);
 									var ids = "";
@@ -95,6 +96,14 @@
 									alert_timeout(ids +" already exists. Please select other user ID ","warn");
 									$(btn).data("btnObj").reasign(btn);									
 								}
+							});
+						}
+						
+						var regAsync = function(){
+							dataCon.post("timeout/setupAsync",para,function(res){
+								alert("Timeout will be steup in the backend, users will be infrom by the emails !");
+								$(btn).data("btnObj").reasign(btn);
+								$('#nav_listTimeout').trigger("click");
 							});
 						}
 						
@@ -201,7 +210,11 @@
 			
 			 
 			var sessionCheck = function(){
-				dataCon.post("timeout/remoteChange", null, function(){
+				dataCon.post("timeout/remoteChange", null, function(res){
+					if(res == "error"){
+						alert("Please use Timeout admin user !");
+						admin_session.logoff(); 
+					}
 					setTimeout(function(){
 						sessionCheck();
 					},10000);
@@ -225,16 +238,16 @@
 			sessionCheck();
 			
 			var preset = function(){
-				$('#emailA').val("myk0417@gmail.com");
-				$('#emailB').val("st.even.mulder@gmail.com");
+				$('#emailA').val("a1@asc.com"); // myk0417@gmail.com
+				$('#emailB').val("b1@asc.com"); //st.even.mulder@gmail.com
 				$('#passA').val("askask");
 				$('#passA_retype').val("askask");
 				$('#phoneA').val("0624384730");
 				$('#passB').val("askask");
 				$('#passB_retype').val("askask");
-				$('#phoneB').val("0644206836");
+				$('#phoneB').val("511"); // 0644206836
 				
-				$('#contactName').val("contact@ask-cs.com");
+				$('#contactName').val("contact1@acs.com");
 				$('#contactPhone').val("506");
 				
 				$('#address').val("Kralingseweg 219");
@@ -293,16 +306,16 @@
 			      <!--Sidebar content-->
 			      	<ul class="nav nav-list">
 					  <li class="nav-header">>Setup Timeout</li>
-					  <li ><a href="javascript:showPage('page_setupTimeout')">add "Timeout" </a></li>
+					  <li ><a href="#/addTimeout" onClick="showPage('page_setupTimeout')">add "Timeout" </a></li>
 					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li>
-					  <li ><a href="javascript:showPage('page_listTimeout')">list "Timeout" </a></li>
+					  <li ><a id="nav_listTimeout" href="#/partners" onClick="showPage('page_listTimeout')">list "Timeout" </a></li>
 					  <li ><a href="javascript:logoff()">Logoff </a></li>
 					  
 					</ul>
 			    </div>
 			    <div class="span10">
 			      <!--Body content-->
-			      	<div id="page_setupTimeout">
+			      	<div id="page_setupTimeout" >
 					    <div>
 							<table class="table">
 								<tr><td>Person A</td></tr>
@@ -351,9 +364,9 @@
 								</tr>
 							</table>
 						</div>
-			            <button id="saveTimeout" data-loading-text="Perseting..." class="btn btn-primary" >
-			                    confirm 
-			            </button>
+						<button id="saveTimeout" data-loading-text="Perseting..." class="btn btn-primary" >
+						        confirm 
+						</button>
 		            </div>
 		            <div id="page_removeTimeout" style="display : none;">
 		            	<input id="removeUserId" type="text" class="input" placeholder="user id for Timeout" data-provide="typeahead">

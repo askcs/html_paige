@@ -98,7 +98,7 @@
 	
 	<target name="concat-admin-core">
 		<concat destfile="build/js/admin_core.js">
-			<filelist dir="src/js/Paige_core" files="admin.js,admin_settings.js,admin_app.js,admin_controller.js" />
+			<filelist dir="src/js/Paige_core" files="admin.js,admin_settings.js,admin_app.js,admin_controller.js,admin_filters.js" />
 		</concat>
 	</target>
 	

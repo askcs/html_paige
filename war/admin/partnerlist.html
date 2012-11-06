@@ -3,8 +3,8 @@
 	  Search: <input ng-model="query">
       Sort by:
       <select ng-model="orderProp">
-        <option value="name">Alphabetical</option>
-        <option value="age">Newest</option>
+        <option value="personA">person A</option>
+        <option value="personB">person B</option>
       </select>
       
       <table class="table table-hover">
@@ -19,7 +19,11 @@
 		<tr ng-repeat="partner in partners | filter:query | orderBy:orderProp" >
 			<td>{{partner.personA}}</td>
 			<td>{{partner.personB}}</td>
-			<td>{{partner.contact}}</td>
+			<td>{{partner.contactPerson}}</td>
+			<td> 
+				{{partner.status | timeoutStatus}}
+				<button ng-click="removeTimeout(partner.personA)">remove</button>
+	       	</td>
 		</tr>
 		</tbody>
 	  </table>
