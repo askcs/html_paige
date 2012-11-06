@@ -168,6 +168,12 @@ PaigeData.prototype.post = function(restPath, data, callback,failedCallback) {
 		500 : function callback(res){
 			if (failedCallback)
 				failedCallback(res.responseText);
+		},
+		complete : function(res){
+			if(res.status == 0 && res.statusText == "error"){
+				if(failedCallback)
+					failedCallback(res.responseText);
+			}
 		}
 	});
 }
@@ -403,9 +409,3 @@ var MD5 = function(string) {
 	var temp = WordToHex(a) + WordToHex(b) + WordToHex(c) + WordToHex(d);
 	return temp.toLowerCase();
 }
-
-// $.import_js('/js/jquery.rest.min.js');
-// $.import_js('/js/bootstrap-alert.js');
-// $.import_js('/js/bootstrap-button.js');
-// $.import_js('/js/bootstrap-typeahead.js');
-// $.import_js('/js/settings.js');
