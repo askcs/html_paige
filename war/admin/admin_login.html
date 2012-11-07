@@ -25,29 +25,56 @@
                         
                         $('#admin_login_btn').text("logging ... Please wait");
                         
-                        $.Read({
-                            url: admin_session.appServices + 'login',
-                            xhrFields: {
-                                withCredentials: true
-                            },
-                            data: {
-                                "uuid": '' + usrName,
-                                "pass": '' + passHash
-                            },
-                            200: function(data){
-                                console.log("received 200 ok on login.");
-                                window.handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]); 
-                            },
-                            400: function(data){
-                            	$('#admin_login_btn').text("login");
-                                localStorage['password'] = '';//                              
-                                alert_timeout("Login failed: Please check your email or password","error");
-                            },
-                            error: function() {
-                            	$('#admin_login_btn').text("login");
-                            	alert_timeout("Login failed: Connection error.","error");
-                            }
-                        });
+                        if ($.browser.msie && window.XDomainRequest) {
+				            var xdr = new XDomainRequest();
+							xdr.open("GET",  admin_session.appServices + 'login?uuid=' + usrName + '&pass=' + passHash,true );
+							xdr.onload = function(){
+							        var data = JSON.parse( xdr.responseText );
+							        console.log("login ", data['X-SESSION_ID'] );
+							        window.handle_session(data['X-SESSION_ID']);   
+							}
+							xdr.onerror = function(){ 
+								$('#admin_login_btn').text("login");
+	                            alert_timeout("Login failed: Please check your email or password.","error");
+								console.log("failed"); 
+							}
+							xdr.send();
+							
+				        } else {
+				            jQuery.support.cors = true;
+                        
+	                        $.Read({
+	                            url: admin_session.appServices + 'login',
+	                            // dataType:"json",
+	                            xhrFields: {
+	                                withCredentials: true
+	                            },
+	                            cache: false,
+	                            data: {
+	                                "uuid": '' + usrName,
+	                                "pass": '' + passHash
+	                            },
+	                            200: function(data){
+	                                console.log("received 200 ok on login.");
+	                                window.handle_session(JSON.parse(data.responseText)["X-SESSION_ID"]); 
+	                            },
+	                            400: function(data){
+	                            	$('#admin_login_btn').text("login");
+	                                localStorage['password'] = '';//                              
+	                                alert_timeout("Login failed: Please check your email or password","error");
+	                            },
+	                            error: function(res) {
+	                            	$('#admin_login_btn').text("login");
+	                            	alert_timeout("Login failed: Connection error.","error");
+	                            },
+	                            complete: function(res){
+	                            	console.log("complete ",res);
+	                            }
+	                        });
+				        }
+                        
+                       
+                        
                         return false;
                         /*code for login_classic ends here */
 		}	

@@ -173,6 +173,10 @@ PaigeData.prototype.post = function(restPath, data, callback,failedCallback) {
 			if(res.status == 0 && res.statusText == "error"){
 				if(failedCallback)
 					failedCallback(res.responseText);
+			}else if(res.status == 0 && res.statusText == "No Transport"){
+				if(failedCallback)
+					failedCallback(res.responseText);
+				alert("Server Call failed. Please try a non-IE browser");
 			}
 		}
 	});
