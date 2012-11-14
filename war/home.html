@@ -604,18 +604,12 @@
 								}else{
 									$('#timeoutStarted #message p').append(msg_unhappy);
 								}
+								
+								dataCon.post("timeout/emotion",val,function(res){
+									console.log("update Emotion");
+									console.log(res);
+								});
 							}
-							
-							// if(pleasure >= 0){
-								// alert("happy");
-								// alert(second_period);
-							// }else{
-								// if(timeleft < second_period){
-									// alert(intervals[0]);	
-									// alert(parseInt(intervals[0]));
-								// }
-								// alert("unhappy");
-							// }
 						}
 						
 						
