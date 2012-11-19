@@ -103,7 +103,7 @@
 							dataCon.post("timeout/setupAsync",para,function(res){
 								alert("Timeout will be steup in the backend, users will be infrom by the emails !");
 								$(btn).data("btnObj").reasign(btn);
-								$('#nav_listTimeout').trigger("click");
+								// $('#nav_listTimeout').trigger("click");
 							});
 						}
 						
@@ -250,8 +250,8 @@
 				$('#contactName').val("contact1@acs.com");
 				$('#contactPhone').val("506");
 				
-				$('#address').val("Kralingseweg 219");
-				$('#zipcode').val("3062 CE Rotterdam");
+				$('#address').val("Damrak 1"); // Kralingseweg 219
+				$('#zipcode').val("1012 LG Amsterdam"); // 3062 CE Rotterdam
 			}
 			
 			var logoff = function(){
@@ -307,8 +307,8 @@
 			      	<ul class="nav nav-list">
 					  <li class="nav-header">>Setup Timeout</li>
 					  <li ><a href="#/addTimeout" onClick="showPage('page_setupTimeout')">add "Timeout" </a></li>
-					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li>
-					  <li ><a id="nav_listTimeout" href="#/partners" onClick="showPage('page_listTimeout')">list "Timeout" </a></li>
+<!-- 					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li> -->
+<!-- 					  <li ><a id="nav_listTimeout" href="#/partners" onClick="showPage('page_listTimeout')">list "Timeout" </a></li> -->
 					  <li ><a href="javascript:logoff()">Logoff </a></li>
 					  
 					</ul>

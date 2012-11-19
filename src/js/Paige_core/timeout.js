@@ -148,6 +148,8 @@ function receiveC2DM(type, data) {
 			$('#timeoutStarted #message p').empty();
 			$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je weer kunt te kalmeren.");
 			$("#timeoutStarted").slideDown();
+		}else if(data == "startupMessage"){
+			localStorage.setItem("startupMessage","true");
 		}
 			
 	}
@@ -216,7 +218,7 @@ function PaigeData() {
 
 }
 
-PaigeData.prototype.get = function(restPath, data, callback) {
+PaigeData.prototype.get = function(restPath, data, callback,failcallback) {
 	if (!session.isLogin()) {
 		console.log("Direct data: Info: No session available, now retrying");
 		session.authenticator();
@@ -248,6 +250,12 @@ PaigeData.prototype.get = function(restPath, data, callback) {
 		},
 		403 : function callback(res) {
 			forbidden();
+			window.location = "login.html";
+		},
+		error : function(){
+			if(failcallback){
+				failcallback();
+			}
 		}
 	});
 }
