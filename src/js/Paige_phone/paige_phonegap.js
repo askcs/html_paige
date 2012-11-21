@@ -9,17 +9,21 @@ document.addEventListener('deviceready', function() {
 		// initialize the Sense plugin
 		window.plugins.sense.init();
 		
-		console.log("c2dmKey:"+localStorage['C2DMKey']);
-        if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
-            setTimeout(function() { dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
-                console.log("C2DM send!");
-            });}, 1000);                    
-        }else{
-            console.log("C2DM Key init wrong! ");
-            if(phoneGapAvailable){
-                window.plugins.pee.registerC2DM();
-            }
-        }
+		if(session.isLogin()){
+		    console.log("c2dmKey:"+localStorage['C2DMKey']);
+		    if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
+	            setTimeout(function() { 
+	                dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
+	                    console.log("C2DM send!");
+	                });
+	            }, 1000);                    
+	        }else{
+	            console.log("C2DM Key init wrong! ");
+	            if(phoneGapAvailable){
+	                window.plugins.pee.registerC2DM();
+	            }
+	        }  
+		}
         
 		session.addCallback("logoff", function() {
 			localStorage.removeItem("sesID");
