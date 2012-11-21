@@ -292,13 +292,19 @@
 				}
 				
 				var checkGCMcount = 0;
-				
+				localStorage.setItem('startupMessage','false');
 				var checkGCMStartup = function(){
 					if(typeof localStorage['startupMessage'] == "undefined" || localStorage['startupMessage'] != "true"){
 						setTimeout(function(){
 							checkGCMStartup();
 						},2000);
 						checkGCMcount++;
+						if(checkGCMcount == 5){
+							if(phoneGapAvailable){
+								window.plugins.pee.registerC2DM();
+							}
+							checkGCMcount = 0;
+						}
 					}else{
 						$('#headerLogo .logoText').html("Time out!");
 						console.log("Message Server connected.");
@@ -343,13 +349,6 @@
 				}
 				
 				checkGPS();
-				//start to check timeout status every 30 seconds 
-				// var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
-				// cache.addRenderer('/home.html', timeoutRenderer,true);
-				
-				// setTimeout(function(){
-					// caches.showList("getTimeout");
-				// },3000);
 				
 				$('#timeoutButton').ready(function(){
 
@@ -388,18 +387,20 @@
 						return;
 					}
 					
-					console.log("c2dmKey:"+localStorage['C2DMKey']);
-					if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
-						setTimeout(function() { dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
-							// var t_cache = caches.getList("getTimeout")[0];
-							// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
-							console.log("C2DM send!");
-						});}, 1000);					
-					}else{
-						console.log("C2DM Key init wrong! ");
-					}
+					// console.log("c2dmKey:"+localStorage['C2DMKey']);
+					// if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
+						// setTimeout(function() { dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
+							// // var t_cache = caches.getList("getTimeout")[0];
+							// // t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+							// console.log("C2DM send!");
+						// });}, 1000);					
+					// }else{
+						// console.log("C2DM Key init wrong! ");
+						// if(phoneGapAvailable){
+							// window.plugins.pee.registerC2DM();
+						// }
+					// }
 				},false);
-
 				
 				$('#timeoutButton').live('click',function(){
 					// start timeout !! 
