@@ -119,7 +119,7 @@ PeePlugin.prototype.setCallbackC2DM = function(callback) {
 };
 
 PeePlugin.prototype.registerC2DM = function() {
-    return cordova.exec(null, null, 'PeePlugin', 'registerC2DM', [ "android@ask-cs.com" ]);
+    return cordova.exec(null, null, 'PeePlugin', 'registerC2DM', [ "986844955846" ]);
 };
 
 PeePlugin.prototype.unregisterC2DM = function(successCallback, failureCallback) {

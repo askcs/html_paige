@@ -152,6 +152,11 @@ function receiveC2DM(type, data) {
 			localStorage.setItem("startupMessage","true");
 		}
 			
+	} else if (type == "registration_error"){
+		console.log("GCM not register , now try it again. ");
+		if(phoneGapAvailable){
+			window.plugins.pee.registerC2DM();
+		}
 	}
 }
 
@@ -168,7 +173,7 @@ session.addCallback("login",function(){
 		}
 
 		window.plugins.pee.setCallbackC2DM('receiveC2DM');
-		window.plugins.pee.registerC2DM('receiveC2DM');
+		window.plugins.pee.registerC2DM();
 	}
 });
 
@@ -574,7 +579,7 @@ function buildHeader()
 	var headerLogo = $('<div id="headerLogo"></div>');
 	
 	headerLogo.append('<div class="logoIcon"><img src="/images/logoIcon.png" height="36" width="36"></div>');
-	headerLogo.append('<div class="logoText">Time out!</div>');
+	headerLogo.append('<div class="logoText">Time out</div>');
 	headerTop.append(headerLogo);
 
 	var toggleMenu = $('<div id="toggleMenu" class="notActive"></div>');

@@ -294,25 +294,19 @@
 				var checkGCMcount = 0;
 				
 				var checkGCMStartup = function(){
-					if(checkGCMcount == 10 || checkGCMcount == 15 ){
-						// try to register to GCM again . 
-					}
-					if(checkGCMcount > 15){
-						alert("Something wrong with Message Server , Please try to login again.");
-						// session.logoff();
-						return;
-					}
-					
 					if(typeof localStorage['startupMessage'] == "undefined" || localStorage['startupMessage'] != "true"){
 						setTimeout(function(){
 							checkGCMStartup();
 						},2000);
 						checkGCMcount++;
 					}else{
-						//localStorage['startupMessage']
+						$('#headerLogo .logoText').html("Time out!");
 						console.log("Message Server connected.");
+						checkGCMcount = 0;
 					}
 				}
+				
+				checkGCMStartup();
 				
 				if(typeof localStorage["initedSensor"] == "undefined"){
 					
@@ -331,7 +325,6 @@
 						}, function() {});
 					}
 					checkSensor();
-					checkGCMStartup();
 				}
 				
 				var checkGPS = function(){
