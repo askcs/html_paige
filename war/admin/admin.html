@@ -293,6 +293,27 @@
 					$('#page_setupTimeout').data("sessionTime",0);
 				})
 			})
+			
+			var simulate = function(type,button){
+				if($('#simulateUserId').val() == ''){
+					alert_timeout("Please fill user ID !");
+					return;
+				}
+				
+				var btx = $(button).text(); 
+				$(button).text("Procssing...");
+				var para = {"userId" : $('#simulateUserId').val() , "type" : type}; 
+				dataCon.post("timeout/admin/simulate",para,function(res){
+					if(res == "norights"){
+						alert("Please login as admin user ");
+					}else if(res == "ok"){
+						
+					}else{
+						alert("Something going wrong.");
+					}
+					$(button).text(btx);
+				});
+			}
 		</script>
 	</head>
 	<body onload="checkLogin();"  ng-controller="PartnerListCtrl">
@@ -309,6 +330,7 @@
 					  <li ><a href="#/addTimeout" onClick="showPage('page_setupTimeout')">add "Timeout" </a></li>
 <!-- 					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li> -->
 					  <li ><a id="nav_listTimeout" href="#/partners" onClick="showPage('page_listTimeout')">list "Timeout" </a></li>
+					  <li ><a id="nav_simulateTimeout" href="#/simulate" onClick="showPage('page_simulateTimeout')">simulate "Timeout" </a></li>
 					  <li ><a href="javascript:logoff()">Logoff </a></li>
 					  
 					</ul>
@@ -377,6 +399,28 @@
 		            </div>
 		            <div id="page_listTimeout" style="display : none;">
 		            	<div ng-view></div>
+		            </div>
+		            <div id="page_simulateTimeout" style="display : none;">
+		            	<input id="simulateUserId" type="text" class="input" placeholder="user id for simulate" data-provide="typeahead">
+		            	<br>
+		            	<button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('aggression',this)">
+			                    aggression 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('start',this)">
+			                    start Timeout 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('happy',this)">
+			                    stop (both happy) 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('close',this)">
+			                    stop and escalate ( too close ) 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('unhappy',this)">
+			                    stop and escalate ( still unhappy ) 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('stopescalation',this)">
+			                    stop escalation 
+			            </button>
 		            </div>
 			    </div>
 			  </div>
