@@ -21,7 +21,26 @@ function PartnerListCtrl($scope, $http) {
     getPartners($scope,$http);
     
     $scope.removeTimeout = function(personId) {
+        
+         
+        
+        
         if(window.confirm("Are you sure you want to delete Timeout for user "+personId + "?")){
+            // remove the user form Ask A, B, contact
+            var paraUsers = [];
+            $.each($scope.partners,function(i,item){
+                console.log(item);
+                if(item.personA == personId){
+                    paraUsers.push(item.personA);
+                    paraUsers.push(item.personB);
+                    paraUsers.push(item.contactPerson);
+                }
+            });
+            var paraUsers; 
+            dataCon.post("timeout/admin/removeUser", paraUsers, function(res){
+                alert_timeout("Users deleted from Ask");
+            });
+            
             var para = {"userId" : personId};
             dataCon.post("timeout/removeTimeout",para,function(res){
                 
@@ -32,7 +51,8 @@ function PartnerListCtrl($scope, $http) {
                     alert_timeout(res);
                     getPartners($scope,$http);
                 }
-            });  
+            });
+            
         }
     }
 }

@@ -228,9 +228,12 @@
 							$("#javascript_countdown_time").text("Starting...");
 							$('#timeoutStarted #message p').empty();
 							
-							javascript_countdown.enable()
-							// javascript_countdown.init(600);
-							javascript_countdown.init(300); // for demo
+							javascript_countdown.enable();
+							if(typeof $("#timeoutButton").data("totalTime") == "undefined" || $("#timeoutButton").data("totalTime") == null ){
+								javascript_countdown.init(1200);
+							}else{
+								javascript_countdown.init($("#timeoutButton").data("totalTime"));
+							}
 							
 							dataCon.get("timeout/start",null,function(res){
 								console.log(res);
@@ -365,6 +368,18 @@
 							if(typeof json.contactPhone != "undefined"){
 				  				localStorage.setItem("contactPhone",json.contactPhone);
 				  			}
+				  			
+				  			if(typeof json.interval == "undefined"){
+				  				return 0;
+				  			}
+				  			var itvs = json.interval.split(',');
+							var duration = 0;
+							for(var i=0 ; i < itvs.length ; i++){
+								duration += parseInt(itvs[i]);
+							}
+							if(duration > 0){
+								$('#timeoutButton').data("totalTime",duration);
+							}
 						});
 					}
 					
