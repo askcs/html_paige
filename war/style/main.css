@@ -218,7 +218,20 @@ div.registerPage #registerContent {
 	margin: 0 auto;
 	padding: 0 20px;
 	color: #fff;
-	text-align: justify;
+}
+
+#registerContent p {
+	line-height: 16px;
+	margin-bottom: 8px;
+}
+
+#registerContent a {
+	text-decoration: underline;
+}
+
+.registerSubtitle {
+	font-weight: bold;
+	margin-top: 16px;
 }
 
 /* ------------- HEADER ------------- */
