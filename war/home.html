@@ -585,8 +585,8 @@
 			}();
 
 		</script>
-		
-		<script type="text/javascript">
+
+<script type="text/javascript">
 			// for init emotion page
 			$('#emotionBlock #button').ready(function(){
 				$('#emotionBlock #button').affectbutton();
@@ -665,16 +665,19 @@
 					changeDivPage("timeoutBlock",null,$('#navBtn_timeoutBlock'));
 				}
 	  		});
-	  		
-	  		$('#triggerContainer').ready(function(){
-	  			$('#triggerContainer #helpContent p.helpsubContent').hide();
-	  			$('#triggerContainer #helpContent p span.helpTitle').live("click",function(event){
-	  				$(event.target).parent('p').next('p').toggle();
-	  			});
-	  		})
-		</script>
 
-		<title>Time out!</title>
+	// commented to disable the help text hiding
+	/*
+	$('#triggerContainer').ready(function() {
+		$('#triggerContainer #helpContent p.helpsubContent').hide();
+		$('#triggerContainer #helpContent p span.helpTitle').live("click", function(event) {
+			$(event.target).parent('p').next('p').toggle();
+		});
+	});
+	*/
+</script>
+
+<title>Time out!</title>
 	</head>
 	<body onload="checkLogin()">
 		<div id="callPopUp" class="popUp displayNone" ontouchmove="blockMove()"></div>
