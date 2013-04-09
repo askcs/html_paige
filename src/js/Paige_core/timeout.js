@@ -148,8 +148,15 @@ function receiveC2DM(type, data) {
 			$('#timeoutStarted #message p').empty();
 			$('#timeoutStarted #message p').append("Ik heb het idee dat jullie een timeout nodig hebben. Klopt dat? Druk op de knop om een timeout te starten zodat je weer kunt te kalmeren.");
 			$("#timeoutStarted").slideDown();
+		}else if(data == "startupMessage"){
+			localStorage.setItem("startupMessage","true");
 		}
 			
+	} else if (type == "registration_error"){
+		console.log("GCM not register , now try it again. ");
+		if(phoneGapAvailable){
+			window.plugins.pee.registerC2DM();
+		}
 	}
 }
 
@@ -166,7 +173,7 @@ session.addCallback("login",function(){
 		}
 
 		window.plugins.pee.setCallbackC2DM('receiveC2DM');
-		window.plugins.pee.registerC2DM('receiveC2DM');
+		window.plugins.pee.registerC2DM();
 	}
 });
 
@@ -216,7 +223,7 @@ function PaigeData() {
 
 }
 
-PaigeData.prototype.get = function(restPath, data, callback) {
+PaigeData.prototype.get = function(restPath, data, callback,failcallback) {
 	if (!session.isLogin()) {
 		console.log("Direct data: Info: No session available, now retrying");
 		session.authenticator();
@@ -248,6 +255,12 @@ PaigeData.prototype.get = function(restPath, data, callback) {
 		},
 		403 : function callback(res) {
 			forbidden();
+			window.location = "login.html";
+		},
+		error : function(){
+			if(failcallback){
+				failcallback();
+			}
 		}
 	});
 }
@@ -566,7 +579,7 @@ function buildHeader()
 	var headerLogo = $('<div id="headerLogo"></div>');
 	
 	headerLogo.append('<div class="logoIcon"><img src="/images/logoIcon.png" height="36" width="36"></div>');
-	headerLogo.append('<div class="logoText">Time out!</div>');
+	headerLogo.append('<div class="logoText">Time out</div>');
 	headerTop.append(headerLogo);
 
 	var toggleMenu = $('<div id="toggleMenu" class="notActive"></div>');
@@ -577,10 +590,10 @@ function buildHeader()
 	var menuUl = $('<ul></ul>');
 	
 	// menuUl.append('<li><a href="javascript:location.reload(true)">Home</a></li>');
-	menuUl.append('<li><a href="javascript:location.reload(true)">Refresh</a></li>');
+	menuUl.append('<li><a href="javascript:location.reload(true)">Verversen</a></li>');
 	// menuUl.append('<li><a href="">Settings</a></li>');
 	menuUl.append('<li><a href="javascript:" id="button_help" >Help</a></li>');
-	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Logout</a></li>');
+	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Uitloggen</a></li>');
 	
 	$(menuUl.find('#button_logout')[0]).live('click',function(){
 		session.logoff();

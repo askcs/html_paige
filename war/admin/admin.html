@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="timeoutAdmin">
 	<head>
 		<meta charset="utf-8">
 		<title>Timeout ! Admin</title>
@@ -68,8 +68,8 @@
 						var paraB =  {'id': idB.toLowerCase(), 'pass': MD5(passB), 'clear': passB, 'phone':phoneB};
 						var paraContact =  {'id': contact.toLowerCase(), 'pass': MD5("contact"), 'clear': "contact",'phone':contactPhone};
 						
-						var para = {'timeout': {'personA': {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA},
-						'personB': {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB },
+						var para = {'timeout': {'personA': {'id': idA.toLowerCase(), 'pass': MD5(passA), 'phone':phoneA ,'clear': passA},
+						'personB': {'id': idB.toLowerCase(), 'pass': MD5(passB), 'phone':phoneB ,'clear': passB},
 						'contact': {'id': contact.toLowerCase(), 'phone': contactPhone},
 						'address': {'address': address , 'zipcode': zipcode , 'country': 'the Netherlands'}
 						}};
@@ -85,7 +85,8 @@
 								console.log(res);
 								if(res == "ok"){
 									$(btn).text($(btn).text()+"...");
-									regUserA();
+									// regUserA();
+									regAsync();
 								}else{
 									var json = JSON.parse(res);
 									var ids = "";
@@ -95,6 +96,14 @@
 									alert_timeout(ids +" already exists. Please select other user ID ","warn");
 									$(btn).data("btnObj").reasign(btn);									
 								}
+							});
+						}
+						
+						var regAsync = function(){
+							dataCon.post("timeout/setupAsync",para,function(res){
+								alert("Timeout will be steup in the backend, users will be infrom by the emails !");
+								$(btn).data("btnObj").reasign(btn);
+								// $('#nav_listTimeout').trigger("click");
 							});
 						}
 						
@@ -201,7 +210,11 @@
 			
 			 
 			var sessionCheck = function(){
-				dataCon.post("timeout/remoteChange", null, function(){
+				dataCon.post("timeout/remoteChange", null, function(res){
+					if(res == "error"){
+						alert("Please use Timeout admin user !");
+						admin_session.logoff(); 
+					}
 					setTimeout(function(){
 						sessionCheck();
 					},10000);
@@ -225,20 +238,20 @@
 			sessionCheck();
 			
 			var preset = function(){
-				$('#emailA').val("myk0417@gmail.com");
-				$('#emailB').val("st.even.mulder@gmail.com");
+				$('#emailA').val("a1@asc.com"); // myk0417@gmail.com
+				$('#emailB').val("b1@asc.com"); //st.even.mulder@gmail.com
 				$('#passA').val("askask");
 				$('#passA_retype').val("askask");
 				$('#phoneA').val("0624384730");
 				$('#passB').val("askask");
 				$('#passB_retype').val("askask");
-				$('#phoneB').val("0644206836");
+				$('#phoneB').val("511"); // 0644206836
 				
-				$('#contactName').val("contact@ask-cs.com");
+				$('#contactName').val("contact1@acs.com");
 				$('#contactPhone').val("506");
 				
-				$('#address').val("Kralingseweg 219");
-				$('#zipcode').val("3062 CE Rotterdam");
+				$('#address').val("Damrak 1"); // Kralingseweg 219
+				$('#zipcode').val("1012 LG Amsterdam"); // 3062 CE Rotterdam
 			}
 			
 			var logoff = function(){
@@ -280,9 +293,30 @@
 					$('#page_setupTimeout').data("sessionTime",0);
 				})
 			})
+			
+			var simulate = function(type,button){
+				if($('#simulateUserId').val() == ''){
+					alert_timeout("Please fill user ID !");
+					return;
+				}
+				
+				var btx = $(button).text(); 
+				$(button).text("Procssing...");
+				var para = {"userId" : $('#simulateUserId').val() , "type" : type}; 
+				dataCon.post("timeout/admin/simulate",para,function(res){
+					if(res == "norights"){
+						alert("Please login as admin user ");
+					}else if(res == "ok"){
+						
+					}else{
+						alert("Something going wrong.");
+					}
+					$(button).text(btx);
+				});
+			}
 		</script>
 	</head>
-	<body onload="checkLogin();">
+	<body onload="checkLogin();"  ng-controller="PartnerListCtrl">
 		<div class="container">
 			<h3>Timeout! App Admin <span id="hid_test">Console</span></h3>
 			<br>
@@ -293,15 +327,17 @@
 			      <!--Sidebar content-->
 			      	<ul class="nav nav-list">
 					  <li class="nav-header">>Setup Timeout</li>
-					  <li ><a href="javascript:showPage('page_setupTimeout')">add "Timeout" </a></li>
-					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li>
+					  <li ><a href="#/addTimeout" onClick="showPage('page_setupTimeout')">add "Timeout" </a></li>
+<!-- 					  <li ><a href="javascript:showPage('page_removeTimeout')">remove "Timeout" </a></li> -->
+					  <li ><a id="nav_listTimeout" href="#/partners" onClick="showPage('page_listTimeout')">list "Timeout" </a></li>
+					  <li ><a id="nav_simulateTimeout" href="#/simulate" onClick="showPage('page_simulateTimeout')">simulate "Timeout" </a></li>
 					  <li ><a href="javascript:logoff()">Logoff </a></li>
 					  
 					</ul>
 			    </div>
 			    <div class="span10">
 			      <!--Body content-->
-			      	<div id="page_setupTimeout">
+			      	<div id="page_setupTimeout" >
 					    <div>
 							<table class="table">
 								<tr><td>Person A</td></tr>
@@ -350,15 +386,40 @@
 								</tr>
 							</table>
 						</div>
-			            <button id="saveTimeout" data-loading-text="Perseting..." class="btn btn-primary" >
-			                    confirm 
-			            </button>
+						<button id="saveTimeout" data-loading-text="Perseting..." class="btn btn-primary" >
+						        confirm 
+						</button>
 		            </div>
 		            <div id="page_removeTimeout" style="display : none;">
 		            	<input id="removeUserId" type="text" class="input" placeholder="user id for Timeout" data-provide="typeahead">
 		            	<br>
 		            	<button id="removeTimeout" data-loading-text="remove Timeout" class="btn btn-primary" onclick="javascript:removeTimeout(this)">
 			                    remove Timeout
+			            </button>
+		            </div>
+		            <div id="page_listTimeout" style="display : none;">
+		            	<div ng-view></div>
+		            </div>
+		            <div id="page_simulateTimeout" style="display : none;">
+		            	<input id="simulateUserId" type="text" class="input" placeholder="user id for simulate" data-provide="typeahead">
+		            	<br>
+		            	<button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('aggression',this)">
+			                    aggression 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('start',this)">
+			                    start Timeout 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('happy',this)">
+			                    stop (both happy) 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('close',this)">
+			                    stop and escalate ( too close ) 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('unhappy',this)">
+			                    stop and escalate ( still unhappy ) 
+			            </button>
+			            <button id="aggressionTimeout" data-loading-text="aggression Timeout" class="btn btn-primary" onclick="javascript:simulate('stopescalation',this)">
+			                    stop escalation 
 			            </button>
 		            </div>
 			    </div>

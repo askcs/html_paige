@@ -72,12 +72,12 @@
 		</java>
 	</target>
 
-		<!-- bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js   for admin page  -->	
+		<!-- bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js,angular.min.js   for admin page  -->	
 	<target name="admin-libs" depends="concat-admin-libs, copy-admin-libs, minify-admin-libs" />
 	
 	<target name="concat-admin-libs">
 		<concat destfile="build/js/admin_libs.js">
-			<filelist dir="src/js/libs" files="jquery-1.7.2.min.js,jquery.ui.core-1.8.17.min.js,jquery.ui.widget-1.8.17.min.js,jquery.rest.min.js,bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js" />
+			<filelist dir="src/js/libs" files="jquery-1.7.2.min.js,jquery.ui.core-1.8.17.min.js,jquery.ui.widget-1.8.17.min.js,jquery.rest.min.js,bootstrap-typeahead.js,bootstrap-button.js,bootstrap-alert.js,angular.min.js" />
 		</concat>
 	</target>
 	
@@ -98,7 +98,7 @@
 	
 	<target name="concat-admin-core">
 		<concat destfile="build/js/admin_core.js">
-			<filelist dir="src/js/Paige_core" files="admin.js,admin_settings.js" />
+			<filelist dir="src/js/Paige_core" files="admin.js,admin_settings.js,admin_app.js,admin_controller.js,admin_filters.js" />
 		</concat>
 	</target>
 	

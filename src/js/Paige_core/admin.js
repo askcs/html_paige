@@ -173,6 +173,10 @@ PaigeData.prototype.post = function(restPath, data, callback,failedCallback) {
 			if(res.status == 0 && res.statusText == "error"){
 				if(failedCallback)
 					failedCallback(res.responseText);
+			}else if(res.status == 0 && res.statusText == "No Transport"){
+				if(failedCallback)
+					failedCallback(res.responseText);
+				alert("Server Call failed. Please try a non-IE browser");
 			}
 		}
 	});
@@ -409,9 +413,3 @@ var MD5 = function(string) {
 	var temp = WordToHex(a) + WordToHex(b) + WordToHex(c) + WordToHex(d);
 	return temp.toLowerCase();
 }
-
-// $.import_js('/js/jquery.rest.min.js');
-// $.import_js('/js/bootstrap-alert.js');
-// $.import_js('/js/bootstrap-button.js');
-// $.import_js('/js/bootstrap-typeahead.js');
-// $.import_js('/js/settings.js');

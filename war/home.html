@@ -169,6 +169,20 @@
 								$("#timeoutButton").data("active",true);
 							}else if(typeof toOjb != "undefined" && toOjb.status == "inactive"){
 								console.log("Timeout stoped ! ");
+								
+								$.map(toOjb.attendees,function(v,k){
+									if(k == session.uuid ){
+										if(typeof localStorage["continued"] != "undefined" && localStorage["continued"] == "true"){
+											alert(v.msg);
+											// alert("Timeout is nu over .");
+										}
+										$('#timeoutStarted #message p').empty();
+										$('#timeoutStarted #message p').append((v.msg == null && typeof v.msg == "undefined")? "": v.msg );
+									}
+								});
+								
+								console.log("timeoutButton " , $("#timeoutButton").attr("class"));
+								
 								$('#timeoutStarted #message p').empty();
 								$("#callButton").data('buttonObj').timeoutStop();
 								$.removeData($('#timeoutButton'),"intervals");
@@ -214,8 +228,12 @@
 							$("#javascript_countdown_time").text("Starting...");
 							$('#timeoutStarted #message p').empty();
 							
-							javascript_countdown.enable()
-							javascript_countdown.init(600);
+							javascript_countdown.enable();
+							if(typeof $("#timeoutButton").data("totalTime") == "undefined" || $("#timeoutButton").data("totalTime") == null ){
+								javascript_countdown.init(1200);
+							}else{
+								javascript_countdown.init($("#timeoutButton").data("totalTime"));
+							}
 							
 							dataCon.get("timeout/start",null,function(res){
 								console.log(res);
@@ -230,6 +248,9 @@
 								// setTimeout(function(){
 									// caches.showList("getTimeout");
 								// },3000);
+							},function(){
+								alert("Starten van de timeout is mislukt! Het lijkt er op dat er problemen met de verbinding zijn...");
+								$("#callButton").data('buttonObj').timeoutStop();
 							});
 						}
 					}
@@ -274,6 +295,29 @@
 					
 				}
 				
+				var checkGCMcount = 0;
+				localStorage.setItem('startupMessage','false');
+				var checkGCMStartup = function(){
+					if(typeof localStorage['startupMessage'] == "undefined" || localStorage['startupMessage'] != "true"){
+						setTimeout(function(){
+							checkGCMStartup();
+						},2000);
+						checkGCMcount++;
+						if(checkGCMcount == 5){
+							if(phoneGapAvailable){
+								window.plugins.pee.registerC2DM();
+							}
+							checkGCMcount = 0;
+						}
+					}else{
+						$('#headerLogo .logoText').html("Time out!");
+						console.log("Message Server connected.");
+						checkGCMcount = 0;
+					}
+				}
+				
+				checkGCMStartup();
+				
 				if(typeof localStorage["initedSensor"] == "undefined"){
 					
 					// check the if the sensor is initialized  
@@ -309,13 +353,6 @@
 				}
 				
 				checkGPS();
-				//start to check timeout status every 30 seconds 
-				// var cache = new ASKCache("getTimeout", "timeout", null, "uuid", session);
-				// cache.addRenderer('/home.html', timeoutRenderer,true);
-				
-				// setTimeout(function(){
-					// caches.showList("getTimeout");
-				// },3000);
 				
 				$('#timeoutButton').ready(function(){
 
@@ -331,6 +368,18 @@
 							if(typeof json.contactPhone != "undefined"){
 				  				localStorage.setItem("contactPhone",json.contactPhone);
 				  			}
+				  			
+				  			if(typeof json.interval == "undefined"){
+				  				return 0;
+				  			}
+				  			var itvs = json.interval.split(',');
+							var duration = 0;
+							for(var i=0 ; i < itvs.length ; i++){
+								duration += parseInt(itvs[i]);
+							}
+							if(duration > 0){
+								$('#timeoutButton').data("totalTime",duration);
+							}
 						});
 					}
 					
@@ -354,18 +403,20 @@
 						return;
 					}
 					
-					console.log("c2dmKey:"+localStorage['C2DMKey']);
-					if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
-						setTimeout(function() { dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
-							// var t_cache = caches.getList("getTimeout")[0];
-							// t_cache.setInterval(900000); // Since we have C2DM set dialog to low
-							console.log("C2DM send!");
-						});}, 1000);					
-					}else{
-						console.log("C2DM Key init wrong! ");
-					}
+					// console.log("c2dmKey:"+localStorage['C2DMKey']);
+					// if(localStorage['C2DMKey'] != null && typeof localStorage['C2DMKey'] != "undefined"){
+						// setTimeout(function() { dataCon.post("timeout/setC2DM",{"key":localStorage['C2DMKey']},function(){
+							// // var t_cache = caches.getList("getTimeout")[0];
+							// // t_cache.setInterval(900000); // Since we have C2DM set dialog to low
+							// console.log("C2DM send!");
+						// });}, 1000);					
+					// }else{
+						// console.log("C2DM Key init wrong! ");
+						// if(phoneGapAvailable){
+							// window.plugins.pee.registerC2DM();
+						// }
+					// }
 				},false);
-
 				
 				$('#timeoutButton').live('click',function(){
 					// start timeout !! 
@@ -534,8 +585,8 @@
 			}();
 
 		</script>
-		
-		<script type="text/javascript">
+
+<script type="text/javascript">
 			// for init emotion page
 			$('#emotionBlock #button').ready(function(){
 				$('#emotionBlock #button').affectbutton();
@@ -590,18 +641,12 @@
 								}else{
 									$('#timeoutStarted #message p').append(msg_unhappy);
 								}
+								
+								dataCon.post("timeout/emotion",val,function(res){
+									console.log("update Emotion");
+									console.log(res);
+								});
 							}
-							
-							// if(pleasure >= 0){
-								// alert("happy");
-								// alert(second_period);
-							// }else{
-								// if(timeleft < second_period){
-									// alert(intervals[0]);	
-									// alert(parseInt(intervals[0]));
-								// }
-								// alert("unhappy");
-							// }
 						}
 						
 						
@@ -620,16 +665,19 @@
 					changeDivPage("timeoutBlock",null,$('#navBtn_timeoutBlock'));
 				}
 	  		});
-	  		
-	  		$('#triggerContainer').ready(function(){
-	  			$('#triggerContainer #helpContent p.helpsubContent').hide();
-	  			$('#triggerContainer #helpContent p span.helpTitle').live("click",function(event){
-	  				$(event.target).parent('p').next('p').toggle();
-	  			});
-	  		})
-		</script>
 
-		<title>Time out!</title>
+	// commented to disable the help text hiding
+	/*
+	$('#triggerContainer').ready(function() {
+		$('#triggerContainer #helpContent p.helpsubContent').hide();
+		$('#triggerContainer #helpContent p span.helpTitle').live("click", function(event) {
+			$(event.target).parent('p').next('p').toggle();
+		});
+	});
+	*/
+</script>
+
+<title>Time out!</title>
 	</head>
 	<body onload="checkLogin()">
 		<div id="callPopUp" class="popUp displayNone" ontouchmove="blockMove()"></div>
@@ -713,62 +761,86 @@
 				    	</div>
 					</div>
 				</div>
-				<div id="helpBlock">
-					<div class="popUpHelpBg">
-						<div id="triggerContainer">
+			<div id="helpBlock">
+				<div class="popUpHelpBg">
+					<div id="triggerContainer">
+						<p>
+							<span class="helpTitleTitle">Algemene uitleg Time Out!</span>
+						</p>
+						<div id="helpContent">
+							<p class="helpsubContent">Binnen elke relatie is wel eens
+								ruzie. Meestal lukt het om daar zelf uit te komen en ruzies uit
+								te praten. Maar als ruzies vaak voorkomen en het niet meer lukt
+								om rustig naar een oplossing te zoeken of als ruzies uitmonden
+								in geweld kan Time Out! een oplossing bieden.</p>
+							<p class="helpsubContent">Time Out! helpt partners die te
+								maken hebben met huiselijk geweld en daar samen uit willen komen
+								om escalaties van ruzies te voorkomen en de relatie zonder
+								geweld voort te zetten. Een hulpverlener blijft uiteraard
+								beschikbaar op momenten dat men daar zelf voor kiest.</p>
 							<p>
-								<span class="helpTitleTitle">Algemene uitleg Time out!</span>
+								<span class="helpTitle">Hoe kom ik aan een login?</span>
 							</p>
-							<br>
-							<div id="helpContent">
-								<p>
-									<span class="helpTitle">Wat doet deze app?</span>
-								</p>
-								<p class="helpsubContent">
-									<br>
-									Binnen elke relatie is wel eens ruzie. Meestal lukt het om daar zelf uit te komen en ruzies uit te praten. Maar als ruzies vaak voorkomen, uitmonden in geweld en het niet meer lukt om rustig naar een oplossing te zoeken kan Time out! een oplossing bieden.
-									<br>
-									Time out! helpt partners die te maken hebben met huiselijk geweld en daar samen uit willen komen om escalaties van ruzies te voorkomen en de relatie zonder geweld voort te zetten. Een hulpverlener blijft uiteraard beschikbaar op momenten dat men daar zelf voor kiest.
-								</p>
-								<br>
-								<p>
-									<span class="helpTitle">Hoe kom ik aan een login?</span>
-								</p>
-								<p class="helpsubContent">
-									<br>
-									Om gebruik te kunnen maken van Time out! heeft u een login nodig. Deze login is beschikbaar voor mensen die met ondersteuning van het Steunpunt Huiselijk Geweld Eindhoven en de Kempen een eind willen maken aan geweld in hun relatie.
-									<br>
-									Voor meer informatie over de login kunt u contact opnemen met het Steunpunt Huiselijk Geweld Eindhoven en de Kempen via info@huiselijkgeweld-eindhovendekempen.nl of telefoonnummer 0900-1262626. Geeft u dan in het keuzemenu postcode 5600 aan.
-								</p>
-								<br>
-								<p>
-									<span class="helpTitle">Wie heeft deze app laten maken?</span>
-								</p>
-								<p class="helpsubContent">
-									<br>
-									Time out! is ontwikkeld door het Steunpunt Huiselijk Geweld Eindhoven en de Kempen in samenwerking met Sense Observation Systems en de Lumens Groep.
-									<br>
-									Sense Observation Systems is een technologiebedrijf wat context bewust communicatie en transactie te ondersteunt. Naarmate het aantal sensoren in onze samenleving toeneemt, neemt ook de noodzaak toe van slimme oplossingen die ondersteuning bieden voor onze communicatie en transacties op basis van alle beschikbare informatie. Sense Observation Systems biedt integrale oplossingen waardoor optimaal gebruik gemaakt kan worden van de beschikbaarheid van sensoren.
-									<br>
-									De Lumens Groep is een Brabantse welzijnsorganisatie. Mensen, daar draait het om bij de Lumens Groep. Mensen die allemaal een kans verdienen om deel te nemen aan de maatschappij. Wij leveren diensten op het gebied van mensenwerk. Ons uitgangspunt? De vragen en behoeften van mensen. Onze werkzaamheden bestaan uit veel verschillende activiteiten waarbij we (groepen) mensen mogelijkheden bieden om mee te doen in de maatschappij. De Lumens Groep vormt een professionele partner voor tal van organisaties, zoals gemeenten, woningbouwcorporaties en organisaties op het terrein van veiligheid, onderwijs, zorg en leefbaarheid.
-									<br>
-								</p>
-								<br>
-								<p>
-									<span class="helpTitle">Hoe kom ik aan meer informatie? Kan ik een nummer bellen? </span>
-								</p>
-								
-								<p class="helpsubContent">
-									<br>
-									Voor meer informatie over Time out! in de praktijk of de login-mogelijkheden kunt u contact opnemen met het Steunpunt Huiselijk Geweld Eindhoven en de Kempen via info@huiselijkgeweld-eindhovendekempen.nl of telefoonnummer 0900-1262626. Geeft u dan in het keuzemenu postcode 5600 aan.
-									<br>
-									Voor informatie over de toepassing van Time out! voor uw organisatie kunt u contact opnemen met de Lumens Groep via info@lumensgroep.nl of telefoonnummer 040-2193300
-									Voor meer informatie over de technologische aspecten van Time out! kunt u contact opnemen met Sense Observation Systems via info@sense-os.nl of telefoonnummer 010-3030600.
-								</p>
-							</div>
+							<p class="helpsubContent">
+								Om gebruik te kunnen maken van Time Out! heeft u een login
+								nodig. Deze login is beschikbaar voor mensen die de escalaties
+								van ruzie in hun relatie willen stoppen en die daarvoor
+								ondersteuning krijgen van een organisatie die deze app
+								beschikbaar stelt. Voor meer informatie over de beschikbaarheid
+								van de login in uw situatie kunt u contact opnemen met het
+								Steunpunt Huiselijk Geweld Eindhoven en de Kempen via <a
+									href="mailto:info@huiselijkgeweld-eindhovendekempen.nl">info@huiselijkgeweld-eindhovendekempen.nl</a>.
+							</p>
+							<p>
+								<span class="helpTitle">Wie heeft deze app laten
+									maken?</span>
+							</p>
+							<p class="helpsubContent">Time Out! is ontwikkeld door Sense
+								Observation Systems en de Lumens Groep.</p>
+							<p class="helpsubContent">Sense is een technologiebedrijf wat
+								context bewust communicatie en transactie te ondersteunt.
+								Naarmate het aantal sensoren in onze samenleving toeneemt, neemt
+								ook de noodzaak toe van slimme oplossingen die ondersteuning
+								bieden voor onze communicatie en transacties op basis van alle
+								beschikbare informatie. Sense biedt integrale oplossingen
+								waardoor optimaal gebruik gemaakt kan worden van de
+								beschikbaarheid van sensoren.</p>
+							<p class="helpsubContent">Lumens Groep is een Brabantse
+								welzijnsorganisatie. Mensen, daar draait het om bij de Lumens
+								Groep. Mensen die allemaal een kans verdienen om deel te nemen
+								aan de maatschappij. Wij leveren diensten op het gebied van
+								mensenwerk. Ons uitgangspunt? De vragen en behoeften van mensen.
+								Onze werkzaamheden bestaan uit veel verschillende activiteiten
+								waarbij we (groepen) mensen mogelijkheden bieden om mee te doen
+								in de maatschappij. De Lumens Groep vormt een professionele
+								partner voor tal van organisaties, zoals gemeenten,
+								woningbouwcorporaties en organisaties op het terrein van
+								veiligheid, onderwijs, zorg en leefbaarheid.</p>
+							<p>
+								<span class="helpTitle">Hoe kom ik aan meer
+									informatie?</span>
+							</p>
+							<p class="helpsubContent">
+								Voor meer informatie over Time Out! in de praktijk kunt u
+								contact opnemen met het Steunpunt Huiselijk Geweld Eindhoven en
+								de Kempen via <a
+									href="mailto:info@huiselijkgeweld-eindhovendekempen.nl">info@huiselijkgeweld-eindhovendekempen.nl</a>.
+							</p>
+							<p class="helpsubContent">
+								Voor informatie over de toepassing van Time Out! voor uw
+								organisatie kunt u contact opnemen met de Lumens Groep via <a
+									href="info@lumensgroep.nl">info@lumensgroep.nl</a> of
+								telefoonnummer 040-2193300.
+							</p>
+							<p class="helpsubContent">
+								Voor meer informatie over de technische aspecten van Time Out!
+								kunt u contact opnemen met Sense Observation Systems via <a
+									href="mailto:info@sense-os.nl">info@sense-os.nl</a>.
+							</p>
 						</div>
 					</div>
 				</div>
+			</div>
 			<div id="spaceFooter"></div>
 		</div>
 		</div>
