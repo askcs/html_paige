@@ -579,7 +579,7 @@ function buildHeader()
 	var headerLogo = $('<div id="headerLogo"></div>');
 	
 	headerLogo.append('<div class="logoIcon"><img src="/images/logoIcon.png" height="36" width="36"></div>');
-	headerLogo.append('<div class="logoText">Time out</div>');
+	headerLogo.append('<div class="logoText">Time Out</div>');
 	headerTop.append(headerLogo);
 
 	var toggleMenu = $('<div id="toggleMenu" class="notActive"></div>');
