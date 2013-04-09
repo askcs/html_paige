@@ -590,10 +590,10 @@ function buildHeader()
 	var menuUl = $('<ul></ul>');
 	
 	// menuUl.append('<li><a href="javascript:location.reload(true)">Home</a></li>');
-	menuUl.append('<li><a href="javascript:location.reload(true)">Refresh</a></li>');
+	menuUl.append('<li><a href="javascript:location.reload(true)">Verversen</a></li>');
 	// menuUl.append('<li><a href="">Settings</a></li>');
 	menuUl.append('<li><a href="javascript:" id="button_help" >Help</a></li>');
-	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Logout</a></li>');
+	menuUl.append('<li><a href="javascript:" class="noBorder" id="button_logout">Uitloggen</a></li>');
 	
 	$(menuUl.find('#button_logout')[0]).live('click',function(){
 		session.logoff();
