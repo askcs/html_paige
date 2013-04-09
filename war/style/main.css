@@ -335,17 +335,19 @@ div.registerPage #registerContent {
 #helpContent {
 	padding-bottom: 100px;
 	display: block;
+	margin-top: 16px;
 }
 
 #helpContent span.helpTitle {
 	cursor: pointer;
 	font-weight: bold;
-	margin-top: 10px;
+	margin-top: 16px;
 	display: block;
+	margin-bottom: 8px;
 }
 
 p.helpsubContent {
-	margin-top: 5px;
+	margin-bottom: 8px;
 	line-height: 16px;
 }
 
