@@ -323,31 +323,31 @@ div.registerPage #registerContent {
 /* ------------- HELP ------------- */
 #helpBlock {
 	display: none;
-	padding: 0 20px;}
+	padding: 0 20px;
+}
 	
 #helpBlock span.helpTitleTitle {
-	font-style:italic;
-	font-weight:bold;
-	font-size:20px;
-	
+	font-style: italic;
+	font-weight: bold;
+	font-size: 20px;
 }
 
 #helpContent {
-	padding-bottom:100px;
-	display:block;}
-
-#helpContent span.helpTitle {
-	cursor:pointer;
-	text-decoration:underline;
-	font-weight:bold;
-	margin-top:10px;
-	display:block;}
-
-p.helpsubContent{
-	line-height:16px;
+	padding-bottom: 100px;
+	display: block;
 }
 
+#helpContent span.helpTitle {
+	cursor: pointer;
+	font-weight: bold;
+	margin-top: 10px;
+	display: block;
+}
 
+p.helpsubContent {
+	margin-top: 5px;
+	line-height: 16px;
+}
 
 /* ------------- HOMEPAGE ------------- */
 div.mainContent {
